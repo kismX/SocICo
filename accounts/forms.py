@@ -6,10 +6,6 @@ class CustomUserCreationForm(UserCreationForm):
         model = CustomUser
         fields = UserCreationForm.Meta.fields + ('name', )
 
-<<<<<<< HEAD
-
-=======
->>>>>>> b2368c7 (wiederherstellung)
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
