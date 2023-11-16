@@ -12,4 +12,8 @@ class CustomUserAdmin(UserAdmin):
     fieldsets = UserAdmin.fieldsets + ((None, {'fields': ('name', )}), )
 
 
+<<<<<<< Updated upstream
 admin.site.register(CustomUser, CustomUserAdmin)
+=======
+admin.site.register(CustomUser, CustomUserAdmin)
+>>>>>>> Stashed changes

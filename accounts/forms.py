@@ -10,5 +10,9 @@ class CustomUserCreationForm(UserCreationForm):
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
+<<<<<<< Updated upstream
         fields = UserChangeForm.Meta.fields
 
+=======
+        fields = UserChangeForm.Meta.fields
+>>>>>>> Stashed changes
