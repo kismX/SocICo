@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.views.generic import ListView, DeleteView, CreateView, DetailView, UpdateView
-from .models import Profile
 from django.urls import reverse_lazy
+from .forms import CustomUserCreationForm
+from .models import Profile
 
 
 
@@ -14,3 +15,10 @@ class UserProfileListView(ListView):
 class UserProfileDetailView(DetailView):
     model = Profile
     template_name = "profile_detail.html"
+
+
+class SignUpView(CreateView):
+    form_class = CustomUserCreationForm
+    success_url = reverse_lazy('login')
+    template_name = 'registration/signup.html'
+    
