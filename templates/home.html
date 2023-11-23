@@ -6,7 +6,7 @@
 
 
 {% if user.is_authenticated %}
-
+<br>
 Hi {{ user.username }}
 <a href="{% url 'logout' %}">Logout</a>
 {% else %}
@@ -15,6 +15,7 @@ Hi {{ user.username }}
 <a href="{% url 'signup' %}">Registrieren</a>
 
 {% endif %}
+<br>
 <br>
 <br>
 <a href="{% url 'profile_list' %}"> >>> ZU DEN PROFILEN</a>

@@ -11,7 +11,7 @@
 
 {% endfor %}
 <p></p>
-<a href="{% url 'home' %}"> <<< ZURÜCK NACH HOME</a>
+<a href="{% url 'profile_detail' pk=request.user.id %}">>>>Zu MEINEM Profil>>></a> <br>
 
 
 {% endblock content %}
