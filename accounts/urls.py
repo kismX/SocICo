@@ -1,6 +1,9 @@
 from django.urls import path
-from .views import UserProfileListView, UserProfileDetailView, SignUpView, friend_requests, send_friend_request, accept_reject_friend
-from .views import UserProfileCreateView, UserProfileUpdateView, UserProfileDeleteView
+from .views import (
+    UserProfileListView, UserProfileDetailView, SignUpView, 
+    UserProfileCreateView, UserProfileUpdateView, UserProfileDeleteView,
+    friend_requests, send_friend_request, accept_reject_friend
+    )
 
 urlpatterns = [
     path('signup/', SignUpView.as_view(), name='signup'),
@@ -15,12 +18,11 @@ urlpatterns = [
     # 2023-11-22
     # path('friend_add/<int:friend_id>/', add_friends, name='add_friends'),
     path('friend_requests/', friend_requests,name='friend_requests'),
-    #'friendship_ip' wird aus dem template geholt (der user klickt auf einen user, der eine id hat, die im template dann friedship_id genannt wird) 
-    # und 'action' (wird hier einfach defiiert und mitgeschickt an den view) wird hier genommen und an accept_reject_friend geschickt
+    #'friendship_ip' wird aus template geholt ( user klickt auf user, der id hat, die im template dann in friedship_id def. wird) 
+    #'action' (wird hier definiert, um action zu machen ;) ) wird hier erstellt und an view 'accept_reject_friend' geschickt
     path('accept_friend/<int:friendship_id>/', accept_reject_friend, {'action': 'accept'}, name='accept_friend'), 
     path('accept_friend/<int:friendship_id>/', accept_reject_friend, {'action': 'reject'}, name='reject_friend'),
 
-    path('send_friend_request/<int:to_user_id>/', send_friend_request, name='send_friend_request'), # das to_user_id wird hier generiert und an send_friend_request gesendet
-
+    path('send_friend_request/<int:to_user_id>/', send_friend_request, name='send_friend_request'), # das to_user_id wird aus template geholt und an 'send_friend_request' gesendet
 
 ]
