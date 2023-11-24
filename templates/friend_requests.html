@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<h2>Freundschaftsanfragen</h2>
+
+<h3> Eingehende Freundschaftsanfragen </h3>
+
+{% if incoming_requests %}
+    {% for request in incoming_requests %}
+    <li><strong>{{ request.from_user.username }}</strong> möchte dich adden. 
+    <a href="{% url 'accept_friend' friendship_id=request.id %}">Annehmen</a>  |  <a href="{% url 'reject_friend' friendship_id=request.id %}">Ablehnen</a></li>
+    {% endfor %}
+
+{% else %}
+    <p>keine Freundesanfragen!</p>
+{% endif %}
+
+
+<br>
+<h3>Ausgehende Freundschaftsanfragen </h3>
+
+{% if outgoing_requests %}
+    {% for request in outgoing_requests %}
+    Du hast eine Anfrage an{{ request.to_user.username }} gesendet.
+    {% endfor %}
+
+{% else %}
+    <p>keine ausgehenden Freundesanfragen!</p>
+{% endif %}
+
+
+
+
+<br>
+<p></p>
+<a href="{% url 'profile_detail' pk=request.user.id %}">>>>Zu MEINEM Profil>>></a><br>
+
+
+{% endblock content %}

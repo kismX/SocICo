@@ -6,7 +6,11 @@
     <title>{% block title %} basisseite {% endblock %}</title>
 </head>
 <body>
-
+    <nav>
+        <a href="{% url 'home' %}">Home  </a>
+        <a href="{% url 'profile_list' %}">|  Alle User-Profile</a>
+        <a href="{% url 'profile_create' %}">|  Erstelle Profil</a>
+    </nav>
 
     <div>
         {% block content %}

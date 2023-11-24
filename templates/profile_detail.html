@@ -4,11 +4,54 @@
 
 <h2> {{ profile.user }}</h2>
 
-<p>Bio: {{ profile.bio }}</p>
-<p>Interessen: {{ profile.interests }}</p>
+<p><strong>Bio: </strong>{{ profile.bio }}</p>
+<p><strong>Interessen: </strong>{{ profile.interests }}</p>
 
 
-<p></p>
-<div><a href="{% url 'profile_list' %}"> <<< ZURÜCK IN DIE LISTE</a></div>
+
+<!-- hier das Problem, dass er prinzipiell eine Freundschaftsanfragew sendet.. und das auch immer an mich selbst -->
+<!-- ich setze aber auch in zeile 15 to_user_id = user.id   -->
+{% if not profile.get_friends %}
+    {% if not profile.get_outgoing_friend_request %}  
+        <a href="{% url 'send_friend_request' to_user_id=profile.user.id %}">Freundschaftsanfrage senden</a>
+    {% else %}
+        <p>Du hast schon eine Anfrage gesendet</p>
+    {% endif %}
+{% else %}
+    {% if request.user.userprofile in profile.get_friends.all %}
+        <p>{{ profile.user.username }} ist bereits mit dir connected</p>
+    {% endif %}
+{% endif %}
+
+
+
+<br>
+<br>
+<br>
+
+<p>--------------------------------------------------</p>
+<h3>Meine Freunde</h3>
+    Du hast hier derzeit <strong>{{ profile.get_friends|length }}</strong> Freunde:
+
+<ul>
+    {% for friend in profile.get_friends %}
+        {% if user.username != friend.from_user.username %}
+            <li><strong>{{ friend.from_user.username }}</strong>   ...ist dein Freund</li>
+        {% else %}
+            <li><strong>{{ friend.to_user.username }}</strong>   ...ist dein Freund</li>
+        {% endif %}
+    {% endfor %}
+</ul>
+
+
+
+
+
+
+<br>
+<div><a href="{% url 'friend_requests' %}"> >>> Zu den Friendrequests >>> </a></div>
+
+
+
 
 {% endblock content %}
