@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import ListView, DeleteView, CreateView, DetailView, UpdateView, TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from .forms import CustomUserCreationForm
 from .models import Profile
@@ -14,28 +15,36 @@ from django.contrib import messages # wird verwendet um meldungen durch die view
 
 
 # erstmal alle Templates zum createn, anzeigen und editieren von profiles der user
-class UserProfileListView(ListView): 
+class UserProfileListView(LoginRequiredMixin, ListView): 
     model = Profile
     template_name = 'profile_list.html'
 
 
-class UserProfileDetailView(DetailView):
+class UserProfileDetailView(LoginRequiredMixin, DetailView):
     model = Profile
     template_name = "profile_detail.html"
 
-class UserProfileCreateView(CreateView):
+class UserProfileCreateView(LoginRequiredMixin, CreateView):
     model = Profile
     template_name = "profile_create.html"
-    fields = ["user", "bio", "interests"]   # erweitern wenn profile erweitert
+    fields = ["bio", "interests"]   # erweitern wenn profile erweitert  # habe "user" entfernt weil es unten dfestgelegt wird in der def, damit ein user keinen ewinfluss drauf hat
+    
+    # diese funktion wird unter der haube immer nach der überprüfung, ob die form gültige daten enthält, aufgerufen, um die form in datenbank zu speichern .save()
+    def form_valid(self, form):
+        # hier überschreiben wir die funktion, indem das user-feld (form.instance.user) 
+        # auf den eingeloggten user gesetzt wird - also das user-feld wird mit dem verknüft, der das profil erstellt:
+        form.instance.user = self.request.user  
+        # wir rufen die grundlegende funktion nochmal auf, um eben das .save() auch auszulösen nach dem überschreiben oben
+        return super().form_valid(form)
     success_url = reverse_lazy("profile_list")
 
-class UserProfileUpdateView(UpdateView):
+class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = Profile
     template_name = "profile_edit.html"
     fields = ["user", "bio", "interests"]     #dann auch erweitern
     success_url = reverse_lazy("profile_list")
 
-class UserProfileDeleteView(DeleteView):
+class UserProfileDeleteView(LoginRequiredMixin, DeleteView):
     model = Profile
     template_name = "profile_delete.html"
     success_url = reverse_lazy("profile_list")
@@ -83,8 +92,9 @@ def accept_reject_friend(request, friendship_id, action):   # friendship_id und 
 
     if action == 'accept':
         friendship.accepted_at = timezone.now()
+        friendship.save() # save hier lassen  :D !!
     elif action == 'reject':
         friendship.delete()
     
-    friendship.save()
+ 
     return redirect('friend_requests')

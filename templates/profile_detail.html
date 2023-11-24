@@ -10,17 +10,16 @@
 
 <!-- hier das Problem, dass er prinzipiell eine Freundschaftsanfragew sendet.. und das auch immer an mich selbst -->
 <!-- ich setze aber auch in zeile 15 to_user_id = user.id   -->
-{% if not user.userprofile.get_friends %}
-    {% if not user_userprofile.get_outgoing_friend_request and user.id != request.user.id %}  
-        <a href="{% url 'send_friend_request' to_user_id=user.id %}">Freundschaftsanfrage senden</a>
-    {% elif user.id == request.user.id %}
-        <p>Du kannst dir nicht selbst eine Anfrage senden, Bro!</p>
+{% if not profile.get_friends %}
+    {% if not profile.get_outgoing_friend_request %}  
+        <a href="{% url 'send_friend_request' to_user_id=profile.user.id %}">Freundschaftsanfrage senden</a>
     {% else %}
         <p>Du hast schon eine Anfrage gesendet</p>
     {% endif %}
 {% else %}
-    <!-- user.username ist ja auch ich selbst.. was natürlich nicht richtrig ist -->
-    <p>{{ user.username }} ist bereits mit dir connected</p>
+    {% if request.user.userprofile in profile.get_friends.all %}
+        <p>{{ profile.user.username }} ist bereits mit dir connected</p>
+    {% endif %}
 {% endif %}
 
 
@@ -35,7 +34,11 @@
 
 <ul>
     {% for friend in profile.get_friends %}
-        <li><strong>{{ friend.to_user.username }}</strong>   ...ist dein Freund</li>
+        {% if user.username != friend.from_user.username %}
+            <li><strong>{{ friend.from_user.username }}</strong>   ...ist dein Freund</li>
+        {% else %}
+            <li><strong>{{ friend.to_user.username }}</strong>   ...ist dein Freund</li>
+        {% endif %}
     {% endfor %}
 </ul>
 
