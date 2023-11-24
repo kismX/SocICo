@@ -139,3 +139,10 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 
 LOGIN_REDIRECT_URL = 'profile_list'            # vorher 'home'
 LOGOUT_REDIRECT_URL = 'home'
+
+#### set up for storing images:
+
+import os
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = 'media/'
