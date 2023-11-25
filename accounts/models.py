@@ -27,7 +27,6 @@ class Profile(models.Model):
     
 
 
-
 # neues model das eine Friednship darstellt
 # es hat den 'from_user', von dem die anfrage ausgeht und 'to_user' an den die anfrage geht
 # wann  die verbindung erstellt wurde geht automatisch: 'createtd_at' und wenn request angenommen, wird das leere 'acceptet_at' mit zeitpunkt ausgefüllt
