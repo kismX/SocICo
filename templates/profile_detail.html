@@ -30,6 +30,7 @@
 <!-- hier sind die Profildetails des Users -->
 <p><strong>Bio: </strong>{{ profile.bio }}</p>
 <p><strong>Interessen: </strong>{{ profile.interests }}</p>
+<p><strong>Avatar:</strong> {{ profile.avatar }} <<  och noch jemacht werden</p>
 
 
 
@@ -38,7 +39,7 @@
 <br>
 
 <p>--------------------------------------------------</p>
-<h3>Meine Freunde</h3>
+<h3>Meine Freunde</h3> (Achtung: ie logik im template ist noch falsch, daher werden immer gleiche freunde anzahl angezeigt, wenn in datenbank welche existeiren :) <br>
     Du hast hier derzeit <strong>{{ profile.get_friends|length }}</strong> Freunde:
 
 <ul>

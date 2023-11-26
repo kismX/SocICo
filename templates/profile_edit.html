@@ -1,12 +1,37 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div>
+    <!-- <div>
         <h1>Editieren deines Profils</h1>
         <form action="" method="post">
             {% csrf_token%}
             {{ form.as_p }}
             <input class="button" type="submit" value="Save changes">
         </form>
-    </div>
+    </div> -->
+
+<h1>Dein profil bearbeiten</h1>
+<img src="{{ user.profile.avatar.url }}"/>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <label>Username:</label>
+        {{ user_form.username }}
+    <label>Email:</label>
+        {{ user_form.email }}
+    
+    <br>
+    <a href="#">Change Password:</a>
+    <hr>
+    <label>Change Avatar:</label>
+        {{ profile_form.avatar }}
+    <br><br>
+    <label>Bio:</label>
+        {{ profile_form.bio }}
+    <br><br>
+    <button type="submit">Änderungen speichern</button>
+</form>
+
+
 {% endblock content %}

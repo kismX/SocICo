@@ -1,15 +1,17 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import ListView, DeleteView, CreateView, DetailView, UpdateView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from .forms import CustomUserCreationForm
-from .models import Profile
+from .forms import CustomUserCreationForm, UpdateUserForm, UpdateProfileForm
+
+#password change
+from django.contrib.auth.views import PasswordChangeView
+from django.contrib.messages.views import SuccessMessageMixin
 
 # 2023-11-22 hinzugefügt für user adden requests etc
-from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
-from .models import Friendship
+from .models import Profile, Friendship
 from django.utils import timezone # für friend connecten
 from django.contrib import messages # wird verwendet um meldungen durch die views oder auch verarbeitung an den user zu schicken
 
@@ -58,6 +60,28 @@ class SignUpView(CreateView):
     template_name = 'registration/signup.html'
 
 
+class ChangePasswordView(SuccessMessageMixin, PasswordChangeView):
+    template_name = 'change_password.html'
+    success_message = 'Successfully Changed Your Password'
+    success_url = reverse_lazy('profile_detail')
+
+@login_required
+def profile(request):
+    if request.method == 'POST':
+        user_form = UpdateUserForm(request.POST, instance=request.user)
+        profile_form = UpdateProfileForm(request.POST, request.FILES, instance=request.user.profile)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'Your Profile is updated successfully')
+            return redirect(to='profile_edit')
+    else:
+        user_form = UpdateUserForm(instance=request.user)
+        profile_form = UpdateProfileForm(instance=request.user.profile)
+    
+    return render(request, 'profile_edit.html', {'user_form': user_form, 'profile_form': profile_form})
+    
 
 #2023-11-22
 #Friend Request stellen

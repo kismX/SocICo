@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import TemplateView
+from django.conf.urls.static import static
+from socico import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,3 +26,5 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),                    # 'accounts/'  path anstatt "" hinzugefügt
     path('accounts/', include('django.contrib.auth.urls')),         # new
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

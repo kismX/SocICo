@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (
     UserProfileListView, UserProfileDetailView, SignUpView, 
     UserProfileCreateView, UserProfileUpdateView, UserProfileDeleteView,
-    friend_requests, send_friend_request, accept_reject_friend
+    friend_requests, send_friend_request, accept_reject_friend, profile,
     )
 
 urlpatterns = [
@@ -12,6 +12,8 @@ urlpatterns = [
     path("profiles/create", UserProfileCreateView.as_view(), name='profile_create'),
     path("profiles/<int:pk>/edit", UserProfileUpdateView.as_view(), name='profile_edit'),
     path("profiles/<int:pk>/delete", UserProfileDeleteView.as_view(), name='profile_delete'),
+
+    path('profile-edit/', profile, name='profile_edit'),
 
     # 2023-11-22
     # path('friend_add/<int:friend_id>/', add_friends, name='add_friends'),

@@ -9,6 +9,8 @@
 <br>
 Hi {{ user.username }}
 <a href="{% url 'logout' %}">Logout</a>
+<br>
+<a href="{% url 'profile_edit' %}">Bearbeite dein Profil</a>
 {% else %}
 <p>Bitte log Dich ein!</p>
 <a href="{% url 'login' %}">Login</a>
