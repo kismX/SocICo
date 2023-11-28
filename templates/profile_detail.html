@@ -5,6 +5,12 @@
 <!-- zeigen wir oben den usernamen des Profilinhabers an -->
 <h2> {{ profile.user }}</h2>
 
+<!-- hier sind die Profildetails des Users -->
+<p><strong>Avatar:</strong> <img src="{{ profile.avatar.url }}" alt="avatar"> </p>
+<p><strong>Bio: </strong>{{ profile.bio }}</p>
+<p><strong>Interessen: </strong>{{ profile.interests }}</p>
+
+<br><br>
 
 <!-- Wenn der angemeldete user.id nicht identisch ist mit der profil.id ..   -->
 <!-- und wenn dieser user nicht unter den friends ist und auch kein friendrequest besteht  -->
@@ -34,11 +40,6 @@
     <p>Du befindest dich auf DEINEM Profil, <strong>{{ request.user.username }}</strong>.</p>
 {% endif %}
 
-<br>
-<!-- hier sind die Profildetails des Users -->
-<p><strong>Bio: </strong>{{ profile.bio }}</p>
-<p><strong>Interessen: </strong>{{ profile.interests }}</p>
-<p><strong>Avatar:</strong> {{ profile.avatar }} <<  och noch jemacht werden</p>
 
 
 
