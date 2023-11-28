@@ -26,6 +26,28 @@ class UserProfileDetailView(LoginRequiredMixin, DetailView):
     model = Profile
     template_name = "profile_detail.html"
 
+    #new 2023-11-28 friends anzeigen
+    def get_context_data(self, **kwargs):
+        # wir rufen die super()geordnete funktion auf, und speichern sie in context, um dann den standard-context zu erweitern
+        context = super().get_context_data(**kwargs)
+        # wir extrahieren den eigeloggten user, der den request gesendet hat
+        user = self.request.user
+        # wir filtern uns die freunde des eingeloggten users aus Friendship objekten (wo accepted_at einen value hat)
+        freunde = Friendship.objects.filter(from_user=user, accepted_at__isnull=False) | Friendship.objects.filter(to_user=user, accepted_at__isnull=False)
+
+        # offene Freundesanfrage
+        freunde_ausgehend = Friendship.objects.filter(from_user=user, accepted_at__isnull=True)
+        freunde_eingehend = Friendship.objects.filter(to_user=user, accepted_at__isnull=True)
+
+        # nun fügen wir die freunde und anzahl dem context hinzu
+        context['freunde'] = freunde
+        context['freund_offen'] = freunde_ausgehend  
+        context['freund_offen'] = freunde_eingehend  
+        context['num_freunde'] = freunde.count()
+
+        return context
+
+
 class UserProfileCreateView(LoginRequiredMixin, CreateView):
     model = Profile
     template_name = "profile_create.html"
@@ -40,11 +62,13 @@ class UserProfileCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
     success_url = reverse_lazy("profile_list")
 
+
 class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = Profile
     template_name = "profile_edit.html"
     fields = ["user", "bio", "interests"]     #dann auch erweitern
     success_url = reverse_lazy("profile_list")
+
 
 class UserProfileDeleteView(LoginRequiredMixin, DeleteView):
     model = Profile
@@ -119,6 +143,4 @@ def accept_reject_friend(request, friendship_id, action):   # friendship_id und 
         friendship.save() # save hier lassen  :D !!
     elif action == 'reject':
         friendship.delete()
-    
- 
     return redirect('friend_requests')
