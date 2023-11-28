@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (
     UserProfileListView, UserProfileDetailView, SignUpView, 
     UserProfileCreateView, UserProfileUpdateView, UserProfileDeleteView,
-    friend_requests, send_friend_request, accept_reject_friend, profile,
+    friend_requests, send_friend_request, accept_reject_friend, profile, remove_friend
     )
 
 urlpatterns = [
@@ -25,4 +25,5 @@ urlpatterns = [
 
     path('send_friend_request/<int:to_user_id>/', send_friend_request, name='send_friend_request'), # das to_user_id wird aus template geholt und an 'send_friend_request' gesendet
 
+    path('remove_friend/<int:friendship_id/', remove_friend, name='remove_friend'), 
 ]

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DeleteView, CreateView, DetailView, UpdateView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
@@ -41,8 +41,8 @@ class UserProfileDetailView(LoginRequiredMixin, DetailView):
 
         # nun fügen wir die freunde und anzahl dem context hinzu
         context['freunde'] = freunde
-        context['freund_offen'] = freunde_ausgehend  
-        context['freund_offen'] = freunde_eingehend  
+        context['freund_ausgehend'] = freunde_ausgehend
+        context['freund_eingehend'] = freunde_eingehend
         context['num_freunde'] = freunde.count()
 
         return context
@@ -144,3 +144,16 @@ def accept_reject_friend(request, friendship_id, action):   # friendship_id und 
     elif action == 'reject':
         friendship.delete()
     return redirect('friend_requests')
+
+
+# 2023-11-28 Freund deleten funktion
+@login_required
+def remove_friend(request, friendship_id):
+    friendship = get_object_or_404(Friendship, id=friendship_id)
+
+    if friendship.from_user == request.user or friendship.to_user == request.user:
+        friendship.delete()
+        messages.success(request, "Freund deleted")
+    else:
+        messages.error(request, "Keine berechtigung zum Deleten des Freundes")
+    return redirect('profile_detail')
