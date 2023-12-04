@@ -30,20 +30,35 @@ class UserProfileDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         # wir rufen die super()geordnete funktion auf, und speichern sie in context, um dann den standard-context zu erweitern
         context = super().get_context_data(**kwargs)
-        # wir extrahieren den eigeloggten user, der den request gesendet hat
+
+
+        #Freunde des eingeloggten users:
+        # wir extrahieren den eigeloggten user, der den request gesendet hat 
         user = self.request.user
         # wir filtern uns die freunde des eingeloggten users aus Friendship objekten (wo accepted_at einen value hat)
         freunde = Friendship.objects.filter(from_user=user, accepted_at__isnull=False) | Friendship.objects.filter(to_user=user, accepted_at__isnull=False)
-
-        # offene Freundesanfrage
+        # offene Freundesanfrage logged in user
         freunde_ausgehend = Friendship.objects.filter(from_user=user, accepted_at__isnull=True)
         freunde_eingehend = Friendship.objects.filter(to_user=user, accepted_at__isnull=True)
 
-        # nun fügen wir die freunde und anzahl dem context hinzu
+
+        # freunde des Users, auf dessen Profil man sich befindet
+        profil_user = self.object  # hole mir das aktuelle Profile-object
+        profil_freunde = Friendship.objects.filter(from_user=profil_user.user, accepted_at__isnull=False) | Friendship.objects.filter(to_user=profil_user.user, accepted_at__isnull=False)
+
+
+
+        # nun fügen wir dem context hinzu
+
+        # für eingeloggten user
         context['freunde'] = freunde
         context['freund_ausgehend'] = freunde_ausgehend
         context['freund_eingehend'] = freunde_eingehend
         context['num_freunde'] = freunde.count()
+
+        # für profil-user:
+        context['profil_freunde'] = profil_freunde
+        context['num_profil_freunde'] = profil_freunde.count()
 
         return context
 

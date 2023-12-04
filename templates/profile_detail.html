@@ -59,17 +59,35 @@
 <br>
 
 <p>--------------------------------------------------</p>
-<h3>Meine Freunde</h3>  <br>
-    Du hast hier derzeit <strong>{{ num_freunde }}</strong> Freunde:
+{% if request.user != profile.user %}
+    <h3>{{ profile.user.username }}'s Freunde </h3>
+        Er/Sie hat hier derzeit <strong>{{ num_profil_freunde }}</strong> Freunde:
 
-<ul>
-    {% for freund in freunde %}
-        {% if user.username != freund.from_user.username %}
-            <li><strong>{{ freund.from_user.username }}</strong> ...ist dein Freund!</li>
-        {% else %}
-            <li><strong>{{ freund.to_user.username }}</strong> ...ist dein Freund!</li>
-        {% endif %}
-    {% endfor %}
+    <ul>
+        {% for freund in profil_freunde %}
+            {% if profile.user.username != freund.from_user.username %}
+                <li><strong>{{ freund.from_user.username }}</strong> ...ist ein Freund des Users!</li>
+            {% else %}
+                <li><strong>{{ freund.to_user.username }}</strong> ...ist ein Freund des Users!</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+
+
+
+{% else %}
+    <h3>Meine Freunde</h3>  <br>
+        Du hast hier derzeit <strong>{{ num_freunde }}</strong> Freunde:
+
+    <ul>
+        {% for freund in freunde %}
+            {% if user.username != freund.from_user.username %}
+                <li><strong>{{ freund.from_user.username }}</strong> ...ist dein Freund!</li>
+            {% else %}
+                <li><strong>{{ freund.to_user.username }}</strong> ...ist dein Freund!</li>
+            {% endif %}
+        {% endfor %}
+{% endif %}
 </ul>
 
 
@@ -79,7 +97,7 @@
 
 
 <br>
-<div><a href="{% url 'friend_requests' %}"> >>> Zu den Friendrequests >>> </a></div>
+<div><a href="{% url 'friend_requests' %}"> >>> Zu den EIGENEN Friendrequests >>> </a></div>
 
 
 

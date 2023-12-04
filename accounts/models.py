@@ -19,13 +19,6 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
     
-
-    # 2023-11-22 neu get_friends() um alle bestehenden freundschaften zu ermitteln
-    # easy: ich verweise auf mein neu erstelltes model Friendship und filter mir aus den friedshipobjekten alle geaddeten raus
-    def get_friends(self):
-        friends = Friendship.objects.filter(accepted_at__isnull=False)
-        return [friend for friend in friends] # spucke mir jeden friend in friends aus (wollt mal wieder dings hier üben.. [ ])
-    
     # Große des Images auf 100x00 skalieren mit library pillow
     def save(self, *args, **kwargs):
         super().save()

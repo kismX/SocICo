@@ -1,0 +1,55 @@
+/* Color Theme Swatches in Hex */
+.Copy-of-Fossil-Vintage---Kovács-Pisti-1-hex { color: #CFCA4C; }
+.Copy-of-Fossil-Vintage---Kovács-Pisti-2-hex { color: #FCF5BF; }
+.Copy-of-Fossil-Vintage---Kovács-Pisti-3-hex { color: #9FE5C2; }
+.Copy-of-Fossil-Vintage---Kovács-Pisti-4-hex { color: #5EB299; }
+.Copy-of-Fossil-Vintage---Kovács-Pisti-5-hex { color: #745A33; }
+
+@font-face {
+    font-family: "PoppinsRegular";
+    src: url("fonts/Poppins-Regular.ttf") format("truetype");
+}
+@font-face {
+    font-family: "PoppinsBold";
+    src: url("fonts/Poppins-Bold.ttf") format("truetype");
+}
+@font-face {
+    font-family: "PoppinsMedium";
+    src: url("fonts/Poppins-Medium.ttf") format("truetype");
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    border: None;
+    text-decoration: None;
+}
+body{
+    background-color: #fcf5bf5d;
+}
+
+.main-menu{
+    font-size: 1.6em;
+    font-family: 'PoppinsRegular';
+    background-color:#CFCA4C;
+    height: 70px;
+    text-align: center;
+    text-align: end;
+    padding-top: 15px;
+    padding-right: 20px;
+}
+.main-menu a{
+    color: white;
+    background-color:#745A33;
+    padding: 30px 20px 10px 20px;
+    border-radius: 10px;
+    margin-left: 5px;
+}
+.main-menu a:hover{
+    transition: ease-in-out 0.5s;
+    background-color:#392c19;
+    padding-bottom: 15px;
+}
+.row{
+    margin: 50px 20% 0px 20%;
+}
