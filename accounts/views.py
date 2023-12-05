@@ -48,13 +48,20 @@ class UserProfileDetailView(LoginRequiredMixin, DetailView):
 
 
 
-        # nun fügen wir dem context hinzu
+        ##### nun fügen wir dem context hinzu  ####
 
         # für eingeloggten user
-        context['freunde'] = freunde
-        context['freund_ausgehend'] = freunde_ausgehend
-        context['freund_eingehend'] = freunde_eingehend
-        context['num_freunde'] = freunde.count()
+        context['freunde'] = freunde   #freundesobjekte
+        context['freunde_namelist'] = [freund.from_user.username if user != freund.from_user else freund.to_user.username for freund in freunde]  # eine liste mit den usernamen der freunde
+        
+        context['freund_ausgehend'] = freunde_ausgehend  # friendrequests ausgehend: objekt-queryset
+        context['freund_ausgehend_namelist'] = [freund.to_user.username for freund in freunde_ausgehend] # friendrequests ausgehend: usernamen-liste
+
+        context['freund_eingehend'] = freunde_eingehend  # friendrequest eingehend: object-queryset
+        context['freund_eingehend_namelist'] = [freund.from_user.username for freund in freunde_eingehend]  # friendrequest eingehend: usernamen-liste
+
+        context['num_freunde'] = freunde.count()    # anzahl der freunde
+
 
         # für profil-user:
         context['profil_freunde'] = profil_freunde
@@ -168,7 +175,8 @@ def remove_friend(request, friendship_id):
 
     if friendship.from_user == request.user or friendship.to_user == request.user:
         friendship.delete()
+        # friendship.save()
         messages.success(request, "Freund deleted")
     else:
         messages.error(request, "Keine berechtigung zum Deleten des Freundes")
-    return redirect('profile_detail')
+    return redirect('profile_list')
