@@ -29,10 +29,10 @@
         {% else %}
 
             {% if profile.user.username in freund_ausgehend_namelist %}
-                EY! Du hast bereits n Friendrequest an <strong>{{ profile.user.username }}</strong> geschickt, du Genie! <br>
-                <a href="{% url 'friend_requests' %}">Check ma deine Friendrequests, Siebhirn</a>
+                <strong>{{ profile.user.username }}</strong> hat von dir einen Friendrequest erhalten! <br>
+                **  Friendrequest zurückziehen  **
             {% elif profile.user.username in freund_eingehend_namelist %}
-                Hey, Du hast bereits eine Freundesanfrage von <strong>{{ profile.user.username }}</strong> bekommen, Bro! <br>
+                Hey, Du hast eine Freundesanfrage von <strong>{{ profile.user.username }}</strong> bekommen, Bro! <br>
                 <a href="{% url 'friend_requests' %}">Zu Deinen Friendrequests!</a>
             {% endif %}
 
@@ -40,7 +40,7 @@
 
     {% else %}
         <strong>{{ profile.user.username }}</strong> ist bereits mit dir connected, mään! <br>
-        Keinen Bock mehr auf ihn/sie? <strong>*** hier steht bald Freundschaft Beenden ***</strong>
+        Keinen Bock mehr auf ihn/sie? ** Freundschaft Beenden  **
     {% endif %}
 
 {% else %}
