@@ -130,7 +130,6 @@ def profile(request):
     
 
 #2023-11-22
-#Friend Request stellen
 @login_required
 def send_friend_request(request, to_user_id):    # das to_user_id kommt aus urls.py hier rein
     to_user = get_user_model().objects.get(id=to_user_id)
@@ -147,7 +146,6 @@ def send_friend_request(request, to_user_id):    # das to_user_id kommt aus urls
     return redirect('profile_detail', pk=to_user_id)
 
 
-# Anzeigen von Friend-requests
 @login_required
 def friend_requests(request):
     incoming_requests = Friendship.objects.filter(to_user=request.user, accepted_at__isnull=True)
@@ -155,7 +153,6 @@ def friend_requests(request):
     return render(request, 'friend_requests.html', {'incoming_requests': incoming_requests, 'outgoing_requests': outgoing_requests})
 
 
-# nun akzeptieren und ablehnen der freundschaftsanfragen
 @login_required
 def accept_reject_friend(request, friendship_id, action):   # friendship_id und action kommen wieder aus urls.py
     friendship = Friendship.objects.get(id=friendship_id)
@@ -168,18 +165,16 @@ def accept_reject_friend(request, friendship_id, action):   # friendship_id und 
     return redirect('friend_requests')
 
 
-# 2023-11-28 Freund deleten funktion
 @login_required
 def remove_friend(request, profile_id):
-    my_user_id = request.user.id
-    print(my_user_id)
+    user_id = request.user.id
     try:
-        friendkill = Friendship.objects.get(to_user_id=profile_id, from_user_id=my_user_id)
+        friendkill = Friendship.objects.get(to_user_id=profile_id, from_user_id=user_id)
         friendkill.delete()
         return redirect('profile_list')
 
     except: 
-        friendkill = Friendship.objects.get(from_user_id=profile_id, to_user_id=my_user_id)
+        friendkill = Friendship.objects.get(from_user_id=profile_id, to_user_id=user_id)
         friendkill.delete()
         return redirect('profile_list')
     

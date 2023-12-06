@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
-from django.utils import timezone  # 23-11-22 für friendship
+from django.utils import timezone
 from PIL import Image
 
 
@@ -13,7 +13,6 @@ class Profile(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
     bio = models.TextField(blank=True)
     interests = models.TextField(blank=True, help_text='Gib interessen getrennt durch Komma an')
-    # user_img = models.ImageField(upload_to='user_img/', blank=True)
     avatar = models.ImageField(default='default.jpg', upload_to='profile_images')
 
     def __str__(self):

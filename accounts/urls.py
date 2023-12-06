@@ -16,7 +16,6 @@ urlpatterns = [
     path('profile-edit/', profile, name='profile_edit'),
 
     # 2023-11-22
-    # path('friend_add/<int:friend_id>/', add_friends, name='add_friends'),
     path('friend_requests/', friend_requests,name='friend_requests'),
     #'friendship_ip' wird aus template geholt ( user klickt auf user, der id hat, die im template dann in friedship_id def. wird) 
     #'action' (wird hier definiert, um action zu machen ;) ) wird hier erstellt und an view 'accept_reject_friend' geschickt
