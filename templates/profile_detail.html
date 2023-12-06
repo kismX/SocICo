@@ -40,7 +40,7 @@
 
     {% else %}
         <strong>{{ profile.user.username }}</strong> ist bereits mit dir connected, mään! <br>
-        Keinen Bock mehr auf ihn/sie? ** Freundschaft Beenden  **
+        Keinen Bock mehr auf ihn/sie? <a href="{% url 'remove_friend' profile_id=profile.id %}">Freundschaft Beenden</a> 
     {% endif %}
 
 {% else %}

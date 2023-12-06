@@ -170,13 +170,16 @@ def accept_reject_friend(request, friendship_id, action):   # friendship_id und 
 
 # 2023-11-28 Freund deleten funktion
 @login_required
-def remove_friend(request, friendship_id):
-    friendship = get_object_or_404(Friendship, id=friendship_id)
+def remove_friend(request, profile_id):
+    my_user_id = request.user.id
+    print(my_user_id)
+    try:
+        friendkill = Friendship.objects.get(to_user_id=profile_id, from_user_id=my_user_id)
+        friendkill.delete()
+        return redirect('profile_list')
 
-    if friendship.from_user == request.user or friendship.to_user == request.user:
-        friendship.delete()
-        # friendship.save()
-        messages.success(request, "Freund deleted")
-    else:
-        messages.error(request, "Keine berechtigung zum Deleten des Freundes")
-    return redirect('profile_list')
+    except: 
+        friendkill = Friendship.objects.get(from_user_id=profile_id, to_user_id=my_user_id)
+        friendkill.delete()
+        return redirect('profile_list')
+    

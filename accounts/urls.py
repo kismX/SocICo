@@ -25,5 +25,5 @@ urlpatterns = [
 
     path('send_friend_request/<int:to_user_id>/', send_friend_request, name='send_friend_request'), # das to_user_id wird aus template geholt und an 'send_friend_request' gesendet
 
-    path('remove_friend/<int:friendship_id/', remove_friend, name='remove_friend'), 
+    path('remove_friend/<int:profile_id>/', remove_friend, name='remove_friend'), 
 ]
