@@ -30,7 +30,7 @@
 
             {% if profile.user.username in freund_ausgehend_namelist %}
                 <strong>{{ profile.user.username }}</strong> hat von dir einen Friendrequest erhalten! <br>
-                **  Friendrequest zurückziehen  **
+                Willste doch nicht? <a href="{% url 'withdraw_friend_request' profile_id=profile.id %}">'n Rückzieher machen!</a>
             {% elif profile.user.username in freund_eingehend_namelist %}
                 Hey, Du hast eine Freundesanfrage von <strong>{{ profile.user.username }}</strong> bekommen, Bro! <br>
                 <a href="{% url 'friend_requests' %}">Zu Deinen Friendrequests!</a>

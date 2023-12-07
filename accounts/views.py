@@ -167,6 +167,19 @@ def accept_reject_friend(request, friendship_id, action):   # friendship_id und 
 
 
 @login_required
+def withdraw_friend_request(request, profile_id):
+    try:
+        # Freundobject raussuchen
+        friend_request = Friendship.objects.get(from_user=request.user, to_user=profile_id)
+        friend_request.delete()
+        return redirect('profile_deteil', pk=profile_id)
+    
+    except Friendship.DoesNotExist:
+        messages.error(request, "Die Freundschaftsanfrage existiert doch gar nicht!")
+        return redirect('profile_deteil', pk=profile_id)
+
+
+@login_required
 def remove_friend(request, profile_id):
     user_id = request.user.id
     try:
