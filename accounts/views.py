@@ -171,10 +171,10 @@ def remove_friend(request, profile_id):
     try:
         friendkill = Friendship.objects.get(to_user_id=profile_id, from_user_id=user_id)
         friendkill.delete()
-        return redirect('profile_list')
+        return redirect('profile_detail', pk=profile_id)
 
     except: 
         friendkill = Friendship.objects.get(from_user_id=profile_id, to_user_id=user_id)
         friendkill.delete()
-        return redirect('profile_list')
+        return redirect('profile_detail', pk=profile_id)
     

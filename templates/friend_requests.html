@@ -22,7 +22,7 @@
 
 {% if outgoing_requests %}
     {% for request in outgoing_requests %}
-    Du hast eine Anfrage an <strong>{{ request.to_user.username }}</strong> gesendet.
+    Du hast eine Anfrage an <strong>{{ request.to_user.username }}</strong> gesendet. <br>
     {% endfor %}
 
 {% else %}
