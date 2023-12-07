@@ -140,7 +140,7 @@ def send_friend_request(request, to_user_id):    # das to_user_id kommt aus urls
         # ..ne warmmeldung geht in admin ein - muss dann an den user noch
         messages.warning(request, 'Du hast bereits ne Anfrage an den user gestellt') 
     else:
-        Friendship.objects.create(from_user=request.user, to_user=to_user)
+        Friendship.objects.create(from_user=request.user, to_user=to_user, status='pending')  # neu: 'status' auf pending, weil anfrage noch ausstehend
         # message geht auch ins admin
         messages.success(request, f'Deine Anfrage wurde an {to_user.username} gesendet, Dikka')  
     return redirect('profile_detail', pk=to_user_id)
@@ -159,6 +159,7 @@ def accept_reject_friend(request, friendship_id, action):   # friendship_id und 
 
     if action == 'accept':
         friendship.accepted_at = timezone.now()
+        friendship.status = 'accepted'
         friendship.save() # save hier lassen  :D !!
     elif action == 'reject':
         friendship.delete()
