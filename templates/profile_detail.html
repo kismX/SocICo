@@ -4,9 +4,10 @@
 
 {% block content %}
 
+
 <!-- zeigen wir oben den usernamen des Profilinhabers an -->
 <h2> {{ profile.user }}</h2>
-
+<br>
 <!-- hier sind die Profildetails des Users -->
 <p><strong>Avatar:</strong> <img src="{{ profile.avatar.url }}" alt="avatar"> </p>
 <p><strong>Bio: </strong>{{ profile.bio }}</p>
@@ -14,55 +15,49 @@
 
 <br><br>
 
+
+
+
 <!-- Wenn der angemeldete user.id nicht identisch ist mit der profil.id ..   -->
-<!-- und wenn dieser user nicht unter den friends ist und auch kein friendrequest besteht  -->
-<!-- dann soll ein friendrequest-link,angezeigt werden -->
-<!-- andernfalls wird gesagt, dass der user bereits mit dir befreundet ist oder du bereits eine anfrage gesendet hast -->
-<!-- und wenn es dein eigenes profil ist, dann soll stehen: "Dein Profil" -->
-
-
+<!-- und wenn dieser profiluser nicht unter den users friends ist und auch kein friendrequest besteht  -->
+<!-- dann wirdein friendrequest-link,angezeigt werden, ansonsten auf friendrequests verwiesen -->
 
 {% if request.user.id != profile.user.id %}
-    {% if request.user not in freunde %}
 
-        <strong>Hier sollte "Freundschaftsanfrage" oder "gibt schon friendrequest" stehen</strong>, das buggt noch (2023-11-28)<<  <br>
-        >>Hier sind Debugging-Statements, zm prüfen, die vorrübergehend am start sind: <br>
-        ..... Request-User:{{ request.user.username }} <br>
-        ..... Profile-user:{{ profile.user.username }} <br>
-        ..... Freunde Eingehend: {{ freund_eingehend }} <br>
-        ..... Freund ausgehend:  {{ freund_ausgehend }} <br> <br>
+    {% if profile.user.username not in freunde_namelist %}
 
-
-
-        {% if request.user.username not in freund_ausgehend and profile.user.username not in freund_eingehend %}  
+        {% if profile.user.username not in freund_eingehend_namelist and profile.user.username not in freund_ausgehend_namelist %}
             <a href="{% url 'send_friend_request' to_user_id=profile.user.id %}">Freundschaftsanfrage senden</a>
-        {% elif request.user in freund_eingehend %}  
-            Du hast bereits eine Anfrage von <strong>{{ profile.user.username }}</strong> erhalten!
-            <a href="{% url 'friend_requests' %}">meine Freundschaftsanfragen überblicken!</a>
-        {% elif request.user in freund_ausgehend %}
-            Du hast bereits ne Freundesanfrage an <strong>{{ profile.user.username }}</strong> gesendet, mein Lieber!
+        {% else %}
+
+            {% if profile.user.username in freund_ausgehend_namelist %}
+                <strong>{{ profile.user.username }}</strong> hat von dir einen Friendrequest erhalten! <br>
+                Willste doch nicht? <a href="{% url 'withdraw_friend_request' profile_id=profile.id %}">'n Rückzieher machen!</a>
+            {% elif profile.user.username in freund_eingehend_namelist %}
+                Hey, Du hast eine Freundesanfrage von <strong>{{ profile.user.username }}</strong> bekommen, Bro! <br>
+                <a href="{% url 'friend_requests' %}">Zu Deinen Friendrequests!</a>
+            {% endif %}
+
         {% endif %}
 
-
     {% else %}
-        <p>{{ profile.user.username }} ist bereits mit dir connected, mään!</p> 
-        Aber wenn du keinen Bock mehr auf ihn hast: (hier wird ein link zum Deleten stehen, muss noch , gibt funktion: remove_friend in views)
-
+        <strong>{{ profile.user.username }}</strong> ist bereits mit dir connected, mään! <br>
+        Keinen Bock mehr auf ihn/sie? <a href="{% url 'remove_friend' profile_id=profile.id %}">Freundschaft Beenden</a> 
     {% endif %}
+
 {% else %}
     <p>Du befindest dich auf DEINEM Profil, <strong>{{ request.user.username }}</strong>.</p>
 {% endif %}
 
 
+<br><br><br>
 
 
-<br>
-<br>
-<br>
+
 
 <p>--------------------------------------------------</p>
 {% if request.user != profile.user %}
-    <h3>{{ profile.user.username }}'s Freunde </h3>
+    <h3>{{ profile.user.username }}'s Freunde </h3>  <br>
         Er/Sie hat hier derzeit <strong>{{ num_profil_freunde }}</strong> Freunde:
 
     <ul>

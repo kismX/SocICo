@@ -48,13 +48,20 @@ class UserProfileDetailView(LoginRequiredMixin, DetailView):
 
 
 
-        # nun fügen wir dem context hinzu
+        ##### nun fügen wir dem context hinzu  ####
 
         # für eingeloggten user
-        context['freunde'] = freunde
-        context['freund_ausgehend'] = freunde_ausgehend
-        context['freund_eingehend'] = freunde_eingehend
-        context['num_freunde'] = freunde.count()
+        context['freunde'] = freunde   #freundesobjekte
+        context['freunde_namelist'] = [freund.from_user.username if user != freund.from_user else freund.to_user.username for freund in freunde]  # eine liste mit den usernamen der freunde
+        
+        context['freund_ausgehend'] = freunde_ausgehend  # friendrequests ausgehend: objekt-queryset
+        context['freund_ausgehend_namelist'] = [freund.to_user.username for freund in freunde_ausgehend] # friendrequests ausgehend: usernamen-liste
+
+        context['freund_eingehend'] = freunde_eingehend  # friendrequest eingehend: object-queryset
+        context['freund_eingehend_namelist'] = [freund.from_user.username for freund in freunde_eingehend]  # friendrequest eingehend: usernamen-liste
+
+        context['num_freunde'] = freunde.count()    # anzahl der freunde
+
 
         # für profil-user:
         context['profil_freunde'] = profil_freunde
@@ -123,7 +130,6 @@ def profile(request):
     
 
 #2023-11-22
-#Friend Request stellen
 @login_required
 def send_friend_request(request, to_user_id):    # das to_user_id kommt aus urls.py hier rein
     to_user = get_user_model().objects.get(id=to_user_id)
@@ -134,13 +140,12 @@ def send_friend_request(request, to_user_id):    # das to_user_id kommt aus urls
         # ..ne warmmeldung geht in admin ein - muss dann an den user noch
         messages.warning(request, 'Du hast bereits ne Anfrage an den user gestellt') 
     else:
-        Friendship.objects.create(from_user=request.user, to_user=to_user)
+        Friendship.objects.create(from_user=request.user, to_user=to_user, status='pending')  # neu: 'status' auf pending, weil anfrage noch ausstehend
         # message geht auch ins admin
         messages.success(request, f'Deine Anfrage wurde an {to_user.username} gesendet, Dikka')  
     return redirect('profile_detail', pk=to_user_id)
 
 
-# Anzeigen von Friend-requests
 @login_required
 def friend_requests(request):
     incoming_requests = Friendship.objects.filter(to_user=request.user, accepted_at__isnull=True)
@@ -148,27 +153,42 @@ def friend_requests(request):
     return render(request, 'friend_requests.html', {'incoming_requests': incoming_requests, 'outgoing_requests': outgoing_requests})
 
 
-# nun akzeptieren und ablehnen der freundschaftsanfragen
 @login_required
 def accept_reject_friend(request, friendship_id, action):   # friendship_id und action kommen wieder aus urls.py
     friendship = Friendship.objects.get(id=friendship_id)
 
     if action == 'accept':
         friendship.accepted_at = timezone.now()
+        friendship.status = 'accepted'
         friendship.save() # save hier lassen  :D !!
     elif action == 'reject':
         friendship.delete()
     return redirect('friend_requests')
 
 
-# 2023-11-28 Freund deleten funktion
 @login_required
-def remove_friend(request, friendship_id):
-    friendship = get_object_or_404(Friendship, id=friendship_id)
+def withdraw_friend_request(request, profile_id):
+    try:
+        # Freundobject raussuchen
+        friend_request = Friendship.objects.get(from_user=request.user, to_user=profile_id)
+        friend_request.delete()
+        return redirect('profile_deteil', pk=profile_id)
+    
+    except Friendship.DoesNotExist:
+        messages.error(request, "Die Freundschaftsanfrage existiert doch gar nicht!")
+        return redirect('profile_deteil', pk=profile_id)
 
-    if friendship.from_user == request.user or friendship.to_user == request.user:
-        friendship.delete()
-        messages.success(request, "Freund deleted")
-    else:
-        messages.error(request, "Keine berechtigung zum Deleten des Freundes")
-    return redirect('profile_detail')
+
+@login_required
+def remove_friend(request, profile_id):
+    user_id = request.user.id
+    try:
+        friendkill = Friendship.objects.get(to_user_id=profile_id, from_user_id=user_id)
+        friendkill.delete()
+        return redirect('profile_detail', pk=profile_id)
+
+    except: 
+        friendkill = Friendship.objects.get(from_user_id=profile_id, to_user_id=user_id)
+        friendkill.delete()
+        return redirect('profile_detail', pk=profile_id)
+    

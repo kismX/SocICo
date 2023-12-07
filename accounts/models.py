@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
-from django.utils import timezone  # 23-11-22 für friendship
+from django.utils import timezone
 from PIL import Image
 
 
@@ -13,7 +13,6 @@ class Profile(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
     bio = models.TextField(blank=True)
     interests = models.TextField(blank=True, help_text='Gib interessen getrennt durch Komma an')
-    # user_img = models.ImageField(upload_to='user_img/', blank=True)
     avatar = models.ImageField(default='default.jpg', upload_to='profile_images')
 
     def __str__(self):
@@ -35,10 +34,24 @@ class Profile(models.Model):
 # es hat den 'from_user', von dem die anfrage ausgeht und 'to_user' an den die anfrage geht
 # wann  die verbindung erstellt wurde geht automatisch: 'createtd_at' und wenn request angenommen, wird das leere 'acceptet_at' mit zeitpunkt ausgefüllt
 class Friendship(models.Model):
+    # diese status in STATUS_CHOICES werden unten im neuen feld "status" benutzt, 
+    # um userbeziehungen besser zu verwalten, das vereinfacht logik und übersichtlichkeit:
+    STATUS_CHOICES = (
+        ('pending', 'Ausstehend'),
+        ('accepted', 'Akzeptiert'),
+        ('rejected', 'Abgelehnt'),
+        ('withdrawn', 'Zurückgezogen'),
+    )
+    
     from_user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='from_user')
     to_user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='to_user')
     created_at = models.DateTimeField(auto_now_add=True)
     accepted_at = models.DateTimeField(null=True, blank=True)
+    status = models.CharField(max_length=30, default='pending')  # hjier wird jeweils der status gespeichert nach requests, accepts.. usw
+
+    # lasse mir die beziehung zwischen sender und empfänger der freundschaft und deren status ()ausgeben - objekt einfacher zu lesen
+    def __str__(self):
+        return f"{self.from_user.username} -> {self.to_user.username} ({self.status})" 
 
     
 

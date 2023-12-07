@@ -3,7 +3,7 @@
 
 
 <h2>Freundschaftsanfragen</h2>
-
+<br><br>
 <h3> Eingehende Freundschaftsanfragen </h3>
 
 {% if incoming_requests %}
@@ -13,16 +13,16 @@
     {% endfor %}
 
 {% else %}
-    <p>keine Freundesanfragen!</p>
+    <p>keine Freundesanfragen!</p><br>
 {% endif %}
 
 
-<br>
+<br><br>
 <h3>Ausgehende Freundschaftsanfragen </h3>
 
 {% if outgoing_requests %}
     {% for request in outgoing_requests %}
-    Du hast eine Anfrage an <strong>{{ request.to_user.username }}</strong> gesendet.
+    Du hast eine Anfrage an <strong>{{ request.to_user.username }}</strong> gesendet. <br>
     {% endfor %}
 
 {% else %}
@@ -32,7 +32,7 @@
 
 
 
-<br>
+<br><br>
 <p></p>
 <a href="{% url 'profile_detail' pk=request.user.id %}">>>>Zu MEINEM Profil>>></a><br>
 
