@@ -5,6 +5,12 @@
 .Copy-of-Fossil-Vintage---Kovács-Pisti-4-hex { color: #5EB299; }
 .Copy-of-Fossil-Vintage---Kovács-Pisti-5-hex { color: #745A33; }
 
+.Copy-of-vintage-1-hex { color: #63A69F; }
+.Copy-of-vintage-2-hex { color: #F2EFDF; }
+.Copy-of-vintage-3-hex { color: #F2CA99; }
+.Copy-of-vintage-4-hex { color: #F28A2E; }
+.Copy-of-vintage-5-hex { color: #40281A; }
+
 @font-face {
     font-family: "PoppinsRegular";
     src: url("fonts/Poppins-Regular.ttf") format("truetype");
@@ -25,13 +31,13 @@
     text-decoration: None;
 }
 body{
-    background-color: #fcf5bf5d;
+    background-color: #F2EFDF;
 }
 
 .main-menu{
     font-size: 1.6em;
     font-family: 'PoppinsRegular';
-    background-color:#CFCA4C;
+    background-color:#63A69F;
     height: 70px;
     text-align: center;
     text-align: end;
@@ -39,15 +45,14 @@ body{
     padding-right: 20px;
 }
 .main-menu a{
-    color: white;
-    background-color:#745A33;
+    color: #F2EFDF;
+    background-color:#40281A;
     padding: 30px 20px 10px 20px;
     border-radius: 10px;
     margin-left: 5px;
 }
 .main-menu a:hover{
     transition: ease-in-out 0.5s;
-    background-color:#392c19;
     padding-bottom: 15px;
 }
 .row{

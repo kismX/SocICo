@@ -22,9 +22,11 @@ from socico import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),    #new
+
+    path('', TemplateView.as_view(template_name='home.html'), name='home'),  
     path('accounts/', include('accounts.urls')),                    # 'accounts/'  path anstatt "" hinzugefügt
-    path('accounts/', include('django.contrib.auth.urls')),         # new
+    path('accounts/', include('django.contrib.auth.urls')),         
+    path('chats/', include('chats.urls')),         
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
