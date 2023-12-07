@@ -187,8 +187,11 @@ def remove_friend(request, profile_id):
         friendkill.delete()
         return redirect('profile_detail', pk=profile_id)
 
-    except: 
-        friendkill = Friendship.objects.get(from_user_id=profile_id, to_user_id=user_id)
-        friendkill.delete()
-        return redirect('profile_detail', pk=profile_id)
+    except Friendship.DoesNotExist: 
+        try:    
+            friendkill = Friendship.objects.get(from_user_id=profile_id, to_user_id=user_id)
+            friendkill.delete()
+            return redirect('profile_detail', pk=profile_id)
+        except Friendship.DoesNotExist:
+            return redirect('profile_detail', pk=profile_id)
     
