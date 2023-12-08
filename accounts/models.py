@@ -10,10 +10,21 @@ class CustomUser(AbstractUser):
 
 
 class Profile(models.Model):
+    GENDER_CHOICES = [
+        ('female', 'weiblich'),
+        ('male', 'männlich'),
+        ('divers', 'divers'),
+    ]
+    
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
+    age = models.IntegerField(blank=True, null=True)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True) 
+    location = models.CharField(max_length=255, blank=True)
     bio = models.TextField(blank=True)
     interests = models.TextField(blank=True, help_text='Gib interessen getrennt durch Komma an')
     avatar = models.ImageField(default='default.jpg', upload_to='profile_images')
+    is_active = models.BooleanField(default=False)  # ist er geraed online oder offline - muss noch implementiert weden
+    last_online = models.DateTimeField(blank=True, null=True)  # wann war user letztes mal online
 
     def __str__(self):
         return self.user.username

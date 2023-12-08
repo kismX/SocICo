@@ -129,6 +129,8 @@ def profile(request):
     return render(request, 'profile_edit.html', {'user_form': user_form, 'profile_form': profile_form})
     
 
+
+
 #2023-11-22
 @login_required
 def send_friend_request(request, to_user_id):    # das to_user_id kommt aus urls.py hier rein
@@ -195,3 +197,7 @@ def remove_friend(request, profile_id):
         except Friendship.DoesNotExist:
             return redirect('profile_detail', pk=profile_id)
     
+#2023-12-08
+def update_activity_status(profile):
+    profile.last_online = timezone.now()
+    profile.save()

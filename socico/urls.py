@@ -25,6 +25,7 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name='home.html'), name='home'),    #new
     path('accounts/', include('accounts.urls')),                    # 'accounts/'  path anstatt "" hinzugefügt
     path('accounts/', include('django.contrib.auth.urls')),         # new
+    path('searchers/', include('searchers.urls')),  #new
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
