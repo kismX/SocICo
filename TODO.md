@@ -1,0 +1,2 @@
+- [ ] requirements.txt aktualisieren
+- [ ] commands txt mit allen wichtigen befehlen (git und so)
