@@ -5,15 +5,42 @@
 <br><br>
     <form method="GET" action="{% url 'user_filter' %}">
         <label for="interests">Suche Leute nach Deinen Interessen:</label>
-        <input type="text" name="interests" placeholder="z.B. Knäckebrot ..." value="{{ interests }}"> <br><br>
+        <input type="text" name="interests" placeholder="z.B. Knäckebrot ..." value="{{ interests }}"> <br>
         <input type="radio" name="search_type" value="contains" checked>  Treffer enthalten den Suchbegriff <br>
         <input type="radio" name="search_type" value="exact">  Treffer entsprechen exakt dem Suchbegriff  ** hier buggt es noch ** <br>
+        <br>
+
+        <label for="age">Alter:</label>
+        <input type="number" name="age", min="0" placeholder="z.B. 25"> <br>
+
+        <label for="gender">Geschlecht:</label>
+        <select name="gender">
+            <option value="">Alles</option>
+            <option value="female">weiblich</option>
+            <option value="male">männlich</option>
+            <option value="divers">divers</option>
+        </select> <br>
+
+        <label for="location">Ort:</label>
+        <input type="text" name="location" placeholder="z.B. Berlin"> <br>
+
+
         <button type="submit">Seeeeek</button>
     </form>
 <br>
+<br>
+
+    <h3>Suchergebnis:</h3>
     <ul>
         {% for user in users %}
-            <li>{{ user.username }}</li>
+            <li>
+                {{ user.username }}       
+            </li>
         {% endfor %}
     </ul>
+    
+    <br>
+    **es fehlt das last_online hinter dem user**
+
+  
 {% endblock %}

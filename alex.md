@@ -17,3 +17,4 @@ nachem ich nun vieles schon gemacht hatte, ab heute ale steps:
 - Accounts-app - models.py: Profile - Modell um age, gender, location, is_active, und last_online erweitert , um es bei suchen einzubeziehen und anderen funktionalitäten
 - accounts-signals.py: user_logged_in_handler und user_logged_out_handler imlementiert, die signal abgreift und in den view zu update_activity_status schickt
 - accounts-app - views.py: update_activity_status funktionalität implementiert, die last_online im Profile aktualisieren, wenn user online oder offline geht
+- template user_filter.html für inetressen und andere eigenschaften von user-suche erstellt
