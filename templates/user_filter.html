@@ -4,7 +4,7 @@
     <h1>Buddy Suche</h1>
 <br><br>
     <form method="GET" action="{% url 'user_filter' %}">
-        <label for="interests">Suche Leute nach Deinen Interessen:</label>
+        <label for="interests">Suche Leute nach Deinen Interessen:</label><br>
         <input type="text" name="interests" placeholder="z.B. Knäckebrot ..." value="{{ interests }}"> <br>
         <input type="radio" name="search_type" value="contains" checked>  Treffer enthalten den Suchbegriff <br>
         <input type="radio" name="search_type" value="exact">  Treffer entsprechen exakt dem Suchbegriff  ** hier buggt es noch ** <br>
@@ -29,18 +29,27 @@
     </form>
 <br>
 <br>
+<br>
 
     <h3>Suchergebnis:</h3>
-    <ul>
-        {% for user in users %}
-            <li>
-                {{ user.username }}       
-            </li>
-        {% endfor %}
-    </ul>
+    <!-- ich sage, nur wenn es GET requests gibt bisher (also eine suchanfrage), führt er die auflistung der ergebnisse aus  -->
+    {% if request.GET %}
+        {% if users %}
+            <ul>
+                {% for user in users %}
+                    <li>
+                        <strong>{{ user.username }}</strong>..................  <em>(zuletzt online: <strong>{{ user.profile.last_online|date:"d.m.Y H:i" }})</em></strong>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>....Sorry, aber Du bist alleine auf diesem Planeten mit deinem Kram!</p>
+        {% endif %}
+    {% else %}
+        Noch nicht gesucht, mein Friend!
+    {% endif %}
     
     <br>
-    **es fehlt das last_online hinter dem user**
 
   
 {% endblock %}

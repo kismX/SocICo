@@ -10,7 +10,7 @@
         </form>
     </div> -->
 
-<h1>Dein profil bearbeiten</h1>
+<h1>Profil bearbeiten</h1>
 <img src="{{ user.profile.avatar.url }}"/>
 
 <form method="post" enctype="multipart/form-data">
@@ -21,11 +21,20 @@
     <label>Email:</label>
         {{ user_form.email }}
     
-    <br>
-    <a href="#">Change Password:</a>
+    <br><br>
+    <a href="#">Change Password:</a><br><br>
     <hr>
     <label>Change Avatar:</label>
         {{ profile_form.avatar }}
+    <br><br>
+    <label>Alter:</label>
+    {{ profile_form.age }}
+    <br><br>
+    <label>Geschlecht:</label>
+    {{ profile_form.gender }}
+    <br><br>
+    <label>Wohnort:</label>
+    {{ profile_form.location }}
     <br><br>
     <label>Bio:</label>
         {{ profile_form.bio }}
@@ -33,6 +42,7 @@
     <label>Interessen:</label>
         {{ profile_form.interests }}
     <br><br>
+
     <button type="submit">Änderungen speichern</button>
 </form>
 
