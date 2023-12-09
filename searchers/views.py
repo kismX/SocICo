@@ -24,16 +24,33 @@ def user_filter(request):
             users = users.filter(profile__interests__icontains=interests)
         else:
             users = users.filter(profile__interests__iexact=interests)
-        
+
+    # folgendes sollte eigentlich ne liste der interessen herstellen, die man durchsucht
+    # wichtig: kombisuche.. zb Coden, schreiben und er findet leute die beides mögen
+
+    # if interests:
+    #     interests.lower()
+    #     interests_list = interests.split(',')
+
+    #     if search_type == 'contains':
+    #         users = users.filter(profile__interests__in=interests_list)
+    #     else:
+    #         users = users.filter(profile__interests__iexact__in=interests_list)
+
+
     if age:
         users = users.filter(profile__age=age)
     
     if gender:
         users = users.filter(profile__gender=gender)
-
-    if location:
-        users = users.filter(profile__location=location)
     
+    if location:
+        location = location.lower()
+        if search_type == 'contains':
+            users = users.filter(profile__location__icontains=location)
+        else:
+            users = users.filter(profile__location__iexact=location)
+
     if last_online:
         last_online_cut = timezone.now() - timedelta(days=7)
         users = users.filter(profile__last_online=last_online_cut)
