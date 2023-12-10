@@ -21,4 +21,10 @@ nachem ich nun vieles schon gemacht hatte, ab heute ale steps:
 - template profile_edit.html - neue forms gender, age, ...hinzugefügt
 - template base.html - Menü angepasst + Seeek hinzugefügt
 - accounts-forms.py: neue profile forms gender, age ...hinzugefügt
--
+
+9.12.23
+- last_online wird korrekt angezeigt bei seeek
+
+10.12.23
+- settings.py: TIME_ZONE von UTC auf Europe/Berlin geändert für korrekte Zeitangabe. UTC ist weltzeituhr. die Variable USE_TZ = True sagt, dass man timezones nutzen kann und UTC umgerechnet wird auf die eingestellte, hier also Europe/Berlin
+-  man kann mehrere suchbegriffe in komma getrennt in kombination abfragen und bekommt passenden user angezeigt 

@@ -11,32 +11,22 @@ def user_filter(request):
     # friend_list = Friendship.objects.filter(Q(from_user=current_user, status='accepted') | Q(to_user=current_user, status='accepted'))
     users = get_user_model().objects.exclude(pk=request.user.pk) # alle ohne request.user, wir wollen ja nicht, dass der selbst mit angezeigt wird, ne?
 
-    interests = request.GET.get('interests', '').lower()
+    # holt die interessen rein, die in der url im GET als value zum key interests angefordert werden
+    # anschließend machen wir eine liste aller interessen, die wir am "," abspalten und mit strip alle leerzeichen entfernen
+    # des weiteren holen wir values für age, gender usw
+    interests = request.GET.get('interests', '')
+    interest_list = [interest.strip().lower() for interest in interests.split(',')] if interests else []
     age = request.GET.get('age')
     gender = request.GET.get('gender')
     location = request.GET.get('location', '')
     last_online = request.GET.get('last_online')
-    search_type = request.GET.get('search_type', 'contains')
 
 
+    # user wählt contains oder exact, dann gehen wir liste der interessen durhc und wenn enthalten, wird ausgegeben
+    # auf dauer kann datenmenge komplex sein.. dann evtl Q-abfrage implementieren
     if interests:
-        if search_type == 'contains':
-            users = users.filter(profile__interests__icontains=interests)
-        else:
-            users = users.filter(profile__interests__iexact=interests)
-
-    # folgendes sollte eigentlich ne liste der interessen herstellen, die man durchsucht
-    # wichtig: kombisuche.. zb Coden, schreiben und er findet leute die beides mögen
-
-    # if interests:
-    #     interests.lower()
-    #     interests_list = interests.split(',')
-
-    #     if search_type == 'contains':
-    #         users = users.filter(profile__interests__in=interests_list)
-    #     else:
-    #         users = users.filter(profile__interests__iexact__in=interests_list)
-
+        for interest in interest_list:
+                users = users.filter(profile__interests__icontains=interest)
 
     if age:
         users = users.filter(profile__age=age)
@@ -46,10 +36,7 @@ def user_filter(request):
     
     if location:
         location = location.lower()
-        if search_type == 'contains':
-            users = users.filter(profile__location__icontains=location)
-        else:
-            users = users.filter(profile__location__iexact=location)
+        users = users.filter(profile__location__icontains=location)
 
     if last_online:
         last_online_cut = timezone.now() - timedelta(days=7)
@@ -57,7 +44,7 @@ def user_filter(request):
     
 
 
-    context = {'users': users, 'interests': interests, 'age': age, 'gender': gender, 'location': location, 'last_online': last_online}
+    context = {'users': users, 'interests': interests, 'age': age, 'gender': gender, 'location': location, 'last_online': last_online, 'interest_list': interest_list}
     return render(request, 'user_filter.html', context)
 
 

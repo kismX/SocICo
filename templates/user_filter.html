@@ -6,8 +6,6 @@
     <form method="GET" action="{% url 'user_filter' %}">
         <label for="interests">Suche Leute nach Deinen Interessen:</label><br>
         <input type="text" name="interests" placeholder="z.B. Knäckebrot ..." value="{{ interests }}"> <br>
-        <input type="radio" name="search_type" value="contains" checked>  Treffer enthalten den Suchbegriff <br>
-        <input type="radio" name="search_type" value="exact">  Treffer entsprechen exakt dem Suchbegriff  ** hier buggt es noch ** <br>
         <br>
 
         <label for="age">Alter:</label>
