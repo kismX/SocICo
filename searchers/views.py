@@ -14,7 +14,7 @@ def user_filter(request):
     interests = request.GET.get('interests', '').lower()
     age = request.GET.get('age')
     gender = request.GET.get('gender')
-    location = request.GET.get('location')
+    location = request.GET.get('location', '')
     last_online = request.GET.get('last_online')
     search_type = request.GET.get('search_type', 'contains')
 
