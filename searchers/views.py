@@ -22,6 +22,7 @@ def user_filter(request):
     gender = request.GET.get('gender')
     location = request.GET.get('location', '')
     last_online = request.GET.get('last_online')
+    last_online_cut = request.GET.get('last_online_cut', '')
 
 
     # user wählt contains oder exact, dann gehen wir liste der interessen durhc und wenn enthalten, wird ausgegeben
@@ -46,10 +47,10 @@ def user_filter(request):
         location = location.lower()
         users = users.filter(profile__location__icontains=location)
 
-    # dit muss noch wa
-    if last_online:
-        last_online_cut = timezone.now() - timedelta(days=7)
-        users = users.filter(profile__last_online=last_online_cut)
+    if last_online_cut:
+        days_num = int(last_online_cut)
+        last_online_delta = timezone.now() - timedelta(days=days_num) #errechne mir einen zeitpunkt: aktuell minus der tage, die der user eingegeben hat
+        users = users.filter(profile__last_online__gte=last_online_delta) # alle user die ab dem zeitpunkt bis heut online waren werden aufgelistet
     
 
     context = {'users': users, 'interests': interests, 'interest_list': interest_list, 
