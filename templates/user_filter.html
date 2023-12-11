@@ -11,6 +11,11 @@
         <label for="age">Alter:</label>
         <input type="number" name="age", min="0" placeholder="z.B. 25"> <br>
 
+        <label for="min_age">.....Mindestalter:</label>
+        <input type="number" name="min_age", min="0" placeholder="z.B. 18"> <br>
+        <label for="max_age">.....Höchstalter:</label>
+        <input type="number" name="max_age", min="0" placeholder="z.B. 99"> <br>
+
         <label for="gender">Geschlecht:</label>
         <select name="gender">
             <option value="">Alles</option>
@@ -36,7 +41,7 @@
             <ul>
                 {% for user in users %}
                     <li>
-                        <strong>{{ user.username }}</strong>..................  <em>(zuletzt online: <strong>{{ user.profile.last_online|date:"d.m.Y H:i" }})</em></strong>
+                        <strong><a href="{% url 'profile_detail' pk=user.profile.id %}">{{ user.username }}</a></strong>..................  <em>zuletzt online: <strong>{{ user.profile.last_online|date:"d.m.Y H:i" }}</em></strong>
                     </li>
                 {% endfor %}
             </ul>
