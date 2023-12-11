@@ -4,11 +4,11 @@
     <h1>Buddy Suche</h1>
 <br><br>
     <form method="GET" action="{% url 'user_filter' %}">
-        <label for="interests">Suche Leute nach Deinen Interessen:</label><br>
-        <input type="text" name="interests" placeholder="z.B. Knäckebrot ..." value="{{ interests }}"> <br>
+        <label for="interests"><strong>Suche Leute nach Deinen Interessen:</strong></label><br>
+        <input type="text" name="interests" placeholder="z.B. Knäckebrot, Musik, ..." value="{{ interests }}"> <br>
         <br>
 
-        <label for="age">Alter:</label>
+        <label for="age"><strong>Alter:</strong></label>
         <input type="number" name="age", min="0" placeholder="z.B. 25"> <br>
 
         <label for="min_age">.....Mindestalter:</label>
@@ -16,7 +16,7 @@
         <label for="max_age">.....Höchstalter:</label>
         <input type="number" name="max_age", min="0" placeholder="z.B. 99"> <br>
 
-        <label for="gender">Geschlecht:</label>
+        <label for="gender"><strong>Geschlecht:</strong></label>
         <select name="gender">
             <option value="">Alles</option>
             <option value="female">weiblich</option>
@@ -24,7 +24,7 @@
             <option value="divers">divers</option>
         </select> <br>
 
-        <label for="location">Ort:</label>
+        <label for="location"><strong>Ort:</strong></label>
         <input type="text" name="location" placeholder="z.B. Berlin"> <br>
 
 
