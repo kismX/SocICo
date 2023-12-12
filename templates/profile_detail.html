@@ -10,12 +10,13 @@
 <br>
 <!-- hier sind die Profildetails des Users -->
 <p><strong>Avatar:</strong> <img src="{{ profile.avatar.url }}" alt="avatar"> </p>
+<p><strong>Alter: </strong>{{ profile.age }}</p>
+<p><strong>Geschlecht: </strong>{{ profile.gender }}</p>
+<p><strong>Wohnort: </strong>{{ profile.location }}</p>
 <p><strong>Bio: </strong>{{ profile.bio }}</p>
 <p><strong>Interessen: </strong>{{ profile.interests }}</p>
 
 <br><br>
-
-
 
 
 <!-- Wenn der angemeldete user.id nicht identisch ist mit der profil.id ..   -->
@@ -41,8 +42,8 @@
         {% endif %}
 
     {% else %}
-        <strong>{{ profile.user.username }}</strong> ist bereits mit dir connected, mään! <br>
-        Keinen Bock mehr auf ihn/sie? <a href="{% url 'remove_friend' profile_id=profile.id %}">Freundschaft Beenden</a> 
+        <strong>{{ profile.user.username }}</strong> ist seit <strong>{{ freund_seit|date:"d.m.Y" }}</strong> dein Freund! <br>
+        ....keine Lust auf die Freundschaft? <a href="{% url 'remove_friend' profile_id=profile.id %}">Freundschaft Beenden</a> 
     {% endif %}
 
 {% else %}

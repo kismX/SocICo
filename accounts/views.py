@@ -13,6 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from .models import Profile, Friendship
 from django.utils import timezone # für friend connecten
+from datetime import datetime, timedelta # für dauer einer bestehenden freundschaft zb
 from django.contrib import messages # wird verwendet um meldungen durch die views oder auch verarbeitung an den user zu schicken
 
 
@@ -46,7 +47,11 @@ class UserProfileDetailView(LoginRequiredMixin, DetailView):
         profil_user = self.object  # hole mir das aktuelle Profile-object
         profil_freunde = Friendship.objects.filter(from_user=profil_user.user, accepted_at__isnull=False) | Friendship.objects.filter(to_user=profil_user.user, accepted_at__isnull=False)
 
-
+        freund_profil = Friendship.objects.filter(from_user=profil_user.user, to_user=user, accepted_at__isnull=False).first() or Friendship.objects.filter(to_user=profil_user.user, from_user=user, accepted_at__isnull=False).first()
+        if freund_profil:
+            freund_seit = freund_profil.accepted_at
+        else:
+            freund_seit = None
 
         ##### nun fügen wir dem context hinzu  ####
 
@@ -61,7 +66,8 @@ class UserProfileDetailView(LoginRequiredMixin, DetailView):
         context['freund_eingehend_namelist'] = [freund.from_user.username for freund in freunde_eingehend]  # friendrequest eingehend: usernamen-liste
 
         context['num_freunde'] = freunde.count()    # anzahl der freunde
-
+        if freund_profil:
+            context['freund_seit'] = freund_seit        # seit wann befreundet
 
         # für profil-user:
         context['profil_freunde'] = profil_freunde
@@ -121,13 +127,15 @@ def profile(request):
             user_form.save()
             profile_form.save()
             messages.success(request, 'Your Profile is updated successfully')
-            return redirect(to='profile_edit')
+            return redirect(to='profile_detail', pk=request.user.id)
     else:
         user_form = UpdateUserForm(instance=request.user)
         profile_form = UpdateProfileForm(instance=request.user.profile)
     
     return render(request, 'profile_edit.html', {'user_form': user_form, 'profile_form': profile_form})
     
+
+
 
 #2023-11-22
 @login_required
@@ -187,8 +195,15 @@ def remove_friend(request, profile_id):
         friendkill.delete()
         return redirect('profile_detail', pk=profile_id)
 
-    except: 
-        friendkill = Friendship.objects.get(from_user_id=profile_id, to_user_id=user_id)
-        friendkill.delete()
-        return redirect('profile_detail', pk=profile_id)
+    except Friendship.DoesNotExist: 
+        try:    
+            friendkill = Friendship.objects.get(from_user_id=profile_id, to_user_id=user_id)
+            friendkill.delete()
+            return redirect('profile_detail', pk=profile_id)
+        except Friendship.DoesNotExist:
+            return redirect('profile_detail', pk=profile_id)
     
+#2023-12-08
+def update_activity_status(profile):
+    profile.last_online = timezone.now()
+    profile.save()

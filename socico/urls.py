@@ -27,6 +27,7 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),                    # 'accounts/'  path anstatt "" hinzugefügt
     path('accounts/', include('django.contrib.auth.urls')),         
     path('rooms/', include('chats.urls')),         
+    path('searchers/', include('searchers.urls')),  #new
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

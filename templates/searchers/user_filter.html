@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Buddy Suche</h1>
+<br><br>
+    <form method="GET" action="{% url 'user_filter' %}">
+        <label for="interests"><strong>Suche Leute nach Deinen Interessen:</strong></label><br>
+        <input type="text" name="interests" placeholder="z.B. Knäckebrot, Musik, ..." value="{{ interests }}"> <br>
+        <br>
+
+        <label for="age"><strong>Alter:</strong></label>
+        <input type="number" name="age", min="0" placeholder="z.B. 25"> <br>
+
+        <label for="min_age">.....Mindestalter:</label>
+        <input type="number" name="min_age", min="0" placeholder="z.B. 18"> <br>
+        <label for="max_age">.....Höchstalter:</label>
+        <input type="number" name="max_age", min="0" placeholder="z.B. 99"> <br>
+
+        <label for="gender"><strong>Geschlecht:</strong></label>
+        <select name="gender">
+            <option value="">Alles</option>
+            <option value="female">weiblich</option>
+            <option value="male">männlich</option>
+            <option value="divers">divers</option>
+        </select> <br>
+
+        <label for="location"><strong>Ort:</strong></label>
+        <input type="text" name="location" placeholder="z.B. Berlin"> <br>
+        <br>
+        <label for="last_online_cut"><strong>Zuletzt online (Tage):</strong></label>
+        <input type="number" name="last_online_cut", min="0" placeholder="z.B. 7"> <br>
+
+        <button type="submit">Seeeeek</button>
+    </form>
+<br>
+<br>
+<br>
+
+    <h3>Suchergebnis:</h3>
+    <!-- ich sage, nur wenn es GET requests gibt bisher (also eine suchanfrage), führt er die auflistung der ergebnisse aus  -->
+    {% if request.GET %}
+        {% if users %}
+            <ul>
+                {% for user in users %}
+                    <li>
+                        <strong><a href="{% url 'profile_detail' pk=user.profile.id %}">{{ user.username }}</a></strong>..................  <em>zuletzt online: <strong>{{ user.profile.last_online|date:"d.m.Y H:i" }}</em></strong>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>....Sorry, aber Du bist alleine auf diesem Planeten mit deinem Kram!</p>
+        {% endif %}
+    {% else %}
+        Noch nicht gesucht, mein Friend!
+    {% endif %}
+    
+    <br>
+
+  
+{% endblock %}

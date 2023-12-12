@@ -21,7 +21,7 @@ class UpdateUserForm(forms.ModelForm):
                                required=True,
                                widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(required=True,
-                             widget=forms.TextInput(attrs={'class': 'form-control'}))
+                             widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'z.B. icke@kikke.ma'}))
     
     class Meta:
         model = get_user_model()
@@ -29,13 +29,22 @@ class UpdateUserForm(forms.ModelForm):
     
 
 class UpdateProfileForm(forms.ModelForm):
+    GENDER_CHOICES = [
+        ('female', 'weiblich'),
+        ('male', 'männlich'),
+        ('divers', 'divers'),
+    ]
+    
     avatar = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control-file'}))
-    bio = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
-    interests = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows':3}))
+    age = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'z.B. 25'}), min_value=12, max_value=110, required=False)
+    gender = forms.ChoiceField(choices=GENDER_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    location = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows':1, 'placeholder': 'z.B. Berlin'}))
+    bio = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5, 'placeholder': 'z.B. Hi, ich muss mal..'}))
+    interests = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows':3, 'placeholder': 'z.B. Halligalli, Semmeln, Löten'}))
 
     class Meta:
         model = Profile
-        fields = ['avatar', 'bio', 'interests']
+        fields = ['avatar', 'age', 'gender', 'location', 'bio', 'interests',]
 
 
 
