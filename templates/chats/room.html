@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ room.name }} | {% endblock %}
+
+{% block content %}
+<div>
+    <h1>Aktueller Chat: {{ room.name }}</h1>
+</div>
+
+<div>
+    <div class="chat-messages" id="chat-messages">
+        {% for message in messages %}
+        Testvariablen: {{ message.user.username }}
+            <div>
+                <p class="chat-name">{{ message.user.username }}</p>
+                <p class="chat-message-box">{{ message.content }}</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div>
+    <div class="chat-form">
+        <form method="post" action="." class="flex">
+            <input type="text" name="content" class="chat-form-input" placeholder="Deine Nachricht..." id="chat-message-input">
+
+            <button class="chat-form-button" id="chat-message-submit">Senden</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ room.slug|json_script:"json-roomname" }}
+{{ request.user.username|json_script:"json-username" }}
+
+<script>
+    const roomName = JSON.parse(document.getElementById('json-roomname').textContent);
+    const userName = JSON.parse(document.getElementById('json-username').textContent);
+
+    // Websocket Connection:
+
+    const chatSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/'
+        + roomName
+        + '/'
+    );
+
+    chatSocket.onmessage = function(e) {
+        console.log('onmessage')
+
+        const data = JSON.parse(e.data);
+
+        if (data.message){
+            let html = '<div>';
+                html += '<p class="chat-name">'+ data.username + '</p>';
+                html += '<p class="chat-message-box">'+ data.message + '</p></div>';
+
+                document.querySelector('#chat-messages').innerHTML += html;
+                scrollToBottom();
+        } else {
+            alert('Die Nachricht war leer...')
+        }
+    }
+
+    chatSocket.onclose = function(e) {
+        console.log('onclose')
+    }
+
+    // Nachricht senden:
+
+    document.querySelector('#chat-message-submit').onclick = function(e){
+        e.preventDefault();
+
+        const messageInputDom = document.querySelector('#chat-message-input');
+        const message = messageInputDom.value;
+
+        chatSocket.send(JSON.stringify({
+            'message': message,
+            'username': userName,
+            'room': roomName
+        }));
+
+        messageInputDom.value = ''; //zurücksetzen der variable
+
+        return false;
+    }
+
+    // Automatisch zum Ende der Nachrichten scrollen:
+
+    function scrollToBottom(){
+        const objDiv = document.querySelector('#chat-messages');
+        objDiv.scrollTop = objDiv.scrollHeight;
+    }
+
+    scrollToBottom(); // um funktion aufzurufen
+</script>
+{% endblock %}
