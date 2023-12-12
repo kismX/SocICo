@@ -10,7 +10,6 @@
 <div>
     <div class="chat-messages" id="chat-messages">
         {% for message in messages %}
-        Testvariablen: {{ message.user.username }}
             <div>
                 <p class="chat-name">{{ message.user.username }}</p>
                 <p class="chat-message-box">{{ message.content }}</p>
