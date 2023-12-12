@@ -57,6 +57,6 @@ def user_filter(request):
                'age': age, 'min_age': min_age, 'max_age': max_age, 'gender': gender, 
                'location': location, 'last_online': last_online}
     
-    return render(request, 'user_filter.html', context)
+    return render(request, 'searchers/user_filter.html', context)
 
 

@@ -1,7 +1,5 @@
 nachem ich nun vieles schon gemacht hatte, ab heute ale steps:
 
-
-
  2023-12-07
 
 - Freundschaftsanfragen zurückziehen implementiert
@@ -23,8 +21,22 @@ nachem ich nun vieles schon gemacht hatte, ab heute ale steps:
 - accounts-forms.py: neue profile forms gender, age ...hinzugefügt
 
 9.12.23
+
 - last_online wird korrekt angezeigt bei seeek
 
 10.12.23
+
 - settings.py: TIME_ZONE von UTC auf Europe/Berlin geändert für korrekte Zeitangabe. UTC ist weltzeituhr. die Variable USE_TZ = True sagt, dass man timezones nutzen kann und UTC umgerechnet wird auf die eingestellte, hier also Europe/Berlin
--  man kann mehrere suchbegriffe in komma getrennt in kombination abfragen und bekommt passenden user angezeigt 
+- man kann mehrere suchbegriffe in komma getrennt in kombination abfragen und bekommt passenden user angezeigt
+
+
+11.12.23
+
+- searchers: view und template: man kann ein timedelta in der suchfunktion eingeben nach Tagen, wann ein user zuletzt online war
+- searchers: user der suchergebnisse werden nun als links zu den entsprechenden userprofilen angezeigt
+
+
+
+12.12.23
+
+- template-ordner searchers etabliert. ausbesserungen, tippfehler (..)
