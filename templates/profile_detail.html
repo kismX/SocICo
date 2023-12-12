@@ -17,8 +17,6 @@
 <br><br>
 
 
-
-
 <!-- Wenn der angemeldete user.id nicht identisch ist mit der profil.id ..   -->
 <!-- und wenn dieser profiluser nicht unter den users friends ist und auch kein friendrequest besteht  -->
 <!-- dann wirdein friendrequest-link,angezeigt werden, ansonsten auf friendrequests verwiesen -->
@@ -42,8 +40,8 @@
         {% endif %}
 
     {% else %}
-        <strong>{{ profile.user.username }}</strong> ist bereits mit dir connected, mään! <br>
-        Keinen Bock mehr auf ihn/sie? <a href="{% url 'remove_friend' profile_id=profile.id %}">Freundschaft Beenden</a> 
+        <strong>{{ profile.user.username }}</strong> ist seit <strong>{{ freund_seit|date:"d.m.Y" }}</strong> dein Freund! <br>
+        ....keine Lust auf die Freundschaft? <a href="{% url 'remove_friend' profile_id=profile.id %}">Freundschaft Beenden</a> 
     {% endif %}
 
 {% else %}
