@@ -3,40 +3,47 @@
 {% block title %}{{ room.name }} | {% endblock %}
 
 {% block content %}
-<div>
-    <h1>Aktueller Chat: {{ room.name }}</h1>
-</div>
-
-<div>
-    <div class="chat-messages" id="chat-messages">
-        {% for message in messages %}
-        <img src="{{ message.user.profile.avatar.url }}" alt="">
-            <div>
-                <p class="chat-name">{{ message.user.username }}</p>
-                <p class="chat-message-box">{{ message.content }}</p>
-            </div>
-        {% endfor %}
+    <div>
+        <h1>Aktueller Chat: {{ room.name }}</h1>
     </div>
-</div>
 
-<div>
-    <div class="chat-form">
-        <form method="post" action="." class="flex">
-            <input type="text" name="content" class="chat-form-input" placeholder="Deine Nachricht..." id="chat-message-input">
 
-            <button class="chat-form-button" id="chat-message-submit">Senden</button>
-        </form>
+        <div class="chat-messages" id="chat-messages">
+            
+                {% for message in messages %}
+                <div class="flex">
+                    <img src="{{ message.user.profile.avatar.url }}" alt="">
+                    <div>
+                        <p class="chat-name">{{ message.user.username }}</p>
+                        <p class="chat-message-box">{{ message.content }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+        </div>
+
+    <div>
+        <div class="chat-form">
+            <form method="post" action="." class="flex">
+                <input type="text" name="content" class="chat-form-input" placeholder="Deine Nachricht..." id="chat-message-input">
+
+                <button class="chat-form-button" id="chat-message-submit">Senden</button>
+            </form>
+        </div>
     </div>
-</div>
+
+    
+
 {% endblock %}
 
 {% block scripts %}
 {{ room.slug|json_script:"json-roomname" }}
 {{ request.user.username|json_script:"json-username" }}
+{{ user.profile.avatar.url|json_script:"json-profileavatar" }}
 
 <script>
     const roomName = JSON.parse(document.getElementById('json-roomname').textContent);
     const userName = JSON.parse(document.getElementById('json-username').textContent);
+
 
     // Websocket Connection:
 
@@ -52,11 +59,14 @@
         console.log('onmessage')
 
         const data = JSON.parse(e.data);
+        const profileAvatar = JSON.parse(document.getElementById('json-profileavatar').textContent);
 
         if (data.message){
-            let html = '<div>';
+            let html = '<div class="flex">';
+                html += '<img src="'+ profileAvatar +'" alt="">';
+                html += '<div>';
                 html += '<p class="chat-name">'+ data.username + '</p>';
-                html += '<p class="chat-message-box">'+ data.message + '</p></div>';
+                html += '<p class="chat-message-box">'+ data.message + '</p></div></div>';
 
                 document.querySelector('#chat-messages').innerHTML += html;
                 scrollToBottom();
@@ -80,7 +90,7 @@
         chatSocket.send(JSON.stringify({
             'message': message,
             'username': userName,
-            'room': roomName
+            'room': roomName,
         }));
 
         messageInputDom.value = ''; //zurücksetzen der variable
