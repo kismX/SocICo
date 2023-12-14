@@ -5,10 +5,17 @@
 {% block content %}
 
 {% for room in rooms %}
-    <div>
-        <h2>{{ room.name }}</h2>
-        <a href="{% url 'room' room.slug %}">Chat beitreten</a>
-    </div>
+    {% if request.user.id|stringformat:"i" in room.slug %} <!-- wir wandeln unsere id in einen string um, "i" heißt das unser ursprünglicher wert ein int ist-->
+        <div>
+            {% for key, value in profile_dict.items %}
+                {% if key in room.slug and request.user.id|stringformat:"i" != key %}
+                    <h2>Chat mit: {{ value }}</h2>
+                {% endif %}
+            {% endfor %}
+            <a href="{% url 'room' room.slug %}">Chat beitreten</a>
+        </div>
+        
+    {% endif %}
 {% endfor %}
 
 {% endblock content%}

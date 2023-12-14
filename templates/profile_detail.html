@@ -25,6 +25,8 @@
 
 {% if request.user.id != profile.user.id %}
 
+    <a href="{% url 'create_chat' own_id=request.user.id foreign_id=profile.user.id%}">Chat erstellen</a>
+
     {% if profile.user.username not in freunde_namelist %}
 
         {% if profile.user.username not in freund_eingehend_namelist and profile.user.username not in freund_ausgehend_namelist %}

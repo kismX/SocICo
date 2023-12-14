@@ -1,13 +1,24 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render,redirect
+from django.http import HttpResponse
+from django.contrib.auth import get_user_model
 
 from .models import Room, Message
 
 @login_required
 def rooms(request):
+    profiles = get_user_model().objects.all()
     rooms = Room.objects.all()
+    profile_dict = dict()
 
-    return render(request, 'chats/rooms.html', {'rooms': rooms})
+    for profile in profiles:
+        id = str(profile.id)
+        name = profile.username
+        profile_dict[id] = name 
+    
+    print(profile_dict)
+    return render(request, 'chats/rooms.html', {'rooms': rooms, 'profile_dict': profile_dict})
+        
 
 @login_required
 def room(request, slug):
@@ -15,3 +26,21 @@ def room(request, slug):
     messages = Message.objects.filter(room=room)
 
     return render(request, 'chats/room.html', {'room': room, 'messages': messages})
+
+@login_required
+def create_chat(request, own_id, foreign_id):
+    first_id = str(own_id)
+    second_id = str(foreign_id)
+
+    slug1 = first_id + '_' + second_id
+    slug2 = second_id + '_' + first_id
+
+    if Room.objects.filter(slug=slug1):
+        print('Room already exists')
+        return redirect('rooms')
+    elif Room.objects.filter(slug=slug2):
+        print('Room already exists')
+        return redirect('rooms')
+    else:
+        Room.objects.create(name=first_id+'_'+second_id, slug=first_id+'_'+second_id)
+        return redirect('rooms')
