@@ -20,12 +20,12 @@ from django.contrib import messages # wird verwendet um meldungen durch die view
 # erstmal alle Templates zum createn, anzeigen und editieren von profiles der user
 class UserProfileListView(LoginRequiredMixin, ListView): 
     model = Profile
-    template_name = 'profile_list.html'
+    template_name = 'profile/profile_list.html'
 
 
 class UserProfileDetailView(LoginRequiredMixin, DetailView):
     model = Profile
-    template_name = "profile_detail.html"
+    template_name = "profile/profile_detail.html"
 
     #new 2023-11-28 friends anzeigen
     def get_context_data(self, **kwargs):
@@ -78,7 +78,7 @@ class UserProfileDetailView(LoginRequiredMixin, DetailView):
 
 class UserProfileCreateView(LoginRequiredMixin, CreateView):
     model = Profile
-    template_name = "profile_create.html"
+    template_name = "profile/profile_create.html"
     fields = ["bio", "interests"]   # erweitern wenn profile erweitert  # habe "user" entfernt weil es unten dfestgelegt wird in der def, damit ein user keinen ewinfluss drauf hat
     
     # diese funktion wird unter der haube immer nach der überprüfung, ob die form gültige daten enthält, aufgerufen, um die form in datenbank zu speichern .save()
@@ -100,7 +100,7 @@ class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
 
 class UserProfileDeleteView(LoginRequiredMixin, DeleteView):
     model = Profile
-    template_name = "profile_delete.html"
+    template_name = "profile/profile_delete.html"
     success_url = reverse_lazy("profile_list")
 
 
@@ -132,7 +132,7 @@ def profile(request):
         user_form = UpdateUserForm(instance=request.user)
         profile_form = UpdateProfileForm(instance=request.user.profile)
     
-    return render(request, 'profile_edit.html', {'user_form': user_form, 'profile_form': profile_form})
+    return render(request, 'profile/profile_edit.html', {'user_form': user_form, 'profile_form': profile_form})
     
 
 
@@ -158,7 +158,7 @@ def send_friend_request(request, to_user_id):    # das to_user_id kommt aus urls
 def friend_requests(request):
     incoming_requests = Friendship.objects.filter(to_user=request.user, accepted_at__isnull=True)
     outgoing_requests = Friendship.objects.filter(from_user=request.user, accepted_at__isnull=True)
-    return render(request, 'friend_requests.html', {'incoming_requests': incoming_requests, 'outgoing_requests': outgoing_requests})
+    return render(request, 'profile/friend_requests.html', {'incoming_requests': incoming_requests, 'outgoing_requests': outgoing_requests})
 
 
 @login_required
