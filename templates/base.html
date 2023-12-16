@@ -10,20 +10,45 @@
     <title>{% block title %}{% endblock %}Seeker</title>
 </head>
 <body>
-    <nav class="main-menu">
-        <a href="{% url 'home' %}">Home</a>
-        <a href="{% url 'profile_list' %}">Alle User</a>
-        {% if user.is_authenticated %}
-        <a href="{% url 'profile_edit' %}">Profil bearbeiten</a>
-        <a href="{% url 'profile_detail' pk=request.user.id %}">Mein Profil</a> 
-        <a href="{% url 'user_filter' %}">Seeeeeek</a> 
-        <a href="{% url 'rooms' %}">Chatrooms</a> 
-        <a href="{% url 'logout' %}">Logout</a>
-        {% else %}
-        <a href="{% url 'login' %}">Login</a>
-        <a href="{% url 'signup' %}">Registrieren</a>
-        {% endif %}
+    
+    <nav class="flex main-menu">
+        <div>
+            <a class="logo" href="{% url 'home' %}">Seeeker</a>
+        </div>
+
+        <div class="flex">
+            {% if user.is_authenticated %}
+                <a href="{% url 'profile_detail' pk=request.user.id %}">Mein Profil</a>
+                <a href="{% url 'logout' %}"><img class="logout-icon" src="/media/icons/logout.png" alt=""></a>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'signup' %}">Registrieren</a>
+            {% endif %}
+        </div>
+        <div id="burger-menu">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+        </div>
     </nav>
+
+    <div class="side-bar">
+        <nav class="flex">
+            {% if user.is_authenticated %}
+                <a href="{% url 'profile_detail' pk=request.user.id %}">Mein Profil</a>
+                <a href="{% url 'logout' %}">Logout</a>
+
+                <a href="{% url 'profile_list' %}">Alle User</a>
+                <a href="{% url 'profile_edit' %}">Profil bearbeiten</a>
+                <a href="{% url 'user_filter' %}">Seeeeeek</a> 
+                <a href="{% url 'rooms' %}">Chatrooms</a> 
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'signup' %}">Registrieren</a>
+            {% endif %}
+        </nav>
+    </div>
+    
 
     <div class="row">
         {% block content %}
@@ -33,6 +58,14 @@
 
     {% block scripts %}
     {% endblock scripts %}
+
+    <script>
+        var sideBar = document.querySelector('.side-bar');
+
+        document.getElementById('burger-menu').onclick = function(e){
+            sideBar.classList.toggle('slide');
+        }
+    </script>
 
 </body>
 </html>
