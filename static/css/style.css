@@ -1,10 +1,4 @@
 /* Color Theme Swatches in Hex */
-/* .Copy-of-Fossil-Vintage---Kovács-Pisti-1-hex { color: #CFCA4C; }
-.Copy-of-Fossil-Vintage---Kovács-Pisti-2-hex { color: #FCF5BF; }
-.Copy-of-Fossil-Vintage---Kovács-Pisti-3-hex { color: #9FE5C2; }
-.Copy-of-Fossil-Vintage---Kovács-Pisti-4-hex { color: #5EB299; }
-.Copy-of-Fossil-Vintage---Kovács-Pisti-5-hex { color: #745A33; } */
-
 .Copy-of-vintage-1-hex { color: #63A69F; }
 .Copy-of-vintage-2-hex { color: #F2EFDF; }
 .Copy-of-vintage-3-hex { color: #F2CA99; }
@@ -47,22 +41,30 @@ h1, h2, h3, h4{
     font-size: 1.6em;
     font-family: 'PoppinsRegular';
     background-color:#63A69F;
+    border-bottom:2px solid #40281A;
     height: 70px;
-    text-align: center;
-    text-align: end;
-    padding-top: 15px;
-    padding-right: 20px;
+    width: 100vw;
+    padding: 20px 100px;
+    justify-content: space-evenly;
+    align-items: center;
+    position: relative;
+    z-index: 2;
 }
 .main-menu a{
     color: #F2EFDF;
-    background-color:#40281A;
-    padding: 30px 20px 10px 20px;
-    border-radius: 10px;
-    margin-left: 5px;
+    margin-right: 20px;
 }
-.main-menu a:hover{
-    transition: ease-in-out 0.5s;
-    padding-bottom: 15px;
+.main-menu .logo{
+    color: #F2EFDF;
+    font-family: "PoppinsBold";
+}
+.main-menu .logout-icon{
+    width: 22px;
+    margin-top: 8px;
+}
+.main-menu .flex{
+    width: 60vw;
+    justify-content: end;
 }
 .row{
     margin-top: 50px;
@@ -155,10 +157,6 @@ h1, h2, h3, h4{
     background-color: #F28A2E;
     color: #40281A;
     width: 10%;
-}
-.chat-form-button:hover{
-    font-family: "PoppinsBold";
-    cursor: pointer;
 }
 .chat-form form{
     justify-content: space-between;
