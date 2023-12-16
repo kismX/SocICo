@@ -38,6 +38,10 @@ body{
     background-color: #F2EFDF;
     color: #40281A;
 }
+h1, h2, h3, h4{
+    font-family: "PoppinsBold";
+    margin-bottom: 30px;
+}
 
 .main-menu{
     font-size: 1.6em;
@@ -66,9 +70,24 @@ body{
     margin-left: auto;
     margin-right: auto;
 }
-h1{
+
+/* Alle Räume */
+
+.rooms-list{
+    background-color: #fff;
+    color: #40281A;
+    width: 100%;
+    padding: 10px 50px;
+    justify-content:space-between;
+    align-items: center;
+    flex-shrink: inherit;
+    margin-bottom: 10px;
+    border-radius: 10px 140px 10px 140px;
+}
+.rooms-list div{
     font-family: "PoppinsBold";
 }
+
 
 /* Chat */
 

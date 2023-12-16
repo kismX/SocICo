@@ -4,18 +4,16 @@
 
 {% block content %}
 
-{% for room in rooms %}
-    {% if request.user.id|stringformat:"i" in room.slug %} <!-- wir wandeln unsere id in einen string um, "i" heißt das unser ursprünglicher wert ein int ist-->
-        <div>
-            {% for key, value in profile_dict.items %}
-                {% if key in room.slug and request.user.id|stringformat:"i" != key %}
-                    <h2>Chat mit: {{ value }}</h2>
-                {% endif %}
-            {% endfor %}
-            <a href="{% url 'room' room.slug %}">Chat beitreten</a>
-        </div>
-        
-    {% endif %}
+<h2>Private Chats:</h2>
+{% for key, value in user_dict.items %}
+    <div class="flex rooms-list">
+                <div>
+                    {% for name in value %}
+                    <p>{{ name }}</p>
+                    {% endfor %}
+                </div>
+                <a class="chat-form-button" href="{% url 'room' key %}">Chat beitreten</a>
+    </div>
 {% endfor %}
 
 {% endblock content%}
