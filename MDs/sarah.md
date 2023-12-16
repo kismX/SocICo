@@ -1,2 +1,2 @@
 - name der personen im raum anzeigen
--
+- user id ü 10 macht probleme weil 1 zb doppelt
