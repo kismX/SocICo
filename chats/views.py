@@ -9,15 +9,27 @@ from .models import Room, Message
 def rooms(request):
     profiles = get_user_model().objects.all()
     rooms = Room.objects.all()
-    profile_dict = dict()
+    user_dict = dict()
+    new_list = []
 
-    for profile in profiles:
-        id = str(profile.id)
-        name = profile.username
-        profile_dict[id] = name 
+    for room in rooms:
+        split_slug = room.slug.split('_')
+        split_slug = [int(i) for i in split_slug]
+
+        for i in split_slug:
+            if i != request.user.id:
+                for profile in profiles:
+                    if i == profile.id:
+                        name = profile.username
+                new_list.append(name)
+
+        if request.user.id in split_slug:
+            user_dict[room.slug] = new_list
+
+        new_list = []
     
-    print(profile_dict)
-    return render(request, 'chats/rooms.html', {'rooms': rooms, 'profile_dict': profile_dict})
+    #print(user_dict)
+    return render(request, 'chats/rooms.html', {'user_dict': user_dict})
         
 
 @login_required
