@@ -66,9 +66,9 @@
     <ul>
         {% for freund in profil_freunde %}
             {% if profile.user.username != freund.from_user.username %}
-                <li><strong>{{ freund.from_user.username }}</strong> ...ist ein Freund des Users!</li>
+                <li><strong><a href="{% url 'profile_detail' pk=freund.from_user.id %}">{{ freund.from_user.username }}</a></strong> ...ist ein Freund des Users!</li>
             {% else %}
-                <li><strong>{{ freund.to_user.username }}</strong> ...ist ein Freund des Users!</li>
+                <li><strong><a href="{% url 'profile_detail' pk=freund.to_user.id %}">{{ freund.to_user.username }}</a></strong> ...ist ein Freund des Users!</li>
             {% endif %}
         {% endfor %}
     </ul>
@@ -82,9 +82,9 @@
     <ul>
         {% for freund in freunde %}
             {% if user.username != freund.from_user.username %}
-                <li><strong>{{ freund.from_user.username }}</strong> ...ist dein Freund!</li>
+                <li><strong><a href="{% url 'profile_detail' pk=freund.from_user.id %}">{{ freund.from_user.username }}</a></strong> ...ist dein Freund!</li>
             {% else %}
-                <li><strong>{{ freund.to_user.username }}</strong> ...ist dein Freund!</li>
+                <li><strong><a href="{% url 'profile_detail' pk=freund.to_user.id %}">{{ freund.to_user.username }}</a></strong> ...ist dein Freund!</li>
             {% endif %}
         {% endfor %}
 {% endif %}
