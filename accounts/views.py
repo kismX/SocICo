@@ -207,3 +207,19 @@ def remove_friend(request, profile_id):
 def update_activity_status(profile):
     profile.last_online = timezone.now()
     profile.save()
+
+
+#2023-12-16 - user nur für freude sichtbar
+def invisible_check(request):
+    user = request.user.id
+    profil = request.user.profile
+
+    #wennn im request.POST ein wert für 'invisible' enthalten ist (ckeckbox gehakt), dann führe aus:
+    if 'invisible' in request.POST:
+        profil.invisible = True
+    else:
+        profil.invisible = False
+
+    profil.save()
+    return redirect('profile_detail', pk=user)
+

@@ -2,7 +2,8 @@ from django.urls import path
 from .views import (
     UserProfileListView, UserProfileDetailView, SignUpView, 
     UserProfileCreateView, UserProfileUpdateView, UserProfileDeleteView,
-    friend_requests, send_friend_request, accept_reject_friend, profile, remove_friend
+    friend_requests, send_friend_request, accept_reject_friend, profile, remove_friend,
+    invisible_check,
     )
 
 urlpatterns = [
@@ -26,4 +27,6 @@ urlpatterns = [
 
     path('withdraw_friend_request/<int:profile_id>/', remove_friend, name='withdraw_friend_request'), 
     path('remove_friend/<int:profile_id>/', remove_friend, name='remove_friend'), 
+    path('profile/invisible/', invisible_check, name='invisible_check'),
+
 ]

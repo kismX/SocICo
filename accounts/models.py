@@ -25,6 +25,7 @@ class Profile(models.Model):
     avatar = models.ImageField(default='default.jpg', upload_to='profile_images')
     is_active = models.BooleanField(default=False)  # ist er geraed online oder offline - muss noch implementiert weden
     last_online = models.DateTimeField(blank=True, null=True)  # wann war user letztes mal online
+    invisible = models.BooleanField(default=False) # user invisible mode für nicht-freunde
 
     def __str__(self):
         return self.user.username
