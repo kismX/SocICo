@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Füge einen neuen Begriff hinzu</h1>
+<form method="post">
+    {% csrf_token %}
+    <div>
+        <label for="id_word">Wort:</label>
+        {{ form.word }}
+    </div>
+    <button type="submit">Speichern</button>
+</form>
+
+{% endblock %}

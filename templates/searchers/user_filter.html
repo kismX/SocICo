@@ -48,13 +48,30 @@
                 {% endfor %}
             </ul>
         {% else %}
-            <p>....Sorry, aber Du bist alleine auf diesem Planeten mit deinem Kram!</p>
+            {% if similar_interests %}
+                <p>Irgendwie nix zu finden, meinteste vielleicht:</p>
+                <ul>
+                    {% for similar_interest in similar_interests %}
+                        <li>
+                            <form action="{% url 'user_filter' %}" method="get">
+                                <input type="hidden" name="interests" value="{{ similar_interest }}">
+                                <button type="submit">{{ similar_interest }}</button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                    <form action="{% url 'user_filter' %}" method="get">
+                        <button type="submit">Nochmal neu starten</button>
+                    </form>
+                </ul>
+            {% else %}
+                <p>....Sorry, aber Du bist alleine auf diesem Planeten mit deinem Kram!</p>
+            {% endif %}
         {% endif %}
     {% else %}
         Noch nicht gesucht, mein Friend!
     {% endif %}
     
     <br>
-
+    <br>
   
 {% endblock %}

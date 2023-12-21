@@ -40,3 +40,14 @@ nachem ich nun vieles schon gemacht hatte, ab heute ale steps:
 12.12.23
 
 - template-ordner searchers etabliert. ausbesserungen, tippfehler (..)
+
+...
+
+21.12.23
+- erstellung eines models Terms in searchers-app , um modell zu haben, in welchem words gespeichert werden, die mit einem algorithmus verglichen werden können mit user-sucheinbgaben, um suchvorschläge zu liefern usw. 
+    - weiter hat es auch schon ein feld synonyme für die folgende synonym-implementierung
+    - und ein Category-Field für verknüfung der wörter mit kategorien
+- weiter ein model für kategorien, welches in abhängigkeit zum Term model ist, um später wortkategorien gründen zu können
+- installieren von fuzzywuzzy (wörter vergleichen, score machen usw)
+- view, urls, forms.py, templates erstellt, die neue wörter aufnimmt oder löscht in liste
+- seeek im View "user_filter"  um ähnliche wortvorschläge bei tippfehlern und nicht gefundenen usern erweitert
