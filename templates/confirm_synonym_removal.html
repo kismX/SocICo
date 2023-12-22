@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Synonym entfernen</h2>
+<p>Möchten Sie das Synonym "{{ synonym.word }}" wirklich vom Begriff "{{ term.word }}" entfernen?</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Synonym entfernen</button>
+</form>
+
+<a href="{% url 'terms_list' %}">Abbrechen</a>
+
+{% endblock %}

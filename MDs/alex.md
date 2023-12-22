@@ -49,5 +49,10 @@ nachem ich nun vieles schon gemacht hatte, ab heute ale steps:
     - und ein Category-Field für verknüfung der wörter mit kategorien
 - weiter ein model für kategorien, welches in abhängigkeit zum Term model ist, um später wortkategorien gründen zu können
 - installieren von fuzzywuzzy (wörter vergleichen, score machen usw)
+- requirements erweitert
 - view, urls, forms.py, templates erstellt, die neue wörter aufnimmt oder löscht in liste
 - seeek im View "user_filter"  um ähnliche wortvorschläge bei tippfehlern und nicht gefundenen usern erweitert
+
+2023-12-22
+- Wörterbuch liste aus term_list bei add_terms integriert, dadurch Templet gespart
+- Wörter werden nun seiten weise mit 10 begriffen pro page angezeigt

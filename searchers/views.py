@@ -8,6 +8,7 @@ from datetime import timedelta
 from fuzzywuzzy import process, fuzz # library zum vergleich von wörtern
 from .forms import TermsForm, CategoryForm
 from .models import Terms
+from django.core.paginator import Paginator #für seiten für wortliste
 
 def user_filter(request):
     # holen uns erstmal alle user, die wir später dann filtern je nach kategorie
@@ -83,19 +84,31 @@ def user_filter(request):
 
 
 # Viewsfür Wörter-Ähnlichkeits-Implementierung und für die später zu implementierende Synonym-Verwaltung
-from django.shortcuts import render, redirect
-from .forms import TermsForm
-
 def add_terms(request):
+    # ich hol mir alle terms geordnet nach umgekehrter id:
+    terms_list = Terms.objects.order_by('-id')
+
+    # ich lasse mir mit paginator 10 terms pro seite anzeigen
+    paginator = Paginator(terms_list, 10)
+    page_num = request.GET.get('page')
+    terms = paginator.get_page(page_num)
+
+
     if request.method == 'POST':
         form = TermsForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('terms_list')
+            return redirect('add_terms')
     else:
         form = TermsForm()
     
-    return render(request, 'searchers/add_terms.html', {'form': form})
+    # mache contextvariable, weil evtl immer mehr dicts kommen
+    context = {
+        'form': form,
+        'terms': terms,
+    }
+
+    return render(request, 'searchers/add_terms.html', context)
 
 
 def remove_terms(request, term_id):
