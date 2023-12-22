@@ -116,12 +116,6 @@ def remove_terms(request, term_id):
 
     if request.method == "POST":
         term.delete()
-        return redirect('terms_list')
+        return redirect('add_terms')
 
     return render(request, 'searchers/confirm_remove_term.html', {'term': term})
-
-
-def terms_list_view(request):
-    # terms = Terms.objects.all()
-    terms = Terms.objects.order_by('-id')[:20]  # letzte 20 begriffe anzeigen
-    return render(request, 'searchers/terms_list.html', {'terms': terms})
