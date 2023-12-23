@@ -35,10 +35,3 @@ def create_event(request):
 def newsfeed(request):
     posts = Post.objects.all().order_by('-created_at')
     return render(request, 'home.html', {'posts': posts})
-
-
-# noch hier, kommt aber in eine separate basis-app für das projekt
-def home(request):
-    posts = Post.objects.all().order_by('-created_at')
-    return render(request, 'home.html', {'posts': posts})
-

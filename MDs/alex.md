@@ -65,3 +65,6 @@ nachem ich nun vieles schon gemacht hatte, ab heute ale steps:
 - ein model für events erstennen (titel, beschreibung foto des events usw)
 - Views erstellt in Profile_detail um Timeline (mal so genannt) mit eigenen posts auf dem profil sichtbar zu machen
 - eine view "home" erstellt, die es biher nicht gab, auf die newsfeed aller user eingehen (sollte noch angepasst werden auf user, die freunde sind, oder denen man folgt oder so)
+
+- eine app "basics" erstellt, um grundlegende dinge hier getrennt von spezifischen apps zu haben.
+- view für "home" nun in basics.views integriert, da es hier zentral liegt und nicht versteckt in zb posts.views
