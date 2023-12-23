@@ -3,6 +3,7 @@ from django.views.generic import ListView, DeleteView, CreateView, DetailView, U
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from .forms import CustomUserCreationForm, UpdateUserForm, UpdateProfileForm
+from posts.models import Post # für post anzeigen des users auf profile_detail
 
 #password change
 from django.contrib.auth.views import PasswordChangeView
@@ -53,6 +54,11 @@ class UserProfileDetailView(LoginRequiredMixin, DetailView):
         else:
             freund_seit = None
 
+
+        # timeline aus postings auf der profilseite anzeigen
+        profile_user_posts = Post.objects.filter(user=profil_user.pk).order_by('-created_at')  # post-obj des profilusers
+        user_posts = Post.objects.filter(user=user).order_by('-created_at') # post-obj des request-users
+
         ##### nun fügen wir dem context hinzu  ####
 
         # für eingeloggten user
@@ -72,6 +78,10 @@ class UserProfileDetailView(LoginRequiredMixin, DetailView):
         # für profil-user:
         context['profil_freunde'] = profil_freunde
         context['num_profil_freunde'] = profil_freunde.count()
+
+        # posts des users auf profil
+        context['user_posts'] = user_posts
+        context['profile_user_posts'] = profile_user_posts
 
         return context
 

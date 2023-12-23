@@ -56,3 +56,12 @@ nachem ich nun vieles schon gemacht hatte, ab heute ale steps:
 2023-12-22
 - Wörterbuch liste aus term_list bei add_terms integriert, dadurch Templet gespart
 - Wörter werden nun seiten weise mit 10 begriffen pro page angezeigt
+
+2023-12-23
+- app "posts" integriert
+- (die dinge hier sind nicht all zu kompliziert, da nur models erstellt wurden, die infos posten, wie wir es im kurs auch gemacht haben)
+
+- ein model für posts (dass man text, bild, link und event -mit foreign key auf Event-Modell- für event-objekte posten) posten kann
+- ein model für events erstennen (titel, beschreibung foto des events usw)
+- Views erstellt in Profile_detail um Timeline (mal so genannt) mit eigenen posts auf dem profil sichtbar zu machen
+- eine view "home" erstellt, die es biher nicht gab, auf die newsfeed aller user eingehen (sollte noch angepasst werden auf user, die freunde sind, oder denen man folgt oder so)

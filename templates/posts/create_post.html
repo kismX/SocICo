@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h3> Teil deinen Kram </h3>
+<p><em> (bislang noch an dieser Stelle, kommt aber auf home und profilesite)</em> </p><br>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Posten</button>
+</form>
+
+
+{% endblock %}

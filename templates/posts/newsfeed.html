@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<h2>Newsfeed</h2>
+{% for post in posts %}
+    <div>
+        <p><strong><a href="{% url 'profile_detail' pk=post.user.id %}">{{ post.user.username }}</a></strong> <em> teilte am <strong>{{ post.created_at|date:"d.m.Y H:i" }}</strong>:</em></p>
+        <hr>
+        {% if post.image %}<img src="{{ post.image.url }}" alt="Post image">{% endif %}
+        {% if post.text %}<p>{{ post.text }}</p>{% endif %}
+        {% if post.link %}<a href="{{ post.link }}">Link</a>{% endif %}
+        {% if post.event %}<p>Veranstaltung: {{ post.event.title }}</p>{% endif %}
+        <br> <br>
+    </div>
+{% endfor %}
+
+
+{% endblock %}

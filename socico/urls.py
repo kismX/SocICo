@@ -19,15 +19,18 @@ from django.urls import path, include
 from django.views.generic.base import TemplateView
 from django.conf.urls.static import static
 from socico import settings
+from posts.views import home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),  
-    path('accounts/', include('accounts.urls')),                    # 'accounts/'  path anstatt "" hinzugefügt
+    #path('', TemplateView.as_view(template_name='home.html'), name='home'),  
+    path('', home, name='home'),
+    path('accounts/', include('accounts.urls')),             
     path('accounts/', include('django.contrib.auth.urls')),         
     path('rooms/', include('chats.urls')),         
-    path('searchers/', include('searchers.urls')),  #new
+    path('searchers/', include('searchers.urls')),
+    path('posts/', include('posts.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
