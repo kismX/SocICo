@@ -35,7 +35,7 @@
             </div>
         {% endfor %}
     {% else %}
-        <p> ok... bisher hat noch keiner was geteilt, sei der erste: </p>
+        <p> ok... bisher hat noch keiner was geteilt, sei der erste: {% url 'create_post' %}</p>
     {% endif %}
 
 {% else %}

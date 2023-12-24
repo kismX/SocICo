@@ -6,7 +6,7 @@
     {% csrf_token %}
     <p>Sicher, dass du diesen Post löschen willst: "{{ post.text }}"?</p>
     <button type="submit">Löschen</button>
-    <a href="{% url 'newsfeed' %}">Abbrechen</a>
+    <a href="{% url 'profile_detail' pk=request.user.id %}">Abbrechen</a>
 </form>
 
 
