@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from .forms import CustomUserCreationForm, UpdateUserForm, UpdateProfileForm
 from posts.models import Post # für post anzeigen des users auf profile_detail
+from posts.forms import PostForm
 
 #password change
 from django.contrib.auth.views import PasswordChangeView
@@ -59,6 +60,8 @@ class UserProfileDetailView(LoginRequiredMixin, DetailView):
         profile_user_posts = Post.objects.filter(user=profil_user.pk).order_by('-created_at')  # post-obj des profilusers
         user_posts = Post.objects.filter(user=user).order_by('-created_at') # post-obj des request-users
 
+
+
         ##### nun fügen wir dem context hinzu  ####
 
         # für eingeloggten user
@@ -83,6 +86,10 @@ class UserProfileDetailView(LoginRequiredMixin, DetailView):
         context['user_posts'] = user_posts
         context['profile_user_posts'] = profile_user_posts
 
+        # wenn benutzer auf seinem eigenen profil, dann kann er posten:
+        #if user == profil_user:
+        context['post_form'] = PostForm()
+        
         return context
 
 

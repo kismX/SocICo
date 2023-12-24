@@ -6,30 +6,23 @@
 
 
 {% if user.is_authenticated %}
-<br>
-Hi {{ user.username }}
-<a href="{% url 'logout' %}">Logout</a>
-<br>
-<a href="{% url 'profile_edit' %}">Bearbeite dein Profil</a>
-{% else %}
-<p>Bitte log Dich ein!</p>
-<a href="{% url 'login' %}">Login</a>
-<a href="{% url 'signup' %}">Registrieren</a>
+    <br>
+    Hi {{ user.username }}
+    <a href="{% url 'logout' %}">Logout</a>
+    <br>
+    <a href="{% url 'profile_edit' %}">Bearbeite dein Profil</a>
 
-{% endif %}
-<br>
-<br>
-<a href="{% url 'profile_list' %}"> >>> ZU DEN PROFILEN</a><br><br>
+    <br>
+    <br>
+    <a href="{% url 'profile_list' %}"> >>> ZU DEN PROFILEN</a><br><br>
 
-
-<p> -------------------- </p>
-<br> <br>
-<h2>NEWSFEED</h2>
-<em>Was user gepostet haben (wird angepasst auf nur posts von freunden):</em>
-<br>
-<br>
+    <p> --------------------------- </p>
+    <br> <br>
+    <h2>NEWSFEED</h2>
+    <em>Was user gepostet haben (wird angepasst auf nur posts von freunden):</em>
+    <br>
+    <br>
     {% for post in posts %}
-
         <div>
             <p><strong><a href="{% url 'profile_detail' pk=post.user.id %}">{{ post.user.username }}</a></strong> <em> teilte am <strong>{{ post.created_at|date:"d.m.Y H:i" }}</strong>:</em></p>
             <hr>
@@ -42,6 +35,11 @@ Hi {{ user.username }}
     {% endfor %}
 
 
-
+{% else %}
+    <p>Bitte log Dich ein!</p>
+    <a href="{% url 'login' %}">Login</a>
+    <a href="{% url 'signup' %}">Registrieren</a>
+{% endif %}
+    
 
 {% endblock %}

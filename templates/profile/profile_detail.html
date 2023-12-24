@@ -146,12 +146,49 @@
 
     <h2>Timeline</h2>
 
-    <p><strong> Teilen macht Spaß! </strong></p>
-    <a href="{% url 'create_post' %}">Hier entlang zum Posten!</a><br><br><br>
-    <p><em> Hier siehst du deine Posts: </em></p><br>
-    {% if profile_user_posts %}
+    {% if request.user == profile.user %}
+        <p><strong> Teilen macht Spaß! </strong></p>
 
-        {% for post in profile_user_posts %}
+        <div>
+            <p><em>Erstelle einen Post</em></p>
+            <form method="post" enctype="multipart/form-data" action="{% url 'create_post' %}">
+                {% csrf_token %}
+                {{ post_form.as_p }}
+                <button type="submit">Posten</button>
+            </form>
+        </div>
+        <bt><br><br>
+
+
+
+    
+        {% if profile_user_posts %}
+            <p><strong> Hier siehst du deine Posts: </strong></p><br>
+
+            {% for post in profile_user_posts %}
+                <div>
+                    <p><strong><a href="{% url 'profile_detail' pk=post.user.id %}">{{ post.user.username }}</a></strong> <em> teilte am <strong>{{ post.created_at|date:"d.m.Y H:i" }}</strong>:</em></p>
+                    {% if post.image %}<img src="{{ post.image.url }}" alt="Post image">{% endif %}<br>
+                    {% if post.text %}<p>{{ post.text }}</p>{% endif %}
+                    {% if post.link %}<a href="{{ post.link }}">Link</a>{% endif %}
+                    {% if post.event %}<p>Veranstaltung: {{ post.event.title }}</p>{% endif %}
+
+                    {% if request.user == post.user %}
+                        <a href="{% url 'edit_post' post.id %}">Bearbeiten</a>
+                        <a href="{% url 'delete_post' post.id %}">Löschen</a>
+                    {% endif %}
+                    <br> <br>
+                </div>
+            {% endfor %}
+        {% else %}
+                <div>
+                    Du hast ja noch gar nichts geteilt ?!? - <a href="{% url 'create_post' %}">Jetzt nachholen!</a><br><br><br>
+        {% endif %}
+    
+    {% else %}
+        {% if profile_user_posts %}
+            <p><strong>Hier siehst du {{ profile.user.username }}'s Posts:</strong> </p><br>
+            {% for post in profile_user_posts %}
             <div>
                 <p><strong><a href="{% url 'profile_detail' pk=post.user.id %}">{{ post.user.username }}</a></strong> <em> teilte am <strong>{{ post.created_at|date:"d.m.Y H:i" }}</strong>:</em></p>
                 <hr>
@@ -160,18 +197,17 @@
                 {% if post.link %}<a href="{{ post.link }}">Link</a>{% endif %}
                 {% if post.event %}<p>Veranstaltung: {{ post.event.title }}</p>{% endif %}
 
-                {% if request.user == post.user %}
-                    <a href="{% url 'edit_post' post.id %}">Bearbeiten</a>
-                    <a href="{% url 'delete_post' post.id %}">Löschen</a>
-                {% endif %}
                 <br> <br>
             </div>
-        {% endfor %}
-    {% else %}
+            {% endfor %}
+        
+        {% else %}
             <div>
-                Du hast ja noch gar nichts geteilt ?!? - <a href="{% url 'create_post' %}">Jetzt nachholen!</a><br><br><br>
+                {{ profile.user.username }} hat offenbar nix zu teilen!!
+            </div>
+        {% endif %}
+        
     {% endif %}
-
 
 {% endif %}
 
