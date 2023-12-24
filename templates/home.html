@@ -28,7 +28,7 @@
             <hr>
             {% if post.image %}<img src="{{ post.image.url }}" alt="Post image">{% endif %}
             {% if post.text %}<p>{{ post.text }}</p>{% endif %}
-            {% if post.link %}<a href="{{ post.link }}">Link</a>{% endif %}
+            {% if post.link %}...KLick: <a href="{{ post.link }}">{{ post.domain }}</a>{% endif %}
             {% if post.event %}<p>Veranstaltung: {{ post.event.title }}</p>{% endif %}
             <br> <br>
         </div>

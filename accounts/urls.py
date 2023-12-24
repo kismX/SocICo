@@ -1,14 +1,12 @@
 from django.urls import path
 from .views import (
-    UserProfileListView, UserProfileDetailView, SignUpView, 
+    UserProfileListView, UserProfileDetailView, 
     UserProfileCreateView, UserProfileUpdateView, UserProfileDeleteView,
-    friend_requests, send_friend_request, accept_reject_friend, profile, remove_friend,
-    invisible_check,
+    friend_requests, send_friend_request, accept_reject_friend, profile, 
+    remove_friend, invisible_check,
     )
 
-urlpatterns = [
-    path('signup/', SignUpView.as_view(), name='signup'),
-    
+urlpatterns = [    
     path('profiles/', UserProfileListView.as_view(), name='profile_list'),
     path('profiles/<int:pk>', UserProfileDetailView.as_view(), name='profile_detail'),
     path("profiles/create", UserProfileCreateView.as_view(), name='profile_create'),

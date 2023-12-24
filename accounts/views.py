@@ -1,21 +1,17 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import ListView, DeleteView, CreateView, DetailView, UpdateView, TemplateView
+from django.shortcuts import render, redirect
+from django.views.generic import ListView, DeleteView, CreateView, DetailView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from .forms import CustomUserCreationForm, UpdateUserForm, UpdateProfileForm
+from .forms import UpdateUserForm, UpdateProfileForm
 from posts.models import Post # für post anzeigen des users auf profile_detail
 from posts.forms import PostForm
-
-#password change
-from django.contrib.auth.views import PasswordChangeView
-from django.contrib.messages.views import SuccessMessageMixin
+from basics.utils import get_domain
 
 # 2023-11-22 hinzugefügt für user adden requests etc
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from .models import Profile, Friendship
 from django.utils import timezone # für friend connecten
-from datetime import datetime, timedelta # für dauer einer bestehenden freundschaft zb
 from django.contrib import messages # wird verwendet um meldungen durch die views oder auch verarbeitung an den user zu schicken
 
 
@@ -34,16 +30,13 @@ class UserProfileDetailView(LoginRequiredMixin, DetailView):
         # wir rufen die super()geordnete funktion auf, und speichern sie in context, um dann den standard-context zu erweitern
         context = super().get_context_data(**kwargs)
 
-
         #Freunde des eingeloggten users:
-        # wir extrahieren den eigeloggten user, der den request gesendet hat 
         user = self.request.user
-        # wir filtern uns die freunde des eingeloggten users aus Friendship objekten (wo accepted_at einen value hat)
         freunde = Friendship.objects.filter(from_user=user, accepted_at__isnull=False) | Friendship.objects.filter(to_user=user, accepted_at__isnull=False)
+        
         # offene Freundesanfrage logged in user
         freunde_ausgehend = Friendship.objects.filter(from_user=user, accepted_at__isnull=True)
         freunde_eingehend = Friendship.objects.filter(to_user=user, accepted_at__isnull=True)
-
 
         # freunde des Users, auf dessen Profil man sich befindet
         profil_user = self.object  # hole mir das aktuelle Profile-object
@@ -55,11 +48,16 @@ class UserProfileDetailView(LoginRequiredMixin, DetailView):
         else:
             freund_seit = None
 
-
         # timeline aus postings auf der profilseite anzeigen
         profile_user_posts = Post.objects.filter(user=profil_user.pk).order_by('-created_at')  # post-obj des profilusers
         user_posts = Post.objects.filter(user=user).order_by('-created_at') # post-obj des request-users
-
+        
+        # wenn in einem objekt ein link ist, hole über get_domain die URL 
+        # und füge sie in einem neuen attribut .domain dem post.objekt hinzu
+        # wodurch post.domain im template abrufbar wird
+        for post in profile_user_posts:
+            if post.link:
+                post.domain = get_domain(post.link)
 
 
         ##### nun fügen wir dem context hinzu  ####
@@ -121,19 +119,6 @@ class UserProfileDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy("profile_list")
 
 
-
-# hier ein signup 
-class SignUpView(CreateView):
-    form_class = CustomUserCreationForm
-    success_url = reverse_lazy('login')
-    template_name = 'registration/signup.html'
-
-
-class ChangePasswordView(SuccessMessageMixin, PasswordChangeView):
-    template_name = 'change_password.html'
-    success_message = 'Successfully Changed Your Password'
-    success_url = reverse_lazy('profile_detail')
-
 @login_required
 def profile(request):
     if request.method == 'POST':
@@ -152,9 +137,6 @@ def profile(request):
     return render(request, 'profile/profile_edit.html', {'user_form': user_form, 'profile_form': profile_form})
     
 
-
-
-#2023-11-22
 @login_required
 def send_friend_request(request, to_user_id):    # das to_user_id kommt aus urls.py hier rein
     to_user = get_user_model().objects.get(id=to_user_id)
@@ -220,7 +202,7 @@ def remove_friend(request, profile_id):
         except Friendship.DoesNotExist:
             return redirect('profile_detail', pk=profile_id)
     
-#2023-12-08
+
 def update_activity_status(profile):
     profile.last_online = timezone.now()
     profile.save()

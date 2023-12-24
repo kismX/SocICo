@@ -46,8 +46,6 @@ class Profile(models.Model):
 # es hat den 'from_user', von dem die anfrage ausgeht und 'to_user' an den die anfrage geht
 # wann  die verbindung erstellt wurde geht automatisch: 'createtd_at' und wenn request angenommen, wird das leere 'acceptet_at' mit zeitpunkt ausgefüllt
 class Friendship(models.Model):
-    # diese status in STATUS_CHOICES werden unten im neuen feld "status" benutzt, 
-    # um userbeziehungen besser zu verwalten, das vereinfacht logik und übersichtlichkeit:
     STATUS_CHOICES = (
         ('pending', 'Ausstehend'),
         ('accepted', 'Akzeptiert'),

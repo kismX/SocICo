@@ -75,3 +75,6 @@ nachem ich nun vieles schon gemacht hatte, ab heute ale steps:
 - auf der home-seite wird nun alles korrekt angezeigt
 - die css habe ich bei .main-menu{position: fixed; top: 0;} die position fixed anstatt flexible gemacht, weil die sidebar sichtbar wurde beim scrollen und weil es fixed hochwertiger wirkt, dazu musste ich top: 0 hinzufügen, um die nav ganz oben an die page zu bringen.
 - weiter musste ich dann bei .row{margin-top: 150px;} von 50 auf 150px erhöhen, da die fixierte .row sonst teile des bodys überschttete. 
+
+- etwas codew gesäubert an verschiedenen stellen, dinge gelöscht, die niocht gebraucht wurden
+- bei geposteten links werden jetzt die domainnamen angezeigt anstatt lediglich ein verlinkter string "Link" 

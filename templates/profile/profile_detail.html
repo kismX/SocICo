@@ -26,12 +26,7 @@
 
         {% endif %}
 
-    {% else %}
-        <strong>{{ profile.user.username }}</strong> ist seit <strong>{{ freund_seit|date:"d.m.Y" }}</strong> dein Freund! <br>
-        ....keine Lust auf die Freundschaft? <a href="{% url 'remove_friend' profile_id=profile.id %}">Freundschaft Beenden</a> 
     {% endif %}
-
-
 
 
 {% else %}
@@ -90,9 +85,6 @@
         </form>
     {% endif %}
 
-
-
-
     <br><br><br>
 
 
@@ -113,8 +105,6 @@
             {% endfor %}
         </ul>
 
-
-
     {% else %}
         <h3>Meine Freunde</h3>
             Du hast hier derzeit <strong>{{ num_freunde }}</strong> Freunde:
@@ -130,14 +120,10 @@
     {% endif %}
     </ul>
 
-
-
-
-
-
-
     <br>
     <div><a href="{% url 'friend_requests' %}"> >>> Zu den EIGENEN Friendrequests >>> </a></div>
+
+
 
 
     <p>--------------------------------------------------</p>
@@ -159,8 +145,6 @@
         </div>
         <bt><br><br>
 
-
-
     
         {% if profile_user_posts %}
             <p><strong> Hier siehst du deine Posts: </strong></p><br>
@@ -170,7 +154,7 @@
                     <p><strong><a href="{% url 'profile_detail' pk=post.user.id %}">{{ post.user.username }}</a></strong> <em> teilte am <strong>{{ post.created_at|date:"d.m.Y H:i" }}</strong>:</em></p>
                     {% if post.image %}<img src="{{ post.image.url }}" alt="Post image">{% endif %}<br>
                     {% if post.text %}<p>{{ post.text }}</p>{% endif %}
-                    {% if post.link %}<a href="{{ post.link }}">Link</a>{% endif %}
+                    {% if post.link %}...Klick: <a href="{{ post.link }}">{{ post.domain }}</a>{% endif %}<br>
                     {% if post.event %}<p>Veranstaltung: {{ post.event.title }}</p>{% endif %}
 
                     {% if request.user == post.user %}
@@ -185,6 +169,7 @@
                     Du hast ja noch gar nichts geteilt ?!? - <a href="{% url 'create_post' %}">Jetzt nachholen!</a><br><br><br>
         {% endif %}
     
+
     {% else %}
         {% if profile_user_posts %}
             <p><strong>Hier siehst du {{ profile.user.username }}'s Posts:</strong> </p><br>
@@ -194,7 +179,7 @@
                 <hr>
                 {% if post.image %}<img src="{{ post.image.url }}" alt="Post image">{% endif %}
                 {% if post.text %}<p>{{ post.text }}</p>{% endif %}
-                {% if post.link %}<a href="{{ post.link }}">Link</a>{% endif %}
+                {% if post.link %}...Klick: <a href="{{ post.link }}">{{ post.domain }}</a>{% endif %}
                 {% if post.event %}<p>Veranstaltung: {{ post.event.title }}</p>{% endif %}
 
                 <br> <br>
