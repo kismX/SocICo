@@ -22,18 +22,21 @@
     <em>Was user gepostet haben (wird angepasst auf nur posts von freunden):</em>
     <br>
     <br>
-    {% for post in posts %}
-        <div>
-            <p><strong><a href="{% url 'profile_detail' pk=post.user.id %}">{{ post.user.username }}</a></strong> <em> teilte am <strong>{{ post.created_at|date:"d.m.Y H:i" }}</strong>:</em></p>
-            <hr>
-            {% if post.image %}<img src="{{ post.image.url }}" alt="Post image">{% endif %}
-            {% if post.text %}<p>{{ post.text }}</p>{% endif %}
-            {% if post.link %}...KLick: <a href="{{ post.link }}">{{ post.domain }}</a>{% endif %}
-            {% if post.event %}<p>Veranstaltung: {{ post.event.title }}</p>{% endif %}
-            <br> <br>
-        </div>
-    {% endfor %}
-
+    {% if posts %}
+        {% for post in posts %}
+            <div>
+                <p><strong><a href="{% url 'profile_detail' pk=post.user.id %}">{{ post.user.username }}</a></strong> <em> teilte am <strong>{{ post.created_at|date:"d.m.Y H:i" }}</strong>:</em></p>
+                <hr>
+                {% if post.image %}<img src="{{ post.image.url }}" alt="Post image">{% endif %}
+                {% if post.text %}<p>{{ post.text }}</p>{% endif %}
+                {% if post.link %}...KLick: <a href="{{ post.link }}">{{ post.domain }}</a>{% endif %}
+                {% if post.event %}<p>Veranstaltung: {{ post.event.title }}</p>{% endif %}
+                <br> <br>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p> ok... bisher hat noch keiner was geteilt, sei der erste: </p>
+    {% endif %}
 
 {% else %}
     <p>Bitte log Dich ein!</p>
