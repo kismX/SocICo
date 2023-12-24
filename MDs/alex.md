@@ -68,3 +68,10 @@ nachem ich nun vieles schon gemacht hatte, ab heute ale steps:
 
 - eine app "basics" erstellt, um grundlegende dinge hier getrennt von spezifischen apps zu haben.
 - view für "home" nun in basics.views integriert, da es hier zentral liegt und nicht versteckt in zb posts.views
+
+2023-12-24
+- eigeneposts werden sind nun auf dem userprofil editier- und löschbar.
+- weiter kann man nun auf der profilseite auch in einer Form posten anstatt auf einem sepataten create_post template, was komfortabler ist
+- auf der home-seite wird nun alles korrekt angezeigt
+- die css habe ich bei .main-menu{position: fixed; top: 0;} die position fixed anstatt flexible gemacht, weil die sidebar sichtbar wurde beim scrollen und weil es fixed hochwertiger wirkt, dazu musste ich top: 0 hinzufügen, um die nav ganz oben an die page zu bringen.
+- weiter musste ich dann bei .row{margin-top: 150px;} von 50 auf 150px erhöhen, da die fixierte .row sonst teile des bodys überschttete. 
