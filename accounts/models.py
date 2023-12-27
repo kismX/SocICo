@@ -44,9 +44,6 @@ class Profile(models.Model):
         #     img.thumbnail(new_img)
         #     img.save(self.avatar.path)
 
-        
-
-
 
 # neues model das eine Friednship darstellt
 # es hat den 'from_user', von dem die anfrage ausgeht und 'to_user' an den die anfrage geht
