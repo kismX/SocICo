@@ -1,9 +1,14 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.utils import timezone
 from datetime import timedelta
 
+# für Terms-Model
+from fuzzywuzzy import process, fuzz # library zum vergleich von wörtern
+from .forms import TermsForm, CategoryForm
+from .models import Terms
+from django.core.paginator import Paginator #für seiten für wortliste
 
 def user_filter(request):
     # holen uns erstmal alle user, die wir später dann filtern je nach kategorie
@@ -25,12 +30,29 @@ def user_filter(request):
     last_online_cut = request.GET.get('last_online_cut', '')
 
 
-    # user wählt contains oder exact, dann gehen wir liste der interessen durhc und wenn enthalten, wird ausgegeben
+    # wir gehen liste der interessen durhc und wenn enthalten, wird ausgegeben
     # auf dauer kann datenmenge komplex sein.. dann evtl Q-abfrage implementieren
     if interests:
         for interest in interest_list:
                 users = users.filter(profile__interests__icontains=interest) #speichern nur die leute in 'users' ab, die passende interessen haben
+    
+    # wenn kein user gefunden, dann ähnliches wort anzeigen
+    similar_interests = [] 
+    min_score_threshold = 70
+    
+    if interests and not users.exists():
+        terms_list = Terms.objects.values_list('word', flat=True) # values_list gibt mir nur value (das wort) aus, kein objekt; flat sagt, dass es eine liste aus strings ist .. keine tuple oder sonst was
+        for interest in interest_list:
+            # Finde ähnliche Interessen, wenn keine User gefunden wurde
+            similar_terms = process.extract(interest, terms_list, limit=10, scorer=fuzz.token_set_ratio) # default scorer wäre Wratio, der umfassender ist und genauer bei spelling fehlern, aber länger dauern kann. zum tewst scorer einfach auskommentieren oder =Wratio
+            for similar_term, score in similar_terms:
+                if score >= min_score_threshold:
+                    similar_interests.append(similar_term)
+    # wenn der suchbegriff in similar_intersts ist und aber keinen user finde, dann lösche ihn
+    if interests in similar_interests and not users.exists():
+        similar_interests.remove(interests)
 
+    # weitere suchkriterien - age, gender, location...:
     if age:
         users = users.filter(profile__age=age)
     
@@ -53,10 +75,47 @@ def user_filter(request):
         users = users.filter(profile__last_online__gte=last_online_delta) # alle user die ab dem zeitpunkt bis heut online waren werden aufgelistet
     
 
-    context = {'users': users, 'interests': interests, 'interest_list': interest_list, 
+    context = {'users': users, 'interests': interests, 'interest_list': interest_list, 'similar_interests': similar_interests,
                'age': age, 'min_age': min_age, 'max_age': max_age, 'gender': gender, 
                'location': location, 'last_online': last_online}
     
     return render(request, 'searchers/user_filter.html', context)
 
 
+
+# Viewsfür Wörter-Ähnlichkeits-Implementierung und für die später zu implementierende Synonym-Verwaltung
+def add_terms(request):
+    # ich hol mir alle terms geordnet nach umgekehrter id:
+    terms_list = Terms.objects.order_by('-id')
+
+    # ich lasse mir mit paginator 10 terms pro seite anzeigen
+    paginator = Paginator(terms_list, 10)
+    page_num = request.GET.get('page')
+    terms = paginator.get_page(page_num)
+
+
+    if request.method == 'POST':
+        form = TermsForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('add_terms')
+    else:
+        form = TermsForm()
+    
+    # mache contextvariable, weil evtl immer mehr dicts kommen
+    context = {
+        'form': form,
+        'terms': terms,
+    }
+
+    return render(request, 'searchers/add_terms.html', context)
+
+
+def remove_terms(request, term_id):
+    term = get_object_or_404(Terms, id=term_id)
+
+    if request.method == "POST":
+        term.delete()
+        return redirect('add_terms')
+
+    return render(request, 'searchers/confirm_remove_term.html', {'term': term})

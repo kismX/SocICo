@@ -38,10 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'basics',
     'channels',
     'accounts',
     'chats',
     'searchers',
+    'posts',
 ]
 
 MIDDLEWARE = [
@@ -148,7 +150,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
-LOGIN_REDIRECT_URL = 'profile_list'            # vorher 'home'
+LOGIN_REDIRECT_URL = 'home'            # vorher 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
 ### set up for storing images:

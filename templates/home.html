@@ -6,20 +6,43 @@
 
 
 {% if user.is_authenticated %}
-<br>
-Hi {{ user.username }}
-<a href="{% url 'logout' %}">Logout</a>
-<br>
-<a href="{% url 'profile_edit' %}">Bearbeite dein Profil</a>
-{% else %}
-<p>Bitte log Dich ein!</p>
-<a href="{% url 'login' %}">Login</a>
-<a href="{% url 'signup' %}">Registrieren</a>
+    <br>
+    Hi {{ user.username }}
+    <a href="{% url 'logout' %}">Logout</a>
+    <br>
+    <a href="{% url 'profile_edit' %}">Bearbeite dein Profil</a>
 
+    <br>
+    <br>
+    <a href="{% url 'profile_list' %}"> >>> ZU DEN PROFILEN</a><br><br>
+
+    <p> --------------------------- </p>
+    <br> <br>
+    <h2>NEWSFEED</h2>
+    <em>Was user gepostet haben (wird angepasst auf nur posts von freunden):</em>
+    <br>
+    <br>
+    {% if posts %}
+        {% for post in posts %}
+            <div>
+                <p><strong><a href="{% url 'profile_detail' pk=post.user.id %}">{{ post.user.username }}</a></strong> <em> teilte am <strong>{{ post.created_at|date:"d.m.Y H:i" }}</strong>:</em></p>
+                <hr>
+                {% if post.image %}<img src="{{ post.image.url }}" alt="Post image">{% endif %}
+                {% if post.text %}<p>{{ post.text }}</p>{% endif %}
+                {% if post.link %}...KLick: <a href="{{ post.link }}">{{ post.domain }}</a>{% endif %}
+                {% if post.event %}<p>Veranstaltung: {{ post.event.title }}</p>{% endif %}
+                <br> <br>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p> ok... bisher hat noch keiner was geteilt, sei der erste: <a href="{% url 'create_post' %}">KLICK</a> </p>
+    {% endif %}
+
+{% else %}
+    <p>Bitte log Dich ein!</p>
+    <a href="{% url 'login' %}">Login</a>
+    <a href="{% url 'signup' %}">Registrieren</a>
 {% endif %}
-<br>
-<br>
-<br>
-<a href="{% url 'profile_list' %}"> >>> ZU DEN PROFILEN</a>
+    
 
 {% endblock %}

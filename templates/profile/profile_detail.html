@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+
+{% block title %}Profil | {% endblock %}
+
+{% block content %}
+
+
+{% if profile.user.profile.invisible and profile.user != request.user and profile.user.username not in freunde_namelist %}
+    <p>Das Profil von <strong>{{ profile.user.username }}</strong> ist leider nur für Freunde sichtbar.</p>
+    {% if profile.user.username not in freunde_namelist %}
+
+        {% if profile.user.username not in freund_eingehend_namelist and profile.user.username not in freund_ausgehend_namelist %}
+            <a href="{% url 'send_friend_request' to_user_id=profile.user.id %}">Freundschaftsanfrage senden</a> <br><br>
+            oder einfach:
+            <a href="{% url 'profile_detail' pk=request.user.id %}">Ab nach Hause</a> <br>
+            
+        {% else %}
+
+            {% if profile.user.username in freund_ausgehend_namelist %}
+                <strong>{{ profile.user.username }}</strong> hat von dir einen Friendrequest erhalten! <br>
+                Willste doch nicht? <a href="{% url 'withdraw_friend_request' profile_id=profile.id %}">'n Rückzieher machen!</a>
+            {% elif profile.user.username in freund_eingehend_namelist %}
+                Hey, Du hast eine Freundesanfrage von <strong>{{ profile.user.username }}</strong> bekommen, Bro! <br>
+                <a href="{% url 'friend_requests' %}">Zu Deinen Friendrequests!</a>
+            {% endif %}
+
+        {% endif %}
+
+    {% endif %}
+
+
+{% else %}
+
+
+    <!-- zeigen wir oben den usernamen des Profilinhabers an -->
+    <h2> {{ profile.user }}</h2>
+    <br>
+    <!-- hier sind die Profildetails des Users -->
+    <p><img src="{{ profile.avatar.url }}" alt="avatar"> </p>
+    <p><strong>Alter: </strong>{{ profile.age }}</p>
+    <p><strong>Geschlecht: </strong>{{ profile.gender }}</p>
+    <p><strong>Wohnort: </strong>{{ profile.location }}</p>
+    <p><strong>Bio: </strong>{{ profile.bio }}</p>
+    <p><strong>Interessen: </strong>{{ profile.interests }}</p>
+
+    <br><br>
+
+
+    <!-- Wenn der angemeldete user.id nicht identisch ist mit der profil.id ..   -->
+    <!-- und wenn dieser profiluser nicht unter den users friends ist und auch kein friendrequest besteht  -->
+    <!-- dann wirdein friendrequest-link,angezeigt werden, ansonsten auf friendrequests verwiesen -->
+
+    {% if request.user.id != profile.user.id %}
+
+        <a href="{% url 'create_chat' own_id=request.user.id foreign_id=profile.user.id%}">Chat erstellen</a>
+
+        {% if profile.user.username not in freunde_namelist %}
+
+            {% if profile.user.username not in freund_eingehend_namelist and profile.user.username not in freund_ausgehend_namelist %}
+                <a href="{% url 'send_friend_request' to_user_id=profile.user.id %}">Freundschaftsanfrage senden</a>
+            {% else %}
+
+                {% if profile.user.username in freund_ausgehend_namelist %}
+                    <strong>{{ profile.user.username }}</strong> hat von dir einen Friendrequest erhalten! <br>
+                    Willste doch nicht? <a href="{% url 'withdraw_friend_request' profile_id=profile.id %}">'n Rückzieher machen!</a>
+                {% elif profile.user.username in freund_eingehend_namelist %}
+                    Hey, Du hast eine Freundesanfrage von <strong>{{ profile.user.username }}</strong> bekommen, Bro! <br>
+                    <a href="{% url 'friend_requests' %}">Zu Deinen Friendrequests!</a>
+                {% endif %}
+
+            {% endif %}
+
+        {% else %}
+            <strong>{{ profile.user.username }}</strong> ist seit <strong>{{ freund_seit|date:"d.m.Y" }}</strong> dein Freund! <br>
+            ....keine Lust auf die Freundschaft? <a href="{% url 'remove_friend' profile_id=profile.id %}">Freundschaft Beenden</a> 
+        {% endif %}
+
+    {% else %}
+        <p>Du befindest dich auf DEINEM Profil, <strong>{{ request.user.username }}</strong>.</p>
+        <form method="post" action="{% url 'invisible_check' %}">
+            {% csrf_token %}
+            <label for="invisible">Profil nur für Freunde sichtbar:</label>
+            <input type="checkbox" name="invisible" {% if request.user.profile.invisible %}checked{% endif %}>
+            <button type="submit">Speichern</button>
+        </form>
+    {% endif %}
+
+    <br><br><br>
+
+
+
+
+    <p>--------------------------------------------------</p>
+    {% if request.user != profile.user %}
+        <h3>{{ profile.user.username }}'s Freunde </h3>  
+            Er/Sie hat hier derzeit <strong>{{ num_profil_freunde }}</strong> Freunde:
+
+        <ul>
+            {% for freund in profil_freunde %}
+                {% if profile.user.username != freund.from_user.username %}
+                    <li><strong><a href="{% url 'profile_detail' pk=freund.from_user.id %}">{{ freund.from_user.username }}</a></strong> ...ist ein Freund des Users!</li>
+                {% else %}
+                    <li><strong><a href="{% url 'profile_detail' pk=freund.to_user.id %}">{{ freund.to_user.username }}</a></strong> ...ist ein Freund des Users!</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+
+    {% else %}
+        <h3>Meine Freunde</h3>
+            Du hast hier derzeit <strong>{{ num_freunde }}</strong> Freunde:
+
+        <ul>
+            {% for freund in freunde %}
+                {% if user.username != freund.from_user.username %}
+                    <li><strong><a href="{% url 'profile_detail' pk=freund.from_user.id %}">{{ freund.from_user.username }}</a></strong> ...ist dein Freund!</li>
+                {% else %}
+                    <li><strong><a href="{% url 'profile_detail' pk=freund.to_user.id %}">{{ freund.to_user.username }}</a></strong> ...ist dein Freund!</li>
+                {% endif %}
+            {% endfor %}
+    {% endif %}
+    </ul>
+
+    <br>
+    <div><a href="{% url 'friend_requests' %}"> >>> Zu den EIGENEN Friendrequests >>> </a></div>
+
+
+
+
+    <p>--------------------------------------------------</p>
+
+    <br><br><br>
+
+    <h2>Timeline</h2>
+
+    {% if request.user == profile.user %}
+        <p><strong> Teilen macht Spaß! </strong></p>
+
+        <div>
+            <p><em>Erstelle einen Post</em></p>
+            <form method="post" enctype="multipart/form-data" action="{% url 'create_post' %}">
+                {% csrf_token %}
+                {{ post_form.as_p }}
+                <button type="submit">Posten</button>
+            </form>
+        </div>
+        <bt><br><br>
+
+    
+        {% if profile_user_posts %}
+            <p><strong> Hier siehst du deine Posts: </strong></p><br>
+
+            {% for post in profile_user_posts %}
+                <div>
+                    <p><strong><a href="{% url 'profile_detail' pk=post.user.id %}">{{ post.user.username }}</a></strong> <em> teilte am <strong>{{ post.created_at|date:"d.m.Y H:i" }}</strong>:</em></p>
+                    {% if post.image %}<img src="{{ post.image.url }}" alt="Post image">{% endif %}<br>
+                    {% if post.text %}<p>{{ post.text }}</p>{% endif %}
+                    {% if post.link %}...Klick: <a href="{{ post.link }}">{{ post.domain }}</a>{% endif %}<br>
+                    {% if post.event %}<p>Veranstaltung: {{ post.event.title }}</p>{% endif %}
+
+                    {% if request.user == post.user %}
+                        <a href="{% url 'edit_post' post.id %}">Bearbeiten</a>
+                        <a href="{% url 'delete_post' post.id %}">Löschen</a>
+                    {% endif %}
+                    <br> <br>
+                </div>
+            {% endfor %}
+        {% else %}
+                <div>
+                    Du hast ja noch gar nichts geteilt ?!? - <a href="{% url 'create_post' %}">Jetzt nachholen!</a><br><br><br>
+        {% endif %}
+    
+
+    {% else %}
+        {% if profile_user_posts %}
+            <p><strong>Hier siehst du {{ profile.user.username }}'s Posts:</strong> </p><br>
+            {% for post in profile_user_posts %}
+            <div>
+                <p><strong><a href="{% url 'profile_detail' pk=post.user.id %}">{{ post.user.username }}</a></strong> <em> teilte am <strong>{{ post.created_at|date:"d.m.Y H:i" }}</strong>:</em></p>
+                <hr>
+                {% if post.image %}<img src="{{ post.image.url }}" alt="Post image">{% endif %}
+                {% if post.text %}<p>{{ post.text }}</p>{% endif %}
+                {% if post.link %}...Klick: <a href="{{ post.link }}">{{ post.domain }}</a>{% endif %}
+                {% if post.event %}<p>Veranstaltung: {{ post.event.title }}</p>{% endif %}
+
+                <br> <br>
+            </div>
+            {% endfor %}
+        
+        {% else %}
+            <div>
+                {{ profile.user.username }} hat offenbar nix zu teilen!!
+            </div>
+        {% endif %}
+        
+    {% endif %}
+
+{% endif %}
+
+{% endblock content %}

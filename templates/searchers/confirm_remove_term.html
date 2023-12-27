@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>{{ term.word }} löschen</h2>
+<form method="post">
+    {% csrf_token %}
+    <p>Sind Sie sicher, dass Sie "{{ term.word }}" löschen möchten?</p>
+    <button type="submit">Ja, löschen</button>
+    <a href="{% url 'add_terms' %}">Nein, zurück</a>
+</form>
+
+{% endblock %}

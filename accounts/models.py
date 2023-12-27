@@ -28,6 +28,7 @@ class Profile(models.Model):
     avatar = models.ImageField(default='default.jpg', upload_to='profile_images')
     is_active = models.BooleanField(default=False)  # ist er geraed online oder offline - muss noch implementiert weden
     last_online = models.DateTimeField(blank=True, null=True)  # wann war user letztes mal online
+    invisible = models.BooleanField(default=False) # user invisible mode für nicht-freunde
 
     def __str__(self):
         return self.user.username
@@ -51,8 +52,6 @@ class Profile(models.Model):
 # es hat den 'from_user', von dem die anfrage ausgeht und 'to_user' an den die anfrage geht
 # wann  die verbindung erstellt wurde geht automatisch: 'createtd_at' und wenn request angenommen, wird das leere 'acceptet_at' mit zeitpunkt ausgefüllt
 class Friendship(models.Model):
-    # diese status in STATUS_CHOICES werden unten im neuen feld "status" benutzt, 
-    # um userbeziehungen besser zu verwalten, das vereinfacht logik und übersichtlichkeit:
     STATUS_CHOICES = (
         ('pending', 'Ausstehend'),
         ('accepted', 'Akzeptiert'),

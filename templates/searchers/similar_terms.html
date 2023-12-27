@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Suchergebnisse für "{{ search_query }}"</h2>
+
+<ul>
+    {% for term, score in results %}
+    <li>{{ term }} (Ähnlichkeitswert: {{ score }})</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
