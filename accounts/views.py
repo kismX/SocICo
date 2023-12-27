@@ -122,10 +122,25 @@ def profile(request):
     if request.method == 'POST':
         user_form = UpdateUserForm(request.POST, instance=request.user)
         profile_form = UpdateProfileForm(request.POST, request.FILES, instance=request.user.profile)
+        
+        profile_instance = Profile.objects.get(id=request.user.id)
 
         if user_form.is_valid() and profile_form.is_valid():
+            
+            # altes bild durch neues ersetzen:
+            new_image = request.FILES.get('avatar')
+            old_image = getattr(profile_instance, 'avatar')
+            
+            if new_image == None:
+                profile = profile_form.save(commit=False)
+                profile.save(update_fields=['age', 'gender', 'location', 'bio', 'interests'])
+            elif old_image == 'default.jpg':
+                profile_form.save()
+            else:
+                old_image.delete()
+                profile_form.save()
+
             user_form.save()
-            profile_form.save()
             messages.success(request, 'Your Profile is updated successfully')
             return redirect(to='profile_detail', pk=request.user.id)
     else:
@@ -206,4 +221,4 @@ def remove_friend(request, profile_id):
 #2023-12-08
 def update_activity_status(profile):
     profile.last_online = timezone.now()
-    profile.save()
+    profile.save(update_fields=['last_online'])

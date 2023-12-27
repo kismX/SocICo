@@ -2,7 +2,10 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
-from PIL import Image
+from django.db.models.signals import pre_delete
+from django.shortcuts import get_object_or_404
+from django.dispatch import receiver
+#from PIL import Image
 
 
 class CustomUser(AbstractUser):
@@ -29,16 +32,19 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
     
-    # Große des Images auf 100x00 skalieren mit library pillow
     def save(self, *args, **kwargs):
-        super().save()
 
-        img = Image.open(self.avatar.path)
+        super(Profile, self).save(*args, **kwargs)
 
-        if img.height > 100 or img.width > 100:
-            new_img = (100, 100)
-            img.thumbnail(new_img)
-            img.save(self.avatar.path)
+        # img = Image.open(self.avatar.path)
+
+        # if img.height > 100 or img.width > 100:
+        #     new_img = (100, 100)
+        #     img.thumbnail(new_img)
+        #     img.save(self.avatar.path)
+
+        
+
 
 
 # neues model das eine Friednship darstellt
