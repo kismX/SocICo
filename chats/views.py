@@ -10,7 +10,7 @@ def rooms(request):
     profiles = get_user_model().objects.all()
     rooms = Room.objects.all()
     user_dict = dict()
-    new_list = []
+    username_list = []
 
     for room in rooms:
         split_slug = room.slug.split('_')
@@ -21,12 +21,12 @@ def rooms(request):
                 for profile in profiles:
                     if i == profile.id:
                         name = profile.username
-                new_list.append(name)
+                username_list.append(name)
 
         if request.user.id in split_slug:
-            user_dict[room.slug] = new_list
+            user_dict[room.slug] = username_list
 
-        new_list = []
+        username_list = []
     
     #print(user_dict)
     return render(request, 'chats/rooms.html', {'user_dict': user_dict})

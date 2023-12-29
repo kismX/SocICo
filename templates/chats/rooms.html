@@ -6,13 +6,13 @@
 
 <h2>Private Chats:</h2>
 {% for key, value in user_dict.items %}
-    <div class="flex rooms-list">
+    <div class="flex-wrap-container rooms-list">
                 <div>
                     {% for name in value %}
                     <p>{{ name }}</p>
                     {% endfor %}
                 </div>
-                <a class="chat-form-button" href="{% url 'room' key %}">Chat beitreten</a>
+                <a class="chat-form-button" href="{% url 'room' key %}">></a>
     </div>
 {% endfor %}
 

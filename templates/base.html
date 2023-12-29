@@ -18,8 +18,8 @@
 
         <div class="flex">
             {% if user.is_authenticated %}
-                <a href="{% url 'profile_detail' pk=request.user.id %}">Mein Profil</a>
-                <a href="{% url 'logout' %}"><img class="logout-icon" src="/media/icons/logout.png" alt=""></a>
+                <a class="profile" href="{% url 'profile_detail' pk=request.user.id %}">Mein Profil</a>
+                <a class="logout" href="{% url 'logout' %}">Logout</a>
             {% else %}
                 <a href="{% url 'login' %}">Login</a>
                 <a href="{% url 'signup' %}">Registrieren</a>
@@ -33,10 +33,9 @@
     </nav>
 
     <div class="side-bar">
-        <nav class="flex">
+        <nav class="flex-wrap-container">
             {% if user.is_authenticated %}
                 <a href="{% url 'profile_detail' pk=request.user.id %}">Mein Profil</a>
-                <a href="{% url 'logout' %}">Logout</a>
 
                 <a href="{% url 'profile_list' %}">Alle User</a>
                 <a href="{% url 'profile_edit' %}">Profil bearbeiten</a>
@@ -44,6 +43,8 @@
                 <a href="{% url 'add_terms' %}">Wörterliste++ (nur für uns)</a>
                 
                 <a href="{% url 'rooms' %}">Chatrooms</a> 
+
+                <a class="logout" href="{% url 'logout' %}">Logout</a>
             {% else %}
                 <a href="{% url 'login' %}">Login</a>
                 <a href="{% url 'signup' %}">Registrieren</a>

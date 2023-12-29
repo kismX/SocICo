@@ -11,7 +11,7 @@
         <div class="chat-messages" id="chat-messages">
             
                 {% for message in messages %}
-                <div class="flex">
+                <div class="flex-wrap-container">
                     <img src="{{ message.user.profile.avatar.url }}" alt="">
                     <div>
                         <p class="chat-name">{{ message.user.username }}</p>
@@ -23,7 +23,7 @@
 
     <div>
         <div class="chat-form">
-            <form method="post" action="." class="flex">
+            <form method="post" action="." class="flex-wrap-container">
                 <input type="text" name="content" class="chat-form-input" placeholder="Deine Nachricht..." id="chat-message-input">
 
                 <button class="chat-form-button" id="chat-message-submit">Senden</button>
@@ -62,7 +62,7 @@
         const profileAvatar = JSON.parse(document.getElementById('json-profileavatar').textContent);
 
         if (data.message){
-            let html = '<div class="flex">';
+            let html = '<div class="flex-wrap-container">';
                 html += '<img src="'+ profileAvatar +'" alt="">';
                 html += '<div>';
                 html += '<p class="chat-name">'+ data.username + '</p>';

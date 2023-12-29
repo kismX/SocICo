@@ -27,6 +27,11 @@
 .flex{
     display: flex;
 }
+.flex-wrap-container{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
 
 body{
     background-color: #F2EFDF;
@@ -38,7 +43,7 @@ h1, h2, h3, h4{
 }
 
 .main-menu{
-    font-size: 1.6em;
+    font-size: 1.3em;
     font-family: 'PoppinsRegular';
     background-color:#63A69F;
     border-bottom:2px solid #40281A;
@@ -71,7 +76,7 @@ h1, h2, h3, h4{
 }
 .row{
     margin-top: 150px;
-    width: 70vw;
+    width: 80vw;
     margin-left: auto;
     margin-right: auto;
 }
@@ -81,16 +86,21 @@ h1, h2, h3, h4{
 .rooms-list{
     background-color: #fff;
     color: #40281A;
-    width: 100%;
-    padding: 10px 50px;
-    justify-content:space-between;
+    padding: 5px 50px;
     align-items: center;
-    flex-shrink: inherit;
     margin-bottom: 10px;
-    border-radius: 10px 140px 10px 140px;
+    border-radius: 5px;
 }
 .rooms-list div{
     font-family: "PoppinsBold";
+    flex: 1 0;
+}
+.rooms-list a{
+    flex: 0 0 10px;
+    color: white;
+}
+.rooms-list .chat-form-button{
+    padding: 5px 20px;
 }
 
 
@@ -100,32 +110,28 @@ h1, h2, h3, h4{
     height: 400px;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 10px 20px;
+    padding: 10px 10px;
     border: 5px solid #40281A;
     border-top-right-radius: 10px;
     border-top-left-radius: 10px;
 }
-.chat-messages .flex{
-    justify-content: start;
-    width: 100%;
+.chat-messages .flex-wrap-container{
     margin-bottom: 20px;
-}
-.chat-messages .flex div{
-    width: 100%;
 }
 .chat-messages img{
     background-color: white;
     object-fit: cover;
-    margin-top: 5px;
-    margin-right: 10px;
     border: 2px solid #40281A;
-    border-radius: 30px;
-    height: 50px;
-    width: 50px;
+    border-radius: 10%;
+    height: 40px;
+    width: 40px;
     box-shadow: 3px 3px 2px 1px #40281a17;
+    flex: 0 0;
+}
+.chat-messages .flex-wrap-container div{
+    flex: 2 1;
 }
 .chat-name{
-    /* background-color: #F28A2E; */
     font-family: "PoppinsBold";
     border-top-right-radius: 10px;
     border-top-left-radius: 10px;
@@ -140,7 +146,6 @@ h1, h2, h3, h4{
     border-bottom-right-radius: 10px;
     font-family: "PoppinsRegular";
     word-wrap: break-word;
-    width: 90%;
 }
 .chat-form{
     background-color: #40281A;
@@ -152,6 +157,7 @@ h1, h2, h3, h4{
     width: 85%;
     padding: 10px 20px;
     border-radius: 10px;
+    flex: 3 0 50%;
 }
 .chat-form-button{
     padding: 10px 20px;
@@ -159,7 +165,8 @@ h1, h2, h3, h4{
     font-family: "PoppinsMedium";
     background-color: #F28A2E;
     color: #40281A;
-    width: 10%;
+    flex: 1 0;
+
 }
 .chat-form form{
     justify-content: space-between;
