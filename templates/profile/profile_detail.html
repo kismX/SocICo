@@ -132,7 +132,7 @@
 
     <h2>Timeline</h2>
 
-    {% if request.user == profile.user %}
+    {% if request.user == profile.user or request.user.is_superuser %}
         <p><strong> Teilen macht Spaß! </strong></p>
 
         <div>
@@ -151,7 +151,7 @@
 
             {% for post in profile_user_posts %}
                 <div>
-                    <strong><a href="{% url 'profile_detail' pk=post.user.id %}">{{ post.user.username }}</a></strong> <em> teilte am <strong>{{ post.created_at|date:"d.m.Y H:i" }}</strong>:</em>
+                    <strong><a href="{% url 'profile_detail' pk=post.user.id %}">{{ post.user.username }}</a></strong> <em> teilte am <strong>{{ post.created_at|date:"d.m.Y H:i" }}</strong>:</em><br>
                     {% if post.image %}<img src="{{ post.image.url }}" alt="Post image">{% endif %}<br>
                     {% if post.text %}{{ post.text|truncatechars:100 }}{% endif %}
                     {% if post.link %}...Klick: <a href="{{ post.link }}">{{ post.domain }}</a>{% endif %}<br>
@@ -164,7 +164,7 @@
                     <strong><em>
                         {{ post.likes.count }} Likes
                         <a href="{% url 'post_detail' post.id %}"> | {{ post.comments.count }} Kommentare</a>
-                        {% if request.user == post.user %}
+                        {% if request.user == post.user or request.user.is_superuser %}
                             <a href="{% url 'edit_post' post.id %}">| Bearbeiten</a>
                             <a href="{% url 'delete_post' post.id %}">| Löschen</a><br>
                         {% endif %}
