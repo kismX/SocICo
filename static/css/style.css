@@ -171,3 +171,25 @@ h1, h2, h3, h4{
 .chat-form form{
     justify-content: space-between;
 }
+
+/* Profil Liste */
+
+.profile-list a{
+    list-style: none;
+    background-color: white;
+    padding: 10px 30px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    color: #40281A;
+    font-family: "PoppinsBold";
+    flex: 1 0;
+}
+.profile-list a img{
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #40281A;
+}

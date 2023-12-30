@@ -4,7 +4,9 @@
 
 {% block content %}
     <div>
-        <h1>Aktueller Chat: {{ room.name }}</h1>
+        {% for name in user_dict.values %}
+        <h1>Chat mit: {{ name.0 }}</h1>
+        {% endfor %}
     </div>
 
 

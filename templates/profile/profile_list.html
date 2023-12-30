@@ -4,13 +4,14 @@
 
 
 <h2> User Profiles</h2>
-{% for profile in profile_list %}
-
-<li><a href="{% url 'profile_detail' profile.pk %}">{{ profile.user }}</a></li>
-
-
-{% endfor %}
-
+<section class="flex-wrap-container profile-list">
+    {% for profile in profile_list %}
+    <a href="{% url 'profile_detail' profile.pk %}">
+        <img src="{{ profile.avatar.url }}" alt="">
+        <p>{{ profile.user }}</p>
+    </a>
+    {% endfor %}
+</section>
 
 
 {% endblock content %}
