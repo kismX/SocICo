@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<h3>{{ post.user }} teilte..</h3>
+{% if post.text %}
+    <p>{{ post.text }}</p>
+{% endif %}
+
+{% if post.image %}
+    <img src="{{ post.image.url }}" alt="Bild des Posts">
+{% endif %}
+
+{% if post.link %}...Klick: <a href="{{ post.link }}">{{ post.domain }}</a>{% endif %}
+
+
+<strong><em>
+    {{ post.total_likes }} Likes
+    <a href="{% url 'post_detail' post.id %}">  |  {{ post.comments.count }} Kommentare</a>
+</strong></em>
+
+<form action="{% url 'like_post' post.id %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Like</button>
+</form>
+
+
+
+<hr><br><br>
+<h3>Kommentare</h3>
+{% for comment in comments %}
+    <p><strong><a href="{% url 'profile_detail' pk=comment.user.id %}">{{ comment.user.username }}</a> </strong> <em>antwortete am {{ comment.created_at|date:"d.m.Y, H:i" }}:</em><br>
+        {{ comment.comment }}</p><br>
+{% endfor %}
+
+
+<p> ---------------------------------------------------------------------------------</p><br>
+{% if user.is_authenticated %}
+    <form method="post">
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <button type="submit">Kommentieren</button>
+    </form>
+{% else %}
+    <p><a href="{% url 'login' %}">Logge dich ein</a>, um zu kommentieren.</p>
+{% endif %}
+
+
+{% endblock %}

@@ -151,18 +151,29 @@
 
             {% for post in profile_user_posts %}
                 <div>
-                    <p><strong><a href="{% url 'profile_detail' pk=post.user.id %}">{{ post.user.username }}</a></strong> <em> teilte am <strong>{{ post.created_at|date:"d.m.Y H:i" }}</strong>:</em></p>
+                    <strong><a href="{% url 'profile_detail' pk=post.user.id %}">{{ post.user.username }}</a></strong> <em> teilte am <strong>{{ post.created_at|date:"d.m.Y H:i" }}</strong>:</em>
                     {% if post.image %}<img src="{{ post.image.url }}" alt="Post image">{% endif %}<br>
-                    {% if post.text %}<p>{{ post.text }}</p>{% endif %}
+                    {% if post.text %}{{ post.text|truncatechars:100 }}{% endif %}
                     {% if post.link %}...Klick: <a href="{{ post.link }}">{{ post.domain }}</a>{% endif %}<br>
                     {% if post.event %}<p>Veranstaltung: {{ post.event.title }}</p>{% endif %}
 
-                    {% if request.user == post.user %}
-                        <a href="{% url 'edit_post' post.id %}">Bearbeiten</a>
-                        <a href="{% url 'delete_post' post.id %}">Löschen</a>
-                    {% endif %}
+                    <form action="{% url 'like_post' post.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit">Like</button>
+                    </form>
+                    <strong><em>
+                        {{ post.likes.count }} Likes
+                        <a href="{% url 'post_detail' post.id %}"> | {{ post.comments.count }} Kommentare</a>
+                        {% if request.user == post.user %}
+                            <a href="{% url 'edit_post' post.id %}">| Bearbeiten</a>
+                            <a href="{% url 'delete_post' post.id %}">| Löschen</a><br>
+                        {% endif %}
+                        <a href="{% url 'post_detail' post.id %}" class="details-link">Mehr erfahren</a><br>
+                    </strong></em>
+
                     <br> <br>
                 </div>
+                <p> ........................  </p><br><br>
             {% endfor %}
         {% else %}
                 <div>

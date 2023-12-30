@@ -28,11 +28,25 @@
                 <p><strong><a href="{% url 'profile_detail' pk=post.user.id %}">{{ post.user.username }}</a></strong> <em> teilte am <strong>{{ post.created_at|date:"d.m.Y H:i" }}</strong>:</em></p>
                 <hr>
                 {% if post.image %}<img src="{{ post.image.url }}" alt="Post image">{% endif %}
-                {% if post.text %}<p>{{ post.text }}</p>{% endif %}
+                {% if post.text %}<p>{{ post.text|truncatechars:100 }}</p>{% endif %}
                 {% if post.link %}...KLick: <a href="{{ post.link }}">{{ post.domain }}</a>{% endif %}
                 {% if post.event %}<p>Veranstaltung: {{ post.event.title }}</p>{% endif %}
+               
+                <form action="{% url 'like_post' post.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Like</button>
+                </form>
+
+                <strong><em>
+                    {{ post.likes.count }} Likes
+                    <a href="{% url 'post_detail' post.id %}"> | {{ post.comments.count }} Kommentare</a><br>
+                    <a href="{% url 'post_detail' post.id %}" class="details-link">Mehr erfahren</a>
+                </strong></em>
+
                 <br> <br>
             </div>
+            <p> ........................  </p><br><br>
+
         {% endfor %}
     {% else %}
         <p> ok... bisher hat noch keiner was geteilt, sei der erste: <a href="{% url 'create_post' %}">KLICK</a> </p>
