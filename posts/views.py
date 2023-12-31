@@ -45,21 +45,36 @@ def post_detail(request, post_id):
 
     if request.method == 'POST':
         comment_form = CommentForm(request.POST)
-        if comment_form.is_valid():
-            comment = comment_form.save(commit=False)
-            comment.post = post
-            comment.user = request.user
-            comment.save()
+        # hierdurch wird auch die clean() method in MOdel aktiv (auch im hintergrund, wenn wir sie nicht angepasst hätten):
+        if comment_form.is_valid(): 
+            comment = comment_form.save(commit=False) # erstellen instanzobjekt, speichern es nicht ab, weil Foreign_verbindungen fehlen
+            comment.post = post # verknüfen nun mit post aus post Modell mit der aktuellen post_id
+            comment.user = request.user # verknüpfen mit aktuellem request.user aus CustomUser modell
+            comment.save() # jetzt speichern wir das objekt angepasst in database
             return redirect('post_detail', post_id=post.id)
     else:
         comment_form = CommentForm()
-    return render(request, 'posts/post_detail.html', {'post': post, 'comments': comments, 'comment_form': comment_form})
+    
+    context = {
+        'post': post,
+        'comments': comments,
+        'comment_form': comment_form,
+    }
+
+    return render(request, 'posts/post_detail.html', context)
 
 
 # comments editieren
 def comment_edit(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
     if request.method == 'POST':
+        # wir erstellen ein CommentForm Objekt "form", 
+        # welches den user-request aus dem "request.POST" und dem aktuellen comment enthält
+        # 'instance' ist n parameter, der in der Klasse ModelForm enthalten ist. 
+        # den man aufruft und mit einem Instanzobjekt dieser CommentForm verknüpft, 
+        # was in diesem Fall "comment" aus z.69 ist, welches mit dem Comment-Objekt 
+        # verbunden ist, das die id=comment_id hat
+        # mit form.save() überschreiben wir den gewünschten comment dann:
         form = CommentForm(request.POST, instance=comment)
         if form.is_valid():
             form.save()
