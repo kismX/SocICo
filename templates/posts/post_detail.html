@@ -14,7 +14,7 @@
 {% if post.link %}...Klick: <a href="{{ post.link }}">{{ post.domain }}</a>{% endif %}
 
 
-<strong><em>
+<strong><em><br>
     {{ post.total_likes }} Likes
     <a href="{% url 'post_detail' post.id %}">  |  {{ post.comments.count }} Kommentare</a>
 </strong></em>

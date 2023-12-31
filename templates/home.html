@@ -39,8 +39,12 @@
 
                 <strong><em>
                     {{ post.likes.count }} Likes
-                    <a href="{% url 'post_detail' post.id %}"> | {{ post.comments.count }} Kommentare</a><br>
-                    <a href="{% url 'post_detail' post.id %}" class="details-link">Mehr erfahren</a>
+                    <a href="{% url 'post_detail' post.id %}"> | {{ post.comments.count }} Kommentare</a>
+                    {% if request.user == post.user or request.user.is_superuser %}
+                            <a href="{% url 'edit_post' post.id %}">| Bearbeiten</a>
+                            <a href="{% url 'delete_post' post.id %}">| Löschen</a><br>
+                    {% endif %}
+                    <br><a href="{% url 'post_detail' post.id %}" class="details-link">Mehr erfahren</a>
                 </strong></em>
 
                 <br> <br>
