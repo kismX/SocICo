@@ -30,7 +30,14 @@
 <h3>Kommentare</h3>
 {% for comment in comments %}
     <p><strong><a href="{% url 'profile_detail' pk=comment.user.id %}">{{ comment.user.username }}</a> </strong> <em>antwortete am {{ comment.created_at|date:"d.m.Y, H:i" }}:</em><br>
-        {{ comment.comment }}</p><br>
+        {{ comment.comment }}</p>
+        {% if request.user == comment.user or request.user.is_superuser %}
+            <a href="{% url 'comment_edit' comment.id %}">Bearbeiten</a>
+            <a href="{% url 'comment_delete' comment.id %}"> | Löschen</a>
+        {% endif %}
+        <br>
+        <p> ................................................ </p>
+        <br>
 {% endfor %}
 
 

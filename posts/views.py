@@ -56,6 +56,28 @@ def post_detail(request, post_id):
     return render(request, 'posts/post_detail.html', {'post': post, 'comments': comments, 'comment_form': comment_form})
 
 
+# comments editieren
+def comment_edit(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    if request.method == 'POST':
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            form.save()
+            return redirect('post_detail', post_id=comment.post.id)
+    else:
+        form = CommentForm(instance=comment)
+    return render(request, 'edit_comment.html', {'form': form})
+
+
+# comments deleten
+def comment_delete(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    if request.method == 'POST':
+        comment.delete()
+        return redirect('post_detail', post_id=comment.post.id)
+    return render(request, 'delete_comment.html', {'comment': comment})
+
+
 # liken
 def like_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
