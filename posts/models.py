@@ -37,6 +37,8 @@ class Comment(models.Model):
     image = models.ImageField(upload_to='comment_images', blank=True, null=True)
     link = models.URLField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    likes = models.ManyToManyField(get_user_model(), related_name='like_comment', blank=True)
+
 
     # bildgröße auf 300x300 proportional begrenzt
     def save(self, *args, **kwargs):
@@ -47,6 +49,9 @@ class Comment(models.Model):
                 output_size = (300, 300)
                 img.thumbnail(output_size)
                 img.save(self.image.path)
+    
+    def total_likes_comment(self):
+        return self.likes.count()
 
     def __str__(self):
         return f"Kommentar von {self.user.username} auf Post {self.post.id}"

@@ -14,15 +14,17 @@
 {% if post.link %}...Klick: <a href="{{ post.link }}">{{ post.domain }}</a>{% endif %}
 
 
-<strong><em><br>
-    {{ post.total_likes }} Likes
-    <a href="{% url 'post_detail' post.id %}">  |  {{ post.comments.count }} Kommentare</a>
-</strong></em>
-
 <form action="{% url 'like_post' post.id %}" method="post">
     {% csrf_token %}
     <button type="submit">Like</button>
 </form>
+
+<strong><em>
+    {{ post.total_likes }} Likes
+    <a href="{% url 'post_detail' post.id %}">  |  {{ post.comments.count }} Kommentare</a>
+</strong></em>
+
+
 
 
 
@@ -31,11 +33,20 @@
 {% for comment in comments %}
     <p><strong><a href="{% url 'profile_detail' pk=comment.user.id %}">{{ comment.user.username }}</a> </strong> <em>antwortete am {{ comment.created_at|date:"d.m.Y, H:i" }}:</em><br>
         {{ comment.comment }}</p>
+
+     <form action="{% url 'like_comment' comment.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Like</button>
+    </form>
+
+    <strong><em>
+        {{ comment.total_likes_comment }} Likes
         {% if request.user == comment.user or request.user.is_superuser %}
             <a href="{% url 'comment_edit' comment.id %}">Bearbeiten</a>
             <a href="{% url 'comment_delete' comment.id %}"> | Löschen</a>
         {% endif %}
-        <br>
+    </strong></em>
+        <br><br>
         <p> ................................................ </p>
         <br>
 {% endfor %}
