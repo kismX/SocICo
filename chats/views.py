@@ -74,3 +74,8 @@ def create_chat(request, own_id, foreign_id):
     else:
         Room.objects.create(name=first_id+'_'+second_id, slug=first_id+'_'+second_id)
         return redirect('rooms')
+    
+
+@login_required
+def create_group_chat(request):
+    return render(request, 'chats/create_room.html')
