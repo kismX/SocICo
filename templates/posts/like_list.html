@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Likes{% endblock %}
+
+{% block content %}
+
+
+{% if post_user_likes %}
+    <h3>Diesen Post haben folgende Leute geliked:</h3>
+    {% for user in post_user_likes %}
+        <p><a href="{% url 'profile_detail' pk=user.id %}">{{ user.username }}</a></p>
+    {% empty %}
+        <em>Niemand hat den Post geliked</em>
+    {% endfor %}
+
+{% elif comment_user_likes %}
+    <h3>Diesen Kommentar haben folgende Leute geliked:</h3>
+    {% for user in comment_user_likes %}
+        <p><a href="{% url 'profile_detail' pk=user.id %}">{{ user.username }}</a></p>
+    {% empty %}
+        <em>Niemand hat den Kommentar geliked</em>
+    {% endfor %}
+{% else %}
+    <em> Es gibt keine Likes!
+{% endif %}
+
+
+{% endblock %}
