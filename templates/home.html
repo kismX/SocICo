@@ -3,7 +3,7 @@
 {% block title %}Home | {% endblock %}
 
 {% block content %}
-
+{% load like_tags %}
 
 {% if user.is_authenticated %}
     <br>
@@ -22,6 +22,8 @@
     <em>Was user gepostet haben (wird angepasst auf nur posts von freunden):</em>
     <br>
     <br>
+
+    <!-- Anzeigen der Posts (Text, img, Link) -->
     {% if posts %}
         {% for post in posts %}
             <div>
@@ -32,11 +34,19 @@
                 {% if post.link %}...KLick: <a href="{{ post.link }}">{{ post.domain }}</a>{% endif %}
                 {% if post.event %}<p>Veranstaltung: {{ post.event.title }}</p>{% endif %}
                
-                <button class="like-home-post-btn" data-post-id="{{ post.id }}">LIKE</button>
-                <a href="{% url 'likelist_post' post.id %}">
-                    <span class="home-post-likes-count">{{ post.likes.count }} Likes</span>
-                </a>
+
+                <!-- Like und Kommentar Handling -->
+                {% if post|has_liked:request.user %}
+                    <button class="like-home-post-btn" data-post-id="{{ post.id }}">UNLIKE</button>
+                {% else %}
+                    <button class="like-home-post-btn" data-post-id="{{ post.id }}">LIKE</button>
+                {% endif %}
                 <strong><em>
+                    <a href="{% url 'likelist_post' post.id %}">
+                        <span class="home-post-likes-count">{{ post.likes.count }} Likes</span>
+                    </a>
+                
+                    
                     <a href="{% url 'post_detail' post.id %}"> | {{ post.comments.count }} Kommentare</a>
                     {% if request.user == post.user or request.user.is_superuser %}
                             <a href="{% url 'edit_post' post.id %}">| Bearbeiten</a>
@@ -70,7 +80,7 @@
             var postId = $(this).data('post-id');
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
             var btn = $(this); 
-            var likeCountSpan = btn.siblings('.home-post-likes-count'); 
+            var likeCountSpan = btn.closest('div').find('.home-post-likes-count'); 
 
             $.ajax({
                 type: 'POST',

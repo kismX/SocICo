@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-
+{% load like_tags %}
 
 <h3>{{ post.user }} teilte..</h3>
 {% if post.text %}
@@ -14,14 +14,19 @@
 {% if post.link %}...Klick: <a href="{{ post.link }}">{{ post.domain }}</a>{% endif %}
 
 
-<button class="like-post-btn" data-post-id="{{ post.id }}">LIKE</button>
-<a href="{% url 'likelist_post' post.id %}">
-    <span class="post-likes-count">{{ post.total_likes }} Likes</span>
-</a>
+<!-- Like und Kommentar Handling Post-->
+<strong>
+    {% if post|has_liked:request.user %}
+        <button class="like-post-btn" data-post-id="{{ post.id }}">UNLIKE</button>
+    {% else %}
+        <button class="like-post-btn" data-post-id="{{ post.id }}">LIKE</button>
+    {% endif %}
 
-<strong><em>
+    <a href="{% url 'likelist_post' post.id %}">
+        <span class="post-likes-count">{{ post.total_likes }} Likes</span>
+    </a>
     <a href="{% url 'post_detail' post.id %}">  |  {{ post.comments.count }} Kommentare</a>
-</strong></em>
+</strong>
 
 
 
@@ -34,21 +39,25 @@
         {{ comment.comment }}</p>
 
 
+    <!-- Like handling Kommentar -->
+    <strong>
+        {% if comment|has_liked:request.user %}
+            <button class="like-comment-btn" data-comment-id="{{ comment.id }}">Unlike</button>
+        {% else %}
+            <button class="like-comment-btn" data-comment-id="{{ comment.id }}">Like</button>
+        {% endif %}
+        <a href="{% url 'likelist_comment' comment.id %}">
+            <span class="comment-likes-count">{{ comment.total_likes_comment }} Likes</span>
+        </a>
 
 
-    <button class="like-comment-btn" data-comment-id="{{ comment.id }}">Like</button>
-    <a href="{% url 'likelist_comment' comment.id %}">
-        <span class="comment-likes-count">{{ comment.total_likes_comment }} Likes</span>
-    </a>
 
-
-
-    <strong><em>
+    
         {% if request.user == comment.user or request.user.is_superuser %}
             <a href="{% url 'comment_edit' comment.id %}">Bearbeiten</a>
             <a href="{% url 'comment_delete' comment.id %}"> | Löschen</a>
         {% endif %}
-    </strong></em>
+    </strong>
         <br><br>
         <p> ................................................ </p>
         <br>
@@ -76,7 +85,7 @@
             var postId = $(this).data('post-id');
             var csrfToken = $('[name=csrfmiddlewaretoken]').val();
             var btn = $(this); // Speichert den Button, um später darauf zuzugreifen
-            var likeCountSpan = btn.siblings('.post-likes-count'); // Wählt das benachbarte Element mit der Klasse 'post-likes-count'
+            var likeCountSpan = btn.closest('strong').find('.post-likes-count'); // Geändert
 
             $.ajax({
                 type: 'POST',
@@ -103,7 +112,7 @@
             var commentId = $(this).data('comment-id');
             var csrfToken = $('[name=csrfmiddlewaretoken]').val();
             var btn = $(this); // Speichert den Button, um später darauf zuzugreifen
-            var likeCountSpan = btn.next('.comment-likes-count'); // Wählt das nächste Element mit der Klasse 'comment-likes-count'
+            var likeCountSpan = btn.closest('strong').find('.comment-likes-count');
 
             $.ajax({
                 type: 'POST',
