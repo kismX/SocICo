@@ -2,8 +2,11 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from django.contrib.auth import get_user_model
-
+from django.db.utils import IntegrityError
+from accounts.models import Friendship
+from .forms import CreateChatForm
 from .models import Room, Message
+from psycopg2 import errors
 
 @login_required
 def rooms(request):
@@ -58,24 +61,39 @@ def room(request, slug):
     return render(request, 'chats/room.html', {'room': room, 'messages': messages, 'user_dict': user_dict})
 
 @login_required
-def create_chat(request, own_id, foreign_id):
-    first_id = str(own_id)
-    second_id = str(foreign_id)
+def create_private_chat(request, own_id, foreign_id):
 
-    slug1 = first_id + '_' + second_id
-    slug2 = second_id + '_' + first_id
+    rooms = Room.objects.all()
 
-    if Room.objects.filter(slug=slug1):
-        print('Room already exists')
-        return redirect('rooms')
-    elif Room.objects.filter(slug=slug2):
-        print('Room already exists')
-        return redirect('rooms')
+    id_list = [own_id, foreign_id]
+    id_list.sort()
+    str_ids = [str(num) for num in id_list]
+
+    if rooms:
+        for room in rooms:
+            sorted_room_list = sorted(room.user_list)
+            if sorted_room_list == id_list:
+                print('Room already exists')
+            else:
+                try:
+                    Room.objects.create(name='_'.join(str_ids), slug='_'.join(str_ids), user_list=[own_id, foreign_id])
+                except (errors.UniqueViolation, IntegrityError):
+                    print("Raum existiert schon")
+
     else:
-        Room.objects.create(name=first_id+'_'+second_id, slug=first_id+'_'+second_id)
-        return redirect('rooms')
-    
+        Room.objects.create(name='_'.join(str_ids), slug='_'.join(str_ids), user_list=[own_id, foreign_id])
+    return redirect('rooms')
+
 
 @login_required
 def create_group_chat(request):
-    return render(request, 'chats/create_room.html')
+    user = request.user
+    freunde = Friendship.objects.filter(from_user=user, accepted_at__isnull=False) | Friendship.objects.filter(to_user=user, accepted_at__isnull=False)
+    
+    if request.method == 'POST':
+        form = CreateChatForm(request.POST)
+
+    else:
+        form = CreateChatForm()
+
+    return render(request, 'chats/create_room.html', {'freunde_liste': freunde, 'form':form})

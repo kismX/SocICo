@@ -3,5 +3,15 @@
 {% block title %}Create Chat | {% endblock %}
 
 {% block content %}
+<h1>hallo</h1>
+    {% for friend in freunde_liste %}
+        <p>{{ friend.id }}</p>
+    {% endfor %}
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit">Posten</button>
+    </form>
 
 {% endblock content%}
