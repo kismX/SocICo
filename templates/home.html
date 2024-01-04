@@ -33,8 +33,9 @@
                 {% if post.event %}<p>Veranstaltung: {{ post.event.title }}</p>{% endif %}
                
                 <button class="like-home-post-btn" data-post-id="{{ post.id }}">LIKE</button>
-                <span class="home-post-likes-count">{{ post.likes.count }} Likes</span>
-
+                <a href="{% url 'likelist_post' post.id %}">
+                    <span class="home-post-likes-count">{{ post.likes.count }} Likes</span>
+                </a>
                 <strong><em>
                     <a href="{% url 'post_detail' post.id %}"> | {{ post.comments.count }} Kommentare</a>
                     {% if request.user == post.user or request.user.is_superuser %}

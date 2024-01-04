@@ -15,7 +15,9 @@
 
 
 <button class="like-post-btn" data-post-id="{{ post.id }}">LIKE</button>
-<span class="post-likes-count">{{ post.total_likes }} Likes</span>
+<a href="{% url 'likelist_post' post.id %}">
+    <span class="post-likes-count">{{ post.total_likes }} Likes</span>
+</a>
 
 <strong><em>
     <a href="{% url 'post_detail' post.id %}">  |  {{ post.comments.count }} Kommentare</a>
@@ -35,7 +37,9 @@
 
 
     <button class="like-comment-btn" data-comment-id="{{ comment.id }}">Like</button>
-    <span class="comment-likes-count">{{ comment.total_likes_comment }} Likes</span>
+    <a href="{% url 'likelist_comment' comment.id %}">
+        <span class="comment-likes-count">{{ comment.total_likes_comment }} Likes</span>
+    </a>
 
 
 
