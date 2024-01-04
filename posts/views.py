@@ -125,6 +125,33 @@ def like_list_comment(request, comment_id):
     return render(request, 'posts/like_list.html', {'comment_user_likes': comment_user_likes, 'comment': comment})
  
 
+# ajax - likes
+from django.http import JsonResponse
+
+def like_post_ajax(request):
+    post_id = request.POST.get('post_id')
+    post = get_object_or_404(Post, id=post_id)
+    liked = False
+    if post.likes.filter(id=request.user.id).exists():
+        post.likes.remove(request.user)
+    else:
+        post.likes.add(request.user)
+        liked = True
+    return JsonResponse({'liked': liked, 'total_likes': post.total_likes()})
+
+def like_comment_ajax(request):
+    comment_id = request.POST.get('comment_id')
+    comment = get_object_or_404(Comment, id=comment_id)
+    liked = False
+    if comment.likes.filter(id=request.user.id).exists():
+        comment.likes.remove(request.user)
+    else:
+        comment.likes.add(request.user)
+        liked = True
+    return JsonResponse({'liked': liked, 'total_likes_comment': comment.total_likes_comment()})
+
+
+
 # views zu events
 def create_event(request):
     if request.method == 'POST':

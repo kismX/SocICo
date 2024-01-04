@@ -14,13 +14,10 @@
 {% if post.link %}...Klick: <a href="{{ post.link }}">{{ post.domain }}</a>{% endif %}
 
 
-<form action="{% url 'like_post' post.id %}" method="post">
-    {% csrf_token %}
-    <button type="submit">Like</button>
-</form>
+<button class="like-post-btn" data-post-id="{{ post.id }}">LIKE</button>
+<span class="post-likes-count">{{ post.total_likes }} Likes</span>
 
 <strong><em>
-    <a href="{% url 'likelist_post' post.id %}">{{ post.total_likes }} Likes</a> 
     <a href="{% url 'post_detail' post.id %}">  |  {{ post.comments.count }} Kommentare</a>
 </strong></em>
 
@@ -34,13 +31,15 @@
     <p><strong><a href="{% url 'profile_detail' pk=comment.user.id %}">{{ comment.user.username }}</a> </strong> <em>antwortete am {{ comment.created_at|date:"d.m.Y, H:i" }}:</em><br>
         {{ comment.comment }}</p>
 
-     <form action="{% url 'like_comment' comment.id %}" method="post">
-        {% csrf_token %}
-        <button type="submit">Like</button>
-    </form>
+
+
+
+    <button class="like-comment-btn" data-comment-id="{{ comment.id }}">Like</button>
+    <span class="comment-likes-count">{{ comment.total_likes_comment }} Likes</span>
+
+
 
     <strong><em>
-        <a href="{% url 'likelist_comment' comment.id %}">{{ comment.total_likes_comment }} Likes</a> 
         {% if request.user == comment.user or request.user.is_superuser %}
             <a href="{% url 'comment_edit' comment.id %}">Bearbeiten</a>
             <a href="{% url 'comment_delete' comment.id %}"> | Löschen</a>
@@ -63,5 +62,64 @@
     <p><a href="{% url 'login' %}">Logge dich ein</a>, um zu kommentieren.</p>
 {% endif %}
 
+
+<!-- dieser Skript hier ist die JavaSkript IMplementierung für die verarbeitung der echtzeit-Likes-->
+<script type="text/javascript">
+    $(document).ready(function(){
+        // Funktion für das Liken von Posts
+        $('.like-post-btn').click(function(e){
+            e.preventDefault();
+            var postId = $(this).data('post-id');
+            var csrfToken = $('[name=csrfmiddlewaretoken]').val();
+            var btn = $(this); // Speichert den Button, um später darauf zuzugreifen
+            var likeCountSpan = btn.siblings('.post-likes-count'); // Wählt das benachbarte Element mit der Klasse 'post-likes-count'
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'like_post_ajax' %}',
+                data: {
+                    'csrfmiddlewaretoken': csrfToken,
+                    'post_id': postId
+                },
+                success: function(response){
+                    if(response.liked){
+                        btn.text('UNLIKE'); // Text des Buttons ändern
+                    } else {
+                        btn.text('LIKE');
+                    }
+                    // Aktualisiert die Anzahl der Likes nur für diesen spezifischen Post
+                    likeCountSpan.text(response.total_likes + ' Likes');
+                }
+            });
+        });
+    
+        // Funktion für das Liken von Kommentaren
+        $('.like-comment-btn').click(function(e){
+            e.preventDefault();
+            var commentId = $(this).data('comment-id');
+            var csrfToken = $('[name=csrfmiddlewaretoken]').val();
+            var btn = $(this); // Speichert den Button, um später darauf zuzugreifen
+            var likeCountSpan = btn.next('.comment-likes-count'); // Wählt das nächste Element mit der Klasse 'comment-likes-count'
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'like_comment_ajax' %}',
+                data: {
+                    'csrfmiddlewaretoken': csrfToken,
+                    'comment_id': commentId
+                },
+                success: function(response){
+                    if(response.liked){
+                        btn.text('Unlike'); // Text des Buttons ändern
+                    } else {
+                        btn.text('Like');
+                    }
+                    // Aktualisiert die Anzahl der Likes nur für diesen spezifischen Kommentar
+                    likeCountSpan.text(response.total_likes_comment + ' Likes');
+                }
+            });
+        });
+    });
+    </script>
 
 {% endblock %}

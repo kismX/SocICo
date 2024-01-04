@@ -32,13 +32,10 @@
                 {% if post.link %}...KLick: <a href="{{ post.link }}">{{ post.domain }}</a>{% endif %}
                 {% if post.event %}<p>Veranstaltung: {{ post.event.title }}</p>{% endif %}
                
-                <form action="{% url 'like_post' post.id %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit">Like</button>
-                </form>
+                <button class="like-home-post-btn" data-post-id="{{ post.id }}">LIKE</button>
+                <span class="home-post-likes-count">{{ post.likes.count }} Likes</span>
 
                 <strong><em>
-                    {{ post.likes.count }} Likes
                     <a href="{% url 'post_detail' post.id %}"> | {{ post.comments.count }} Kommentare</a>
                     {% if request.user == post.user or request.user.is_superuser %}
                             <a href="{% url 'edit_post' post.id %}">| Bearbeiten</a>
@@ -62,5 +59,36 @@
     <a href="{% url 'signup' %}">Registrieren</a>
 {% endif %}
     
+
+
+<!-- AXAX-->
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.like-home-post-btn').click(function(e){
+            e.preventDefault();
+            var postId = $(this).data('post-id');
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+            var btn = $(this); 
+            var likeCountSpan = btn.siblings('.home-post-likes-count'); 
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'like_post_ajax' %}',
+                data: {
+                    'csrfmiddlewaretoken': csrfToken,
+                    'post_id': postId
+                },
+                success: function(response){
+                    if(response.liked){
+                        btn.text('UNLIKE');
+                    } else {
+                        btn.text('LIKE');
+                    }
+                    likeCountSpan.text(response.total_likes + ' Likes');
+                }
+            });
+        });
+    });
+</script>
 
 {% endblock %}
