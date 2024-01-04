@@ -30,6 +30,9 @@ class Profile(models.Model):
     last_online = models.DateTimeField(blank=True, null=True)  # wann war user letztes mal online
     invisible = models.BooleanField(default=False) # user invisible mode für nicht-freunde
 
+    def interest_list(self):
+        return [interest.strip().lower() for interest in self.interests.split(',')] if self.interests else []
+    
     def __str__(self):
         return self.user.username
     

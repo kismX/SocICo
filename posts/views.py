@@ -104,6 +104,26 @@ def like_post(request, post_id):
     # wir leiten den user lieber uff die seite zurück, von der er kam, damit nach like nicht auf post_detail
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
+def like_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    if comment.likes.filter(id=request.user.id).exists():
+        comment.likes.remove(request.user)
+    else:
+        comment.likes.add(request.user)
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+# liste der user , die geliked haben auf like_list.html
+def like_list_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    post_user_likes = post.likes.all()
+    return render(request, 'posts/like_list.html', {'post_user_likes': post_user_likes, 'post': post})
+ 
+def like_list_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    comment_user_likes = comment.likes.all()
+    return render(request, 'posts/like_list.html', {'comment_user_likes': comment_user_likes, 'comment': comment})
+ 
 
 # views zu events
 def create_event(request):
