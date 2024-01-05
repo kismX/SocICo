@@ -1,42 +1,36 @@
 {% extends 'base.html' %}
-
 {% block title %}Profil | {% endblock %}
-
 {% block content %}
 {% load like_tags %}
 
-
+<!-- Invisible Bedingung -->
 {% if profile.user.profile.invisible and profile.user != request.user and profile.user.username not in freunde_namelist %}
     <p>Das Profil von <strong>{{ profile.user.username }}</strong> ist leider nur für Freunde sichtbar.</p>
+    
+    <!-- Friendrequest Handling wenn Invisible -->
     {% if profile.user.username not in freunde_namelist %}
-
         {% if profile.user.username not in freund_eingehend_namelist and profile.user.username not in freund_ausgehend_namelist %}
             <a href="{% url 'send_friend_request' to_user_id=profile.user.id %}">Freundschaftsanfrage senden</a> <br><br>
             oder einfach:
             <a href="{% url 'profile_detail' pk=request.user.id %}">Ab nach Hause</a> <br>
-            
         {% else %}
-
             {% if profile.user.username in freund_ausgehend_namelist %}
                 <strong>{{ profile.user.username }}</strong> hat von dir einen Friendrequest erhalten! <br>
                 Willste doch nicht? <a href="{% url 'withdraw_friend_request' profile_id=profile.id %}">'n Rückzieher machen!</a>
             {% elif profile.user.username in freund_eingehend_namelist %}
                 Hey, Du hast eine Freundesanfrage von <strong>{{ profile.user.username }}</strong> bekommen, Bro! <br>
                 <a href="{% url 'friend_requests' %}">Zu Deinen Friendrequests!</a>
+                oder einfach:
+                <a href="{% url 'profile_detail' pk=request.user.id %}">Ab nach Hause</a> <br>
             {% endif %}
-
         {% endif %}
 
     {% endif %}
 
-
 {% else %}
-
-
-    <!-- zeigen wir oben den usernamen des Profilinhabers an -->
+    <!-- Wenn profil sichtbar, Profiluser mit Infos -->
     <h2> {{ profile.user }}</h2>
     <br>
-    <!-- hier sind die Profildetails des Users -->
     <p><img src="{{ profile.avatar.url }}" alt="avatar"> </p>
     <p><strong>Alter: </strong>{{ profile.age }}</p>
     <p><strong>Geschlecht: </strong>{{ profile.gender }}</p>
@@ -46,21 +40,19 @@
 
     <br><br>
 
-
-    <!-- Wenn der angemeldete user.id nicht identisch ist mit der profil.id ..   -->
-    <!-- und wenn dieser profiluser nicht unter den users friends ist und auch kein friendrequest besteht  -->
-    <!-- dann wirdein friendrequest-link,angezeigt werden, ansonsten auf friendrequests verwiesen -->
-
+    <!-- Wenn angemeldete user.id != profil.id -->
+    <!-- kann man Chat mit Profiluser erstellen -->
+    <!-- und wenn Profiluser nicht unter Freunden und auch kein friendrequest besteht  -->
+    <!-- dann wird friendrequest ermöglicht -->
+    <!-- und wenn unter freunden, kann man auch freundschaft beenden -->
     {% if request.user.id != profile.user.id %}
 
         <a href="{% url 'create_chat' own_id=request.user.id foreign_id=profile.user.id%}">Chat erstellen</a>
 
         {% if profile.user.username not in freunde_namelist %}
-
             {% if profile.user.username not in freund_eingehend_namelist and profile.user.username not in freund_ausgehend_namelist %}
                 <a href="{% url 'send_friend_request' to_user_id=profile.user.id %}">Freundschaftsanfrage senden</a>
             {% else %}
-
                 {% if profile.user.username in freund_ausgehend_namelist %}
                     <strong>{{ profile.user.username }}</strong> hat von dir einen Friendrequest erhalten! <br>
                     Willste doch nicht? <a href="{% url 'withdraw_friend_request' profile_id=profile.id %}">'n Rückzieher machen!</a>
@@ -68,29 +60,31 @@
                     Hey, Du hast eine Freundesanfrage von <strong>{{ profile.user.username }}</strong> bekommen, Bro! <br>
                     <a href="{% url 'friend_requests' %}">Zu Deinen Friendrequests!</a>
                 {% endif %}
-
             {% endif %}
-
         {% else %}
             <strong>{{ profile.user.username }}</strong> ist seit <strong>{{ freund_seit|date:"d.m.Y" }}</strong> dein Freund! <br>
             ....keine Lust auf die Freundschaft? <a href="{% url 'remove_friend' profile_id=profile.id %}">Freundschaft Beenden</a> 
         {% endif %}
 
+    <!-- und ist request.user.id == profil.user.id > Eigenes Profil -->
     {% else %}
         <p>Du befindest dich auf DEINEM Profil, <strong>{{ request.user.username }}</strong>.</p>
-        <form method="post" action="{% url 'invisible_check' %}">
-            {% csrf_token %}
-            <label for="invisible">Profil nur für Freunde sichtbar:</label>
-            <input type="checkbox" name="invisible" {% if request.user.profile.invisible %}checked{% endif %}>
-            <button type="submit">Speichern</button>
-        </form>
+        
+        Profil für Fremde: 
+        <button id="visibility-toggle-btn" data-visible="{{ request.user.profile.invisible }}">
+            {% if request.user.profile.invisible %}
+                UNSICHTBAR
+            {% else %}
+                SICHTBAR
+            {% endif %}
+        </button>
     {% endif %}
 
     <br><br><br>
 
 
 
-
+    <!-- Freunde auf Profil anzeigen unf auf deren Profile verlinken -->
     <p>--------------------------------------------------</p>
     {% if request.user != profile.user %}
         <h3>{{ profile.user.username }}'s Freunde </h3>  
@@ -126,14 +120,16 @@
 
 
 
-
+    <!-- Post-Funktion auf dem User-Profil -->
     <p>--------------------------------------------------</p>
 
     <br><br><br>
 
     <h2>Timeline</h2>
 
+    <!-- eigenes Profil -->
     {% if request.user == profile.user or request.user.is_superuser %}
+        <!-- Post-Form -->
         <p><strong> Teilen macht Spaß! </strong></p>
 
         <div>
@@ -146,14 +142,15 @@
         </div>
         <bt><br><br>
 
-    
+        
+        <!-- Posts des eigenen Profils anzeigen -->
         {% if profile_user_posts %}
             <p><strong> Hier siehst du deine Posts: </strong></p><br>
 
             {% for post in profile_user_posts %}
                 <div>
                     <strong><a href="{% url 'profile_detail' pk=post.user.id %}">{{ post.user.username }}</a></strong> <em> teilte am <strong>{{ post.created_at|date:"d.m.Y H:i" }}</strong>:</em><br>
-                    {% if post.image %}<img src="{{ post.image.url }}" alt="Post image">{% endif %}
+                    {% if post.image %}<img src="{{ post.image.url }}" alt="Post image"><br>{% endif %}
                     {% if post.text %}{{ post.text|truncatechars:100 }}{% endif %}
                     {% if post.link %}...Klick: <a href="{{ post.link }}">{{ post.domain }}</a>{% endif %}<br>
                     {% if post.event %}<p>Veranstaltung: {{ post.event.title }}</p>{% endif %}
@@ -186,7 +183,7 @@
                 </div>
         {% endif %}
     
-
+    <!-- Profile der anderen -->
     {% else %}
         {% if profile_user_posts %}
             <p><strong>Hier siehst du {{ profile.user.username }}'s Posts:</strong> </p><br>
@@ -233,6 +230,8 @@
 {% endif %}
 
 
+
+<!-- AJAX Skript -->
 <script type="text/javascript">
     $(document).ready(function(){
         $('.like-post-btn').click(function(e){
@@ -259,6 +258,31 @@
                 }
             });
         });
+
+        $('#visibility-toggle-btn').click(function() {
+            var csrfToken = $('[name=csrfmiddlewaretoken]').val();
+            var isVisible = $(this).data('visible');
+    
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'invisible_check' %}',
+                data: {
+                    'csrfmiddlewaretoken': csrfToken,
+                    'visible': isVisible
+                },
+                success: function(response) {
+                    if (response.visible) {
+                        $('#visibility-toggle-btn').text('UNSICHTBAR').data('visible', false);
+                    } else {
+                        $('#visibility-toggle-btn').text('SICHTBAR').data('visible', true);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert("Ein Fehler ist aufgetreten: " + error);
+                }
+            });
+        });
+            
     });
 </script>
 

@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, DeleteView, CreateView, DetailView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
+from django.http import JsonResponse
 from .forms import UpdateUserForm, UpdateProfileForm
 from posts.models import Post # für post anzeigen des users auf profile_detail
 from posts.forms import PostForm
@@ -13,6 +14,9 @@ from django.contrib.auth import get_user_model
 from .models import Profile, Friendship
 from django.utils import timezone # für friend connecten
 from django.contrib import messages # wird verwendet um meldungen durch die views oder auch verarbeitung an den user zu schicken
+
+# für Ajax invisible_check
+from django.views.decorators.http import require_POST
 
 
 # erstmal alle Templates zum createn, anzeigen und editieren von profiles der user
@@ -223,17 +227,11 @@ def update_activity_status(profile):
     profile.save(update_fields=['last_online'])
 
 
-#2023-12-16 - user nur für freude sichtbar
+@login_required
+@require_POST
 def invisible_check(request):
-    user = request.user.id
     profil = request.user.profile
-
-    #wennn im request.POST ein wert für 'invisible' enthalten ist (ckeckbox gehakt), dann führe aus:
-    if 'invisible' in request.POST:
-        profil.invisible = True
-    else:
-        profil.invisible = False
-
+    profil.invisible = not profil.invisible
     profil.save()
-    return redirect('profile_detail', pk=user)
-
+    
+    return JsonResponse({'visible': profil.invisible})
