@@ -3,6 +3,7 @@
 {% block title %}Profil | {% endblock %}
 
 {% block content %}
+{% load like_tags %}
 
 
 {% if profile.user.profile.invisible and profile.user != request.user and profile.user.username not in freunde_namelist %}
@@ -152,24 +153,28 @@
             {% for post in profile_user_posts %}
                 <div>
                     <strong><a href="{% url 'profile_detail' pk=post.user.id %}">{{ post.user.username }}</a></strong> <em> teilte am <strong>{{ post.created_at|date:"d.m.Y H:i" }}</strong>:</em><br>
-                    {% if post.image %}<img src="{{ post.image.url }}" alt="Post image">{% endif %}<br>
+                    {% if post.image %}<img src="{{ post.image.url }}" alt="Post image">{% endif %}
                     {% if post.text %}{{ post.text|truncatechars:100 }}{% endif %}
                     {% if post.link %}...Klick: <a href="{{ post.link }}">{{ post.domain }}</a>{% endif %}<br>
                     {% if post.event %}<p>Veranstaltung: {{ post.event.title }}</p>{% endif %}
-
-                    <form action="{% url 'like_post' post.id %}" method="post">
-                        {% csrf_token %}
-                        <button type="submit">Like</button>
-                    </form>
-                    <strong><em>
-                        {{ post.likes.count }} Likes
+                    
+                    <strong>
+                        {% if post|has_liked_post:request.user %}
+                            <button class="like-post-btn" data-post-id="{{ post.id }}">UNLIKE</button>
+                        {% else %}
+                            <button class="like-post-btn" data-post-id="{{ post.id }}">LIKE</button>
+                        {% endif %}
+                        
+                        <a href="{% url 'likelist_post' post.id %}">
+                            <span class="post-likes-count">{{ post.likes.count }} Likes</span>
+                        </a>
                         <a href="{% url 'post_detail' post.id %}"> | {{ post.comments.count }} Kommentare</a>
                         {% if request.user == post.user or request.user.is_superuser %}
                             <a href="{% url 'edit_post' post.id %}">| Bearbeiten</a>
                             <a href="{% url 'delete_post' post.id %}">| Löschen</a><br>
                         {% endif %}
-                        <a href="{% url 'post_detail' post.id %}" class="details-link">Mehr erfahren</a><br>
-                    </strong></em>
+                        <em><a href="{% url 'post_detail' post.id %}" class="details-link">Mehr erfahren</a></em><br>
+                    </strong>
 
                     <br> <br>
                 </div>
@@ -178,6 +183,7 @@
         {% else %}
                 <div>
                     Du hast ja noch gar nichts geteilt ?!? - <a href="{% url 'create_post' %}">Jetzt nachholen!</a><br><br><br>
+                </div>
         {% endif %}
     
 
@@ -187,14 +193,33 @@
             {% for post in profile_user_posts %}
             <div>
                 <p><strong><a href="{% url 'profile_detail' pk=post.user.id %}">{{ post.user.username }}</a></strong> <em> teilte am <strong>{{ post.created_at|date:"d.m.Y H:i" }}</strong>:</em></p>
-                <hr>
+                <hr><br>
                 {% if post.image %}<img src="{{ post.image.url }}" alt="Post image">{% endif %}
                 {% if post.text %}<p>{{ post.text }}</p>{% endif %}
                 {% if post.link %}...Klick: <a href="{{ post.link }}">{{ post.domain }}</a>{% endif %}
                 {% if post.event %}<p>Veranstaltung: {{ post.event.title }}</p>{% endif %}
-
-                <br> <br>
+                <br>
+                <strong>
+                    {% if post|has_liked_post:request.user %}
+                        <button class="like-post-btn" data-post-id="{{ post.id }}">UNLIKE</button>
+                    {% else %}
+                        <button class="like-post-btn" data-post-id="{{ post.id }}">LIKE</button>
+                    {% endif %}
+                    
+                    <a href="{% url 'likelist_post' post.id %}">
+                        <span class="post-likes-count">{{ post.likes.count }} Likes</span>
+                    </a>
+                    <a href="{% url 'post_detail' post.id %}"> | {{ post.comments.count }} Kommentare</a>
+                    {% if request.user == post.user or request.user.is_superuser %}
+                        <a href="{% url 'edit_post' post.id %}">| Bearbeiten</a>
+                        <a href="{% url 'delete_post' post.id %}">| Löschen</a><br>
+                    {% endif %}
+                    <br>
+                    <em><a href="{% url 'post_detail' post.id %}" class="details-link">Mehr erfahren</a></em><br>
+                </strong>
             </div>
+            <br><br>
+            
             {% endfor %}
         
         {% else %}
@@ -206,5 +231,36 @@
     {% endif %}
 
 {% endif %}
+
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.like-post-btn').click(function(e){
+            e.preventDefault();
+            var postId = $(this).data('post-id');
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+            var btn = $(this);
+            var likeCountSpan = btn.closest('strong').find('.post-likes-count');
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'like_post_ajax' %}',
+                data: {
+                    'csrfmiddlewaretoken': csrfToken,
+                    'post_id': postId
+                },
+                success: function(response){
+                    if(response.liked){
+                        btn.text('UNLIKE');
+                    } else {
+                        btn.text('LIKE');
+                    }
+                    likeCountSpan.text(response.total_likes + ' Likes');
+                }
+            });
+        });
+    });
+</script>
+
 
 {% endblock content %}

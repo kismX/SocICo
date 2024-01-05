@@ -16,7 +16,7 @@
 
 <!-- Like und Kommentar Handling Post-->
 <strong>
-    {% if post|has_liked:request.user %}
+    {% if post|has_liked_post:request.user %}
         <button class="like-post-btn" data-post-id="{{ post.id }}">UNLIKE</button>
     {% else %}
         <button class="like-post-btn" data-post-id="{{ post.id }}">LIKE</button>
@@ -41,7 +41,7 @@
 
     <!-- Like handling Kommentar -->
     <strong>
-        {% if comment|has_liked:request.user %}
+        {% if comment|has_liked_comment:request.user %}
             <button class="like-comment-btn" data-comment-id="{{ comment.id }}">Unlike</button>
         {% else %}
             <button class="like-comment-btn" data-comment-id="{{ comment.id }}">Like</button>
