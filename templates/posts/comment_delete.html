@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<form method="post">
+    {% csrf_token %}
+    <p>Sicher, dass du diesen Kommentar löschen willst: "{{ comment.comment }}"?</p>
+    <button type="submit">Löschen</button>
+    <a href="{% url 'profile_detail' pk=request.user.id %}">Abbrechen</a>
+</form>
+
+
+{% endblock %}

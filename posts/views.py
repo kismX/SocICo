@@ -81,7 +81,7 @@ def comment_edit(request, comment_id):
             return redirect('post_detail', post_id=comment.post.id)
     else:
         form = CommentForm(instance=comment)
-    return render(request, 'edit_comment.html', {'form': form})
+    return render(request, 'posts/comment_edit.html', {'form': form})
 
 
 # comments deleten
@@ -90,7 +90,7 @@ def comment_delete(request, comment_id):
     if request.method == 'POST':
         comment.delete()
         return redirect('post_detail', post_id=comment.post.id)
-    return render(request, 'delete_comment.html', {'comment': comment})
+    return render(request, 'posts/comment_delete.html', {'comment': comment})
 
 
 # liken (ajax)
