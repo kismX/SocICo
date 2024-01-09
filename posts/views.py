@@ -1,8 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
+
 from .models import Post, Comment
+from notifications.models import Notification
 from .forms import PostForm, CommentForm, EventForm
 from basics.utils import get_domain
+
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 # views zum posten
 def create_post(request):
@@ -94,28 +99,87 @@ def comment_delete(request, comment_id):
 
 
 # liken (ajax)
-from django.http import JsonResponse
-
+# + notification wenn like
 def like_post_ajax(request):
     post_id = request.POST.get('post_id')
     post = get_object_or_404(Post, id=post_id)
     liked = False
+
     if post.likes.filter(id=request.user.id).exists():
         post.likes.remove(request.user)
     else:
         post.likes.add(request.user)
         liked = True
+
+        # Erstelle notification nur, wenn Post-ersteller und likender User unterschiedlich sind
+        if post.user != request.user:
+            notification = Notification.objects.create(
+                to_user=post.user,
+                from_user=request.user,
+                post=post,
+                notification_type='like',
+                notification_info=f"{request.user.username} hat deinen Post geliked.",
+                notification_link=f"/post/{post.id}/"
+            )
+            print(f"Notification erstellt: {notification.id} für {notification.to_user}") #test funktioniert!!
+            
+            # Senden der notifications über channels
+            channel_layer = get_channel_layer()
+            group_name = f"notification_user_{post.user.id}"
+            print(f"Senden an Grouououp: {group_name}")  # test
+
+            async_to_sync(channel_layer.group_send)(
+            group_name,
+            {
+                "type": "send_notification",
+                "message": {
+                    "notification_id": notification.id,
+                }
+            }
+        )
+        print(f"Nachricht gesendet für Notifiation: {notification.id}")  #test
+
     return JsonResponse({'liked': liked, 'total_likes': post.total_likes()})
+
 
 def like_comment_ajax(request):
     comment_id = request.POST.get('comment_id')
     comment = get_object_or_404(Comment, id=comment_id)
     liked = False
+
     if comment.likes.filter(id=request.user.id).exists():
         comment.likes.remove(request.user)
     else:
         comment.likes.add(request.user)
         liked = True
+
+        if comment.user != request.user:
+            notification = Notification.objects.create(
+                to_user=comment.user,
+                from_user=request.user,
+                comment=comment,
+                notification_type='like',
+                notification_info=f"{request.user.username} hat deinen Kommentar geliked.",
+                notification_link=f"/post/{comment.post.id}/"
+            )
+            print(f"Notification erstellt: {notification.id} für {notification.to_user}") #test
+
+
+            channel_layer = get_channel_layer()
+            group_name = f"notification_user_{comment.user.id}"
+            print(f"Senden an Grouououp: {group_name}")  # test
+
+            async_to_sync(channel_layer.group_send)(
+                group_name,
+                {
+                    "type": "send_notification",
+                    "message": {
+                        "notification_id": notification.id,
+                    }
+                }
+            )
+            print(f"Nachricht gesendet für Notifiation: {notification.id}")  #test
+
     return JsonResponse({'liked': liked, 'total_likes_comment': comment.total_likes_comment()})
 
 

@@ -193,3 +193,45 @@ h1, h2, h3, h4{
     border-radius: 50%;
     border: 2px solid #40281A;
 }
+
+
+
+/* notifications style */
+.notification-area {
+    position: relative;
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.notification-button {
+    padding: 5px 15px;
+    border-radius: 5px;
+    background-color: #F28A2E;
+    color: #40281A;
+    font-family: "PoppinsMedium";
+    cursor: pointer;
+}
+
+.notification-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #F2EFDF;
+    min-width: 250px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 5px;
+    overflow: auto;
+    max-height: 300px; /* Maximalhöhe mit Scrollbalken */
+}
+
+.notification-dropdown div {
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    color: #40281A;
+}
+
+.notification-dropdown div:hover {
+    background-color: #F2CA99;
+}
