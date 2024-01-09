@@ -12,18 +12,18 @@
         {% csrf_token %}
         
         <p>Alle User</p>
-        <select name="input_all_users" multiple>
-            {% for profile in profiles %}
-            <option value="{{ profile.id }}">{{ profile }}</option>
-            {% endfor %}
-        </select>
+        
+        {% for profile in profiles %}
+        <input type="checkbox" value="{{ profile.id }}" name="input_all_users" id="profile_checkbox">
+        <label for="profile_checkbox">{{ profile }}</label>
+        {% endfor %}
 
         <p>Freunde</p>
-        <select name="input_friends" multiple>
-            {% for friend in friends %}
-            <option value="{{ friend.id }}">{{ friend }}</option>
-            {% endfor %}
-        </select>
+        
+        {% for friend in friends %}
+        <input type="checkbox" value="{{ friend.id }}" name="input_friends" id="friends_checkbox">
+        <label for="friends_checkbox">{{ friend }}</label>
+        {% endfor %}
 
         <input name="room_name" type="text">
 

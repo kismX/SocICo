@@ -19,7 +19,9 @@
 <h2>Gruppen Chats:</h2>
 {% for key, value in group_dict.items %}
     <div class="flex-wrap-container rooms-list">
-                <p>{{ value }}</p>
+                <div>
+                    <p>{{ value }}</p>
+                </div>
                 <a class="chat-form-button" href="{% url 'room' key %}">></a>
     </div>
 {% endfor %}
