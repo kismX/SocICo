@@ -4,17 +4,20 @@ from asgiref.sync import sync_to_async
 from .models import Notification
 
 class NotificationConsumer(AsyncWebsocketConsumer):
-    async def connect(self):
+    
+    
+    async def connect(self):  #läuft
         print("connect method aufgerufen") # test
+        
         self.user = self.scope["user"]
         if self.user.is_authenticated:
             # Erstelle n einzigartigen groupname für den User
             self.group_name = f"notification_user_{self.user.id}"
-            print(f"Groupname connect: {self.group_name}")
+            print(f"Groupname connect: {self.group_name}") # test funktioniert
             # Füge user zur Gruppe hinzu
             await self.channel_layer.group_add(self.group_name, self.channel_name)
             await self.accept()
-            print(f"WebSocket connected yo. Group: {self.group_name}") #test
+            print(f"WebSocket connected yo. Group: {self.group_name}") #test funktioniert
 
     async def disconnect(self, code):
         # Entferne User aus Group, wenn Verbindung getrennt wird
@@ -39,7 +42,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=json.dumps(notification_data))
 
     async def send_notification(self, event):
-        print(f"Notification-Event bekommenn: {event}") #test
+        print(f"Notification-Event bekommenn: {event}") #test funktioniert, wenn anderer user online
 
         # Method wird aufgerufen, wenn Nachricht an group gesendet wird
         notification_message = event['message']

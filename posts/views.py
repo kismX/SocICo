@@ -100,7 +100,7 @@ def comment_delete(request, comment_id):
 
 # liken (ajax)
 # + notification wenn like
-def like_post_ajax(request):
+def like_post_ajax(request):  # signal websocket läuft!
     post_id = request.POST.get('post_id')
     post = get_object_or_404(Post, id=post_id)
     liked = False
@@ -121,12 +121,12 @@ def like_post_ajax(request):
                 notification_info=f"{request.user.username} hat deinen Post geliked.",
                 notification_link=f"/post/{post.id}/"
             )
-            print(f"Notification erstellt: {notification.id} für {notification.to_user}") #test funktioniert!!
+            print(f"Notification für Post erstellt: {notification.id} für {notification.to_user}") #test funktioniert!!
             
             # Senden der notifications über channels
             channel_layer = get_channel_layer()
             group_name = f"notification_user_{post.user.id}"
-            print(f"Senden an Grouououp: {group_name}")  # test
+            print(f"Senden an Grouououp: {group_name}")  # test funktioniert
 
             async_to_sync(channel_layer.group_send)(
             group_name,
@@ -137,12 +137,12 @@ def like_post_ajax(request):
                 }
             }
         )
-        print(f"Nachricht gesendet für Notifiation: {notification.id}")  #test
+        print(f"Nachricht gesendet für Notifiation post: {notification.id}")  #test funktioniert
 
     return JsonResponse({'liked': liked, 'total_likes': post.total_likes()})
 
 
-def like_comment_ajax(request):
+def like_comment_ajax(request): # signal websocket läuft!
     comment_id = request.POST.get('comment_id')
     comment = get_object_or_404(Comment, id=comment_id)
     liked = False
@@ -162,12 +162,12 @@ def like_comment_ajax(request):
                 notification_info=f"{request.user.username} hat deinen Kommentar geliked.",
                 notification_link=f"/post/{comment.post.id}/"
             )
-            print(f"Notification erstellt: {notification.id} für {notification.to_user}") #test
+            print(f"Notification für comment erstellt: {notification.id} für {notification.to_user}") #test funktioniert
 
 
             channel_layer = get_channel_layer()
             group_name = f"notification_user_{comment.user.id}"
-            print(f"Senden an Grouououp: {group_name}")  # test
+            print(f"Senden an Grouououp comment : {group_name}")  # test funktioniert
 
             async_to_sync(channel_layer.group_send)(
                 group_name,
@@ -178,7 +178,7 @@ def like_comment_ajax(request):
                     }
                 }
             )
-            print(f"Nachricht gesendet für Notifiation: {notification.id}")  #test
+            print(f"Nachricht gesendet für Notifiation comment: {notification.id}")  #test
 
     return JsonResponse({'liked': liked, 'total_likes_comment': comment.total_likes_comment()})
 
