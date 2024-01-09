@@ -7,10 +7,11 @@ from accounts.models import Friendship
 from .models import Room, Message
 from psycopg2 import errors
 
+
 @login_required
 def rooms(request):
-    profiles = get_user_model().objects.all()
     rooms = Room.objects.all()
+    profiles = get_user_model().objects.all()
     private_dict = dict()
     group_dict = dict()
     username_list = []
@@ -59,7 +60,6 @@ def room(request, slug):
 def create_private_chat(request, own_id, foreign_id):
 
     rooms = Room.objects.all()
-
     id_list = [own_id, foreign_id]
     id_list.sort()
     str_ids = [str(num) for num in id_list]
@@ -104,6 +104,7 @@ def create_group_chat(request):
     
     input_list = request.GET.getlist("input_all_users")
     input_name = request.GET.get("room_name")
+    rooms = Room.objects.all()
     id_list = [user]
 
     # Wenn der Input nicht None ist erstelle einen Raum:
@@ -111,8 +112,19 @@ def create_group_chat(request):
         for item in input_list:
             item = int(item)
             id_list.append(item)
+
+        id_list.sort()
+
+        for room in rooms:
+            sorted_room_list = sorted(room.user_list)
+            if sorted_room_list == id_list:
+                print('Room already exists')
+            else:
+                try:
+                    Room.objects.create(name=input_name, slug=str(user)+'_'+'_'.join(input_list), user_list=id_list)
+                except (errors.UniqueViolation, IntegrityError):
+                    print('Room already exists')
         
-        Room.objects.create(name=input_name, slug=str(user)+'_'+'_'.join(input_list), user_list=id_list)
         return redirect('rooms')
 
     context = {
