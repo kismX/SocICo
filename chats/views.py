@@ -86,12 +86,21 @@ def create_group_chat(request):
     profiles = get_user_model().objects.all()
     friends = Friendship.objects.filter(from_user=user, accepted_at__isnull=False) | Friendship.objects.filter(to_user=user, accepted_at__isnull=False)
     profile_list = []
+    friends_list = []
 
+    # Liste der Profile anderer User
     for profile in profiles:
         if profile.id == user:
             pass
         else:
             profile_list.append(profile)
+
+    # Liste der eigenen Freunde
+    for friend in friends:
+        if friend.to_user_id == user:
+            friends_list.append(friend.from_user)
+        else:
+            friends_list.append(friend.to_user)
     
     input_list = request.GET.getlist("input_all_users")
     input_name = request.GET.get("room_name")
@@ -108,7 +117,7 @@ def create_group_chat(request):
 
     context = {
         'profiles': profile_list,
-        'friends': friends,
+        'friends': friends_list,
     }    
 
     return render(request, 'chats/create_room.html', context)
