@@ -21,7 +21,7 @@
         <p>Freunde</p>
         
         {% for friend in friends %}
-        <input type="checkbox" value="{{ friend.id }}" name="input_friends" id="friends_checkbox">
+        <input type="checkbox" value="{{ friend.id }}" name="input_all_users" id="friends_checkbox">
         <label for="friends_checkbox">{{ friend }}</label>
         {% endfor %}
 

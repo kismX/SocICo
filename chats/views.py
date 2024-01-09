@@ -111,17 +111,21 @@ def create_group_chat(request):
     if input_list != []:
         for item in input_list:
             item = int(item)
-            id_list.append(item)
+            if item not in id_list:
+                id_list.append(item)
 
-        id_list.sort()
+        sorted_id_list = sorted(id_list)
+        sorted_id_list_strings = [str(id) for id in sorted_id_list]
 
         for room in rooms:
             sorted_room_list = sorted(room.user_list)
-            if sorted_room_list == id_list:
+            print(sorted_room_list)
+
+            if sorted_room_list == sorted_id_list:
                 print('Room already exists')
             else:
                 try:
-                    Room.objects.create(name=input_name, slug=str(user)+'_'+'_'.join(input_list), user_list=id_list)
+                    Room.objects.create(name=input_name, slug='_'.join(sorted_id_list_strings), user_list=id_list)
                 except (errors.UniqueViolation, IntegrityError):
                     print('Room already exists')
         
