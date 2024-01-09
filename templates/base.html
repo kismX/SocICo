@@ -18,7 +18,7 @@
 
         <div class="flex">
             {% if user.is_authenticated %}
-                <a class="profile" href="{% url 'profile_detail' pk=request.user.id %}">Mein Profil</a>
+                <a class="profile" href="{% url 'profile_detail' pk=request.user.id %}">{{ request.user.username }}</a>
                 <a class="logout" href="{% url 'logout' %}">Logout</a>
             {% else %}
                 <a href="{% url 'login' %}">Login</a>

@@ -8,9 +8,25 @@
         <p>{{ friend.id }}</p>
     {% endfor %}
 
-    <form method="post">
+    <form method="get">
         {% csrf_token %}
-        {{ form }}
+        
+        <p>Alle User</p>
+        <select name="input_all_users" multiple>
+            {% for profile in profiles %}
+            <option value="{{ profile.id }}">{{ profile }}</option>
+            {% endfor %}
+        </select>
+
+        <p>Freunde</p>
+        <select name="input_friends" multiple>
+            {% for friend in friends %}
+            <option value="{{ friend.id }}">{{ friend }}</option>
+            {% endfor %}
+        </select>
+
+        <input name="room_name" type="text">
+
         <button type="submit">Posten</button>
     </form>
 
