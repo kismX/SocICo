@@ -12,3 +12,18 @@ def mark_as_read(request):
         return JsonResponse({'status': 'success'})
     except Notification.DoesNotExist:
         return JsonResponse({'status': 'error', 'message': 'Notification not found'}, status=404)
+
+
+def get_unsent_notifications(request):
+    if request.user.is_authenticated:
+        unsent_notifications = Notification.objects.filter(
+            to_user=request.user, 
+            is_sent=False
+        ).values() 
+
+        # notifications als gesendet markieren
+        unsent_notifications.update(is_sent=True)
+
+        return JsonResponse({"notifications": list(unsent_notifications)})
+    else:
+        return JsonResponse({"error": "Nicht authentifiziert"}, status=401)

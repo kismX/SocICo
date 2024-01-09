@@ -119,7 +119,8 @@ def like_post_ajax(request):  # signal websocket läuft!
                 post=post,
                 notification_type='like',
                 notification_info=f"{request.user.username} hat deinen Post geliked.",
-                notification_link=f"/post/{post.id}/"
+                notification_link=f"/post/{post.id}/",
+                is_sent = False # hinzugefügt
             )
             print(f"Notification für Post erstellt: {notification.id} für {notification.to_user}") #test funktioniert!!
             
@@ -160,7 +161,8 @@ def like_comment_ajax(request): # signal websocket läuft!
                 comment=comment,
                 notification_type='like',
                 notification_info=f"{request.user.username} hat deinen Kommentar geliked.",
-                notification_link=f"/post/{comment.post.id}/"
+                notification_link=f"/post/{comment.post.id}/",
+                is_sent = False # hinzugefügt
             )
             print(f"Notification für comment erstellt: {notification.id} für {notification.to_user}") #test funktioniert
 

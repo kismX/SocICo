@@ -12,6 +12,7 @@ class Notification(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     notification_info = models.TextField()
     notification_link = models.URLField()
+    is_sent = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Notification von {self.from_user} an {self.to_user} vom Typ {self.type}"
