@@ -3,9 +3,9 @@
 {% block title %}| {% endblock %}
 
 {% block content %}
-    <div>
-        {% for name in user_dict.values %}
-        <h1>Chat mit: {{ name.0 }}</h1>
+    <div class="flex">
+        {% for name in username_list %}
+        <h1>{{ name }}/</h1>
         {% endfor %}
     </div>
 

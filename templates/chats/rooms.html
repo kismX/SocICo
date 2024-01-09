@@ -5,13 +5,21 @@
 {% block content %}
 
 <h2>Private Chats:</h2>
-{% for key, value in user_dict.items %}
+{% for key, value in private_dict.items %}
     <div class="flex-wrap-container rooms-list">
                 <div>
                     {% for name in value %}
                     <p>{{ name }}</p>
                     {% endfor %}
                 </div>
+                <a class="chat-form-button" href="{% url 'room' key %}">></a>
+    </div>
+{% endfor %}
+
+<h2>Gruppen Chats:</h2>
+{% for key, value in group_dict.items %}
+    <div class="flex-wrap-container rooms-list">
+                <p>{{ value }}</p>
                 <a class="chat-form-button" href="{% url 'room' key %}">></a>
     </div>
 {% endfor %}
