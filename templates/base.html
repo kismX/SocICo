@@ -22,17 +22,17 @@
                 <a class="profile" href="{% url 'profile_detail' pk=request.user.id %}">Mein Profil</a>
                 <a class="logout" href="{% url 'logout' %}">Logout</a>
 
-                <!-- Notifications Menü -->
-                <!-- <div id="notificationArea" class="notification-area"> -->
-                <!--    <button id="notificationButton">Benachrichtigungen</button>-->
-                <!--    <div id="notificationDropdown" class="notification-dropdown">-->
-                        <!-- noticications werden dann hier angezeigt --> 
-                <!--     </div>-->
-                <!-- </div> -->
+                {% if notifications %}
+                    <a class="notifications" href="{% url 'notifications' %}">
+                    Benachrichtigungen <span class="notification-badge"></span>
+                    </a>
+                {% else %}
+                    <a class="notifications" href="{% url 'notifications' %}"> Benachrichtigungen</a>
+                {% endif %}
 
                 <!-- hier notifications -->
-                <p> NOTIFICATIONS </p>
-                <ul id="notificationsList"></ul>
+                {% comment %} <p> NOTIFICATIONS </p>
+                <ul id="notificationsList"></ul> {% endcomment %}
                     
             {% else %}
                 <a href="{% url 'login' %}">Login</a>
@@ -55,6 +55,8 @@
                 <a href="{% url 'profile_edit' %}">Profil bearbeiten</a>
                 <a href="{% url 'user_filter' %}">Seeeeeek</a>
                 <a href="{% url 'add_terms' %}">Wörterliste++ (nur für uns)</a>
+                <a href="{% url 'notifications' %}">Benachrichtigungen</a>
+
                 
                 <a href="{% url 'rooms' %}">Chatrooms</a> 
 
@@ -87,6 +89,8 @@
     </script>
 
 
+    {% comment %} 
+    
     <script>
         // Javascript für notifications 
 
@@ -107,12 +111,6 @@
             console.error('Notification socket closed unexpectedly');
         };
     
-        // function displayNotification(info, link) {
-        //    var dropdown = document.getElementById("notificationDropdown");
-        //    var notificationElement = document.createElement("div");
-        //    notificationElement.innerHTML = `<a href="${link}">${info}</a>`;
-        //    dropdown.prepend(notificationElement); // fügt benachrichtigung oben in dropdown-lsite hinzu
-        //} 
     
         function displayNotification(info, link) {
             var notificationList = document.getElementById("notificationList");
@@ -146,7 +144,9 @@
         });
 
         {% endif %}
-    </script>
+    </script> 
+
+    {% endcomment %}
 
 </body>
 </html>
