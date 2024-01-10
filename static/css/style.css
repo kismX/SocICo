@@ -194,44 +194,53 @@ h1, h2, h3, h4{
     border: 2px solid #40281A;
 }
 
+/* Gruppenchat erstellen */
 
-
-/* notifications style */
-.notification-area {
-    position: relative;
-    display: inline-block;
-    margin-right: 20px;
-}
-
-.notification-button {
-    padding: 5px 15px;
-    border-radius: 5px;
-    background-color: #F28A2E;
-    color: #40281A;
+.groupchat-form{
+    background-color: white;
+    width: 100%;
+    padding: 20px;
+    border-radius: 10px;
     font-family: "PoppinsMedium";
-    cursor: pointer;
+    gap: 50px;
+    align-items: start;
 }
-
-.notification-dropdown {
-    display: none;
-    position: absolute;
-    right: 0;
-    background-color: #F2EFDF;
-    min-width: 250px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-    border-radius: 5px;
-    overflow: auto;
-    max-height: 300px; /* Maximalhöhe mit Scrollbalken */
+.groupchat-form fieldset{
+    display: flex;
+    flex-direction: column;
+    flex: 1 0;
 }
-
-.notification-dropdown div {
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    color: #40281A;
+.groupchat-form fieldset p{
+    font-size: 1.2em;
+    font-family: "PoppinsBold";
 }
-
-.notification-dropdown div:hover {
-    background-color: #F2CA99;
+.groupchat-list-container{
+    height: 250px;
+    overflow-y: scroll;
+    scrollbar-width: 5px;
+}
+.groupchat-list-container div{
+    background-color: #F28A2E;
+    margin-bottom: 5px;
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+}
+#groupchat-checkbox{
+    margin-right: 10px;
+}
+.groupchat-form-submit input{
+    height: 30px;
+    background-color: #40281a3f;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+.groupchat-form-submit button{
+    width: 100%;
+    background-color: #63A69F;
+    color: white;
+    font-family: "PoppinsMedium";
+    padding: 10px;
+    border-radius: 10px;
 }
