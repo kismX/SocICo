@@ -27,7 +27,6 @@ pyOpenSSL==23.3.0
 python-Levenshtein==0.23.0
 rapidfuzz==3.5.2
 redis==5.0.1
-redis-server==6.0.16
 requests==2.31.0
 service-identity==23.1.0
 six==1.16.0
