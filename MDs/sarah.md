@@ -1,2 +1,4 @@
-- [ ] name der personen im raum anzeigen (room.html)
+- [X] name der personen im raum anzeigen (room.html)
 - [ ] raumname muss pflichtfeld werden
+- [ ] liste der leute im chat rechts
+- [ ]
