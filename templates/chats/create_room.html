@@ -3,31 +3,44 @@
 {% block title %}Create Chat | {% endblock %}
 
 {% block content %}
-<h1>hallo</h1>
-    {% for friend in freunde_liste %}
-        <p>{{ friend.id }}</p>
-    {% endfor %}
+<h1>Gruppenchat erstellen</h1>
 
-    <form method="get">
+    <form class="groupchat-form flex-wrap-container" method="get">
         {% csrf_token %}
-        
-        <p>Alle User</p>
-        
-        {% for profile in profiles %}
-        <input type="checkbox" value="{{ profile.id }}" name="input_all_users" id="profile_checkbox">
-        <label for="profile_checkbox">{{ profile }}</label>
-        {% endfor %}
 
-        <p>Freunde</p>
+        <fieldset>
+            <p>Freunde</p>
+            
+            <div class="groupchat-list-container">
+                {% for friend in friends %}
+                <div>
+                    <input type="checkbox" value="{{ friend.id }}" name="input_all_users" id="groupchat-checkbox">
+                    <label for="friends_checkbox">{{ friend }}</label>
+                </div>
+                {% endfor %}
+            </div>
+        </fieldset>
         
-        {% for friend in friends %}
-        <input type="checkbox" value="{{ friend.id }}" name="input_all_users" id="friends_checkbox">
-        <label for="friends_checkbox">{{ friend }}</label>
-        {% endfor %}
+        <fieldset>
+            <p>Alle User</p>
 
-        <input name="room_name" type="text">
+            <div class="groupchat-list-container">
+                {% for profile in profiles %}
+                <div>
+                    <input type="checkbox" value="{{ profile.id }}" name="input_all_users" id="groupchat-checkbox">
+                    <label for="profile_checkbox">{{ profile }}</label>
+                </div>
+                {% endfor %}
+            </div>
+            
+        </fieldset>
 
-        <button type="submit">Posten</button>
+        <fieldset class="groupchat-form-submit">
+            <p>Chatname:</p>
+            <input name="room_name" type="text">
+            <button type="submit">Gruppe erstellen</button>
+        </fieldset>
+        
     </form>
 
 {% endblock content%}
