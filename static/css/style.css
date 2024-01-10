@@ -193,3 +193,54 @@ h1, h2, h3, h4{
     border-radius: 50%;
     border: 2px solid #40281A;
 }
+
+/* Gruppenchat erstellen */
+
+.groupchat-form{
+    background-color: white;
+    width: 100%;
+    padding: 20px;
+    border-radius: 10px;
+    font-family: "PoppinsMedium";
+    gap: 50px;
+    align-items: start;
+}
+.groupchat-form fieldset{
+    display: flex;
+    flex-direction: column;
+    flex: 1 0;
+}
+.groupchat-form fieldset p{
+    font-size: 1.2em;
+    font-family: "PoppinsBold";
+}
+.groupchat-list-container{
+    height: 250px;
+    overflow-y: scroll;
+    scrollbar-width: 5px;
+}
+.groupchat-list-container div{
+    background-color: #F28A2E;
+    margin-bottom: 5px;
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+}
+#groupchat-checkbox{
+    margin-right: 10px;
+}
+.groupchat-form-submit input{
+    height: 30px;
+    background-color: #40281a3f;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+.groupchat-form-submit button{
+    width: 100%;
+    background-color: #63A69F;
+    color: white;
+    font-family: "PoppinsMedium";
+    padding: 10px;
+    border-radius: 10px;
+}
