@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Notifications | {% endblock %}
+{% block content %}
+
+{% if request.user.is_authenticated %}
+    <h2>Benachrichtigungen</h2>
+    
+    {% if notifications %}
+        <ul>
+            {% for notification in notifications %}
+                {% if notification.notification_type == 'like' %}
+                    <li>Du hast ein neues LIKE erhalten:
+                        (<em>Von <strong>{{ notification.from_user }} </strong></em> am <em><strong>{{ notification.created_at|date:"d.m.Y H:i" }}</strong></em>)<br>
+                        <a href="{{ notification.notification_link }}">Link zur gelikten Seite</a>
+                        <br><br>
+                    </li>
+                {% elif notification.notification_type == 'post' %}
+                    <li>Du hast einen neuen BEITRAG erhalten:
+                        (<em>Von <strong>{{ notification.from_user }} </strong></em> am <em><strong>{{ notification.created_at|date:"d.m.Y H:i" }}</strong></em>)<br>
+                        <a href="{{ notification.notification_link }}">Link zum neuen Beitrag</a>
+                    </li>
+                {% elif notification.notification_type == 'comment' %}
+                    <li>Du hast einen neuen KOMMENTAR erhalten:
+                        (<em>Von <strong>{{ notification.from_user }} </strong></em> am <em><strong>{{ notification.created_at|date:"d.m.Y H:i" }}</strong></em>)<br>
+                        <a href="{{ notification.notification_link }}">Link zum neuen Beitrag</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% else %}
+        Hier gibt es noch keine Neuigkeiten!
+    {% endif %}
+{% else %}
+    <p>Nicht authentifiziert.</p>
+{% endif %}
+
+
+{% endblock %}
