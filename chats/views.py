@@ -83,17 +83,9 @@ def create_private_chat(request, own_id, foreign_id):
 @login_required
 def create_group_chat(request):
     user = request.user.id
-    profiles = get_user_model().objects.all()
+    profiles = get_user_model().objects.exclude(pk=request.user.pk)
     friends = Friendship.objects.filter(from_user=user, accepted_at__isnull=False) | Friendship.objects.filter(to_user=user, accepted_at__isnull=False)
-    profile_list = []
     friends_list = []
-
-    # Liste der Profile anderer User
-    for profile in profiles:
-        if profile.id == user:
-            pass
-        else:
-            profile_list.append(profile)
 
     # Liste der eigenen Freunde
     for friend in friends:
@@ -132,7 +124,7 @@ def create_group_chat(request):
         return redirect('rooms')
 
     context = {
-        'profiles': profile_list,
+        'profiles': profiles,
         'friends': friends_list,
     }    
 

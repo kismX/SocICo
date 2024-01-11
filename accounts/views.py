@@ -109,7 +109,7 @@ class UserProfileCreateView(LoginRequiredMixin, CreateView):
 class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = Profile
     template_name = "profile_edit.html"
-    fields = ["user", "bio", "interests"]     #dann auch erweitern
+    fields = ["user", "bio", "interests",]     #dann auch erweitern
     success_url = reverse_lazy("profile_list")
 
 

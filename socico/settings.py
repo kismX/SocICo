@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'basics',
     'channels',
+    'cities_light',
     'accounts',
     'chats',
     'searchers',

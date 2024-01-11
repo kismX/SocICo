@@ -3,37 +3,39 @@
 {% block title %}| {% endblock %}
 
 {% block content %}
-    <div class="flex">
-        {% for name in username_list %}
-        <h1>{{ name }}/</h1>
-        {% endfor %}
-    </div>
+    <div class="flex-wrap-container chat-container">
 
-
-        <div class="chat-messages" id="chat-messages">
-            
-                {% for message in messages %}
-                <div class="flex-wrap-container">
-                    <img src="{{ message.user.profile.avatar.url }}" alt="">
-                    <div>
-                        <p class="chat-name">{{ message.user.username }}</p>
-                        <p class="chat-message-box">{{ message.content }}</p>
+        <div>
+            <div class="chat-messages" id="chat-messages">
+                
+                    {% for message in messages %}
+                    <div class="flex-wrap-container">
+                        <img src="{{ message.user.profile.avatar.url }}" alt="">
+                        <div>
+                            <p class="chat-name">{{ message.user.username }}</p>
+                            <p class="chat-message-box">{{ message.content }}</p>
+                        </div>
                     </div>
+                    {% endfor %}
+            </div>
+
+            <div>
+                <div class="chat-form">
+                    <form method="post" action="." class="flex-wrap-container">
+                        <input type="text" name="content" class="chat-form-input" placeholder="Deine Nachricht..." id="chat-message-input">
+
+                        <button class="chat-form-button" id="chat-message-submit">Senden</button>
+                    </form>
                 </div>
-                {% endfor %}
+            </div>
         </div>
 
-    <div>
-        <div class="chat-form">
-            <form method="post" action="." class="flex-wrap-container">
-                <input type="text" name="content" class="chat-form-input" placeholder="Deine Nachricht..." id="chat-message-input">
-
-                <button class="chat-form-button" id="chat-message-submit">Senden</button>
-            </form>
+        <div class="chat-namelist">
+            {% for name in username_list %}
+            <a href="#">{{ name }}</a>
+            {% endfor %}
         </div>
     </div>
-
-    
 
 {% endblock %}
 
