@@ -10,6 +10,7 @@ from django.dispatch import receiver
 
 class CustomUser(AbstractUser):
     name = models.CharField(null=True, blank=True, max_length=60)
+    country = models.ForeignKey('cities_light.Country', on_delete=models.SET_NULL, null=True)
     city = models.ForeignKey('cities_light.City', on_delete=models.SET_NULL, null=True)
 
 

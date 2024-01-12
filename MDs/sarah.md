@@ -4,3 +4,4 @@
 - [ ] csrf token aus slug raus wenn keine eingabe passiert im gruppenchat erstellen fenster
 - [ ] city und country in formular so implementieren dass es gespeichert werden kann
 - [X] cities-light installiert (pip install django-cities-light > python manage.py cities_light) -> migration nicht vergessen!!!
+- [ ] passwort ändern implementieren

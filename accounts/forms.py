@@ -8,7 +8,7 @@ from cities_light.models import Country, City
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
-        fields = UserCreationForm.Meta.fields + ('name', 'city' )
+        fields = UserCreationForm.Meta.fields + ('name', 'country', 'city' )
 
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
@@ -26,7 +26,7 @@ class UpdateUserForm(forms.ModelForm):
     
     class Meta:
         model = get_user_model()
-        fields = ['username', 'email']
+        fields = ['username', 'email', 'country', 'city']
     
 
 class UpdateProfileForm(forms.ModelForm):

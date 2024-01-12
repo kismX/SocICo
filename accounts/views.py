@@ -7,13 +7,13 @@ from posts.models import Post # für post anzeigen des users auf profile_detail
 from posts.forms import PostForm
 from basics.utils import get_domain
 
-# 2023-11-22 hinzugefügt für user adden requests etc
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from .models import Profile, Friendship
 from django.utils import timezone # für friend connecten
 from django.contrib import messages # wird verwendet um meldungen durch die views oder auch verarbeitung an den user zu schicken
 
+from cities_light.models import City
 
 # erstmal alle Templates zum createn, anzeigen und editieren von profiles der user
 class UserProfileListView(LoginRequiredMixin, ListView): 
@@ -121,6 +121,9 @@ class UserProfileDeleteView(LoginRequiredMixin, DeleteView):
 
 @login_required
 def profile(request):
+
+    # Verarbeitet Profilbearbeitung
+
     if request.method == 'POST':
         user_form = UpdateUserForm(request.POST, instance=request.user)
         profile_form = UpdateProfileForm(request.POST, request.FILES, instance=request.user.profile)
@@ -148,8 +151,13 @@ def profile(request):
     else:
         user_form = UpdateUserForm(instance=request.user)
         profile_form = UpdateProfileForm(instance=request.user.profile)
+
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form,
+    }
     
-    return render(request, 'profile/profile_edit.html', {'user_form': user_form, 'profile_form': profile_form})
+    return render(request, 'profile/profile_edit.html', context)
     
 
 @login_required
