@@ -21,9 +21,10 @@ def create_post(request):
             post.save()
 
             # notification erstellen - ohne websockets
-            notification_info = f"{request.user.username} hat einen neuen Beitrag auf deinem Profil erstellt."
-            notification_link = f"/posts/post/{post.id}/"
-            create_notification(request.user, request.user, 'post', notification_info, notification_link)
+            if post.user != request.user:
+                notification_info = f"{request.user.username} hat einen neuen Beitrag auf deinem Profil erstellt."
+                notification_link = f"/posts/post/{post.id}/"
+                create_notification(request.user, request.user, 'post', notification_info, notification_link)
             
             return redirect('profile_detail', pk=post.user.id)
     else:
@@ -112,95 +113,6 @@ def comment_delete(request, comment_id):
     return render(request, 'posts/comment_delete.html', {'comment': comment})
 
 
-# LIKEN   (ajax)
-# + NOTIFICATIONS wenn like
-
-# WEBSOCKETS-VERSIONs
-# def like_post_ajax(request):  # signal websocket läuft!
-#     post_id = request.POST.get('post_id')
-#     post = get_object_or_404(Post, id=post_id)
-#     liked = False
-
-#     if post.likes.filter(id=request.user.id).exists():
-#         post.likes.remove(request.user)
-#     else:
-#         post.likes.add(request.user)
-#         liked = True
-
-#         # Erstelle notification nur, wenn Post-ersteller und likender User unterschiedlich sind
-#         if post.user != request.user:
-#             notification = Notification.objects.create(
-#                 to_user=post.user,
-#                 from_user=request.user,
-#                 post=post,
-#                 notification_type='like',
-#                 notification_info=f"{request.user.username} hat deinen Post geliked.",
-#                 notification_link=f"/post/{post.id}/",
-#                 is_sent = False # hinzugefügt
-#             )
-#             print(f"Notification für Post erstellt: {notification.id} für {notification.to_user}") #test funktioniert!!
-            
-#             # Senden der notifications über channels
-#             channel_layer = get_channel_layer()
-#             group_name = f"notification_user_{post.user.id}"
-#             print(f"Senden an Grouououp: {group_name}")  # test funktioniert
-
-#             async_to_sync(channel_layer.group_send)(
-#             group_name,
-#             {
-#                 "type": "send_notification",
-#                 "message": {
-#                     "notification_id": notification.id,
-#                 }
-#             }
-#         )
-#         print(f"Nachricht gesendet für Notifiation post: {notification.id}")  #test funktioniert
-
-#     return JsonResponse({'liked': liked, 'total_likes': post.total_likes()})
-
-
-# def like_comment_ajax(request): # signal websocket läuft!
-#     comment_id = request.POST.get('comment_id')
-#     comment = get_object_or_404(Comment, id=comment_id)
-#     liked = False
-
-#     if comment.likes.filter(id=request.user.id).exists():
-#         comment.likes.remove(request.user)
-#     else:
-#         comment.likes.add(request.user)
-#         liked = True
-
-#         if comment.user != request.user:
-#             notification = Notification.objects.create(
-#                 to_user=comment.user,
-#                 from_user=request.user,
-#                 comment=comment,
-#                 notification_type='like',
-#                 notification_info=f"{request.user.username} hat deinen Kommentar geliked.",
-#                 notification_link=f"/post/{comment.post.id}/",
-#                 is_sent = False # hinzugefügt
-#             )
-#             print(f"Notification für comment erstellt: {notification.id} für {notification.to_user}") #test funktioniert
-
-
-#             channel_layer = get_channel_layer()
-#             group_name = f"notification_user_{comment.user.id}"
-#             print(f"Senden an Grouououp comment : {group_name}")  # test funktioniert
-
-#             async_to_sync(channel_layer.group_send)(
-#                 group_name,
-#                 {
-#                     "type": "send_notification",
-#                     "message": {
-#                         "notification_id": notification.id,
-#                     }
-#                 }
-#             )
-#             print(f"Nachricht gesendet für Notifiation comment: {notification.id}")  #test
-
-#     return JsonResponse({'liked': liked, 'total_likes_comment': comment.total_likes_comment()})
-
-
 # OHNE WEBSOCKETS VERSIONs
 def like_post_ajax(request):
     post_id = request.POST.get('post_id')
@@ -242,8 +154,6 @@ def like_comment_ajax(request):
     return JsonResponse({'liked': liked, 'total_likes_comment': comment.total_likes_comment()})
 
 
-
-
 # liste der user , die geliked haben auf like_list.html
 def like_list_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
@@ -259,7 +169,7 @@ def like_list_comment(request, comment_id):
 
 
 
-# views zu events
+# views zu events - bald
 def create_event(request):
     if request.method == 'POST':
         form = EventForm(request.POST, request.FILES)

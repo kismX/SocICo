@@ -1,10 +1,8 @@
 from django.urls import path
-from .views import get_notifications,  mark_as_read, get_unsent_notifications
+from .views import get_notifications, mark_notification_as_read
 
 urlpatterns = [
-    path('notifications/', get_notifications, name='notifications'), # ohne websockets lösung
+    path('notifications/', get_notifications, name='notifications'),
+    path('mark_notification_as_read/<int:notification_id>/', mark_notification_as_read, name='mark_notification_as_read'),
 
-    path('mark-as-read/', mark_as_read, name='mark-as-read'),
-    path('unsent_notifications/', get_unsent_notifications, name='unsent_notifications'),
-    
 ]
