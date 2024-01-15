@@ -13,7 +13,7 @@ from django.contrib.auth import get_user_model
 from .models import Profile, Friendship
 from django.utils import timezone # für friend connecten
 from django.contrib import messages # wird verwendet um meldungen durch die views oder auch verarbeitung an den user zu schicken
-
+from PIL import Image
 # für Ajax invisible_check
 from django.views.decorators.http import require_POST
 
@@ -129,15 +129,27 @@ def profile(request):
             # altes bild durch neues ersetzen:
             new_image = request.FILES.get('avatar')
             old_image = getattr(profile_instance, 'avatar')
-            
+
             if new_image == None:
                 profile = profile_form.save(commit=False)
                 profile.save(update_fields=['age', 'gender', 'location', 'bio', 'interests'])
             elif old_image == 'default.jpg':
                 profile_form.save()
+                my_profile = Profile.objects.get(id=request.user.id)
+                img = Image.open(my_profile.avatar.path)
+                if img.height > 200 or img.width > 200:
+                    new_img = (200, 200)
+                    img.thumbnail(new_img)
+                    img.save(my_profile.avatar.path)
             else:
                 old_image.delete()
                 profile_form.save()
+                my_profile = Profile.objects.get(id=request.user.id)
+                img = Image.open(my_profile.avatar.path)
+                if img.height > 200 or img.width > 200:
+                    new_img = (200, 200)
+                    img.thumbnail(new_img)
+                    img.save(my_profile.avatar.path)
 
             user_form.save()
             messages.success(request, 'Your Profile is updated successfully')
