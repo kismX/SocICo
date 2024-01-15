@@ -12,7 +12,4 @@ def make_context_global(request):
         context = {
             'notifications_new_count': notifications_new_count,
         }
-
-        return context
-    else:
-        return context
+    return context

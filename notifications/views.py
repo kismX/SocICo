@@ -9,7 +9,7 @@ def create_notification(to_user, from_user, notification_type, notification_info
         notification_type=notification_type,
         notification_info=notification_info,
         notification_link=notification_link,
-        is_sent=False
+        #is_sent=False
     )
     return notification
 
@@ -18,7 +18,6 @@ def get_notifications(request):
     if request.user.is_authenticated:
         notifications_new = Notification.objects.filter(to_user=request.user, is_read=False)
         notifications_read = Notification.objects.filter(to_user=request.user, is_read=True)
-        #notifications_new_count = notifications_new.count()
         return render(request, 'notifications.html', {'notifications_new': notifications_new, 'notifications_read': notifications_read})
     else:
         return HttpResponse("Nicht authentifiziert.")
