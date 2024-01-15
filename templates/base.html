@@ -22,18 +22,17 @@
                 <a class="profile" href="{% url 'profile_detail' pk=request.user.id %}">{{ request.user.username }}</a>
                 <a class="logout" href="{% url 'logout' %}">Logout</a>
 
-                {% if notifications %}
-                    <a class="notifications" href="{% url 'notifications' %}">
-                    Benachrichtigungen <span class="notification-badge"></span>
+                <!-- notifications in Nav -->
+                {% if notifications_new_count != 0 %}
+                    <a href="{% url 'notifications' %}">
+                        {{ notifications_new_count }} NEWS
                     </a>
                 {% else %}
-                    <a class="notifications" href="{% url 'notifications' %}"> Benachrichtigungen</a>
+                    <a href="{% url 'notifications' %}">
+                        {{ notifications_new_count }} NEWS 
+                    </a>
                 {% endif %}
-
-                <!-- hier notifications -->
-                {% comment %} <p> NOTIFICATIONS </p>
-                <ul id="notificationsList"></ul> {% endcomment %}
-                    
+   
             {% else %}
                 <a href="{% url 'login' %}">Login</a>
                 <a href="{% url 'signup' %}">Registrieren</a>
@@ -89,65 +88,6 @@
         }
     </script>
 
-
-    {% comment %} 
-    
-    <script>
-        // Javascript für notifications 
-
-        {% if user.is_authenticated %}
-        const notificationSocket = new WebSocket(
-            'ws://' + window.location.host + '/ws/notifications/'
-        );
-    
-        notificationSocket.onmessage = function(e) {
-            const data = JSON.parse(e.data);
-    
-            if (data.type === 'notification') {
-                displayNotification(data.notification_info, data.notification_link);
-            }
-        };
-    
-        notificationSocket.onclose = function(e) {
-            console.error('Notification socket closed unexpectedly');
-        };
-    
-    
-        function displayNotification(info, link) {
-            var notificationList = document.getElementById("notificationList");
-            var notificationElement = document.createElement("li");
-            notificationElement.innerHTML = `<a href="${link}">${info}</a>`;
-            notificationList.appendChild(notificationElement); // Füge nitificatuions zur Liste hinzu
-        }
-
-
-        document.getElementById("notificationButton").onclick = function() {
-            var dropdown = document.getElementById("notificationDropdown");
-            dropdown.style.display = dropdown.style.display === "none" ? "block" : "none";
-        };
-
-        function fetchUnsentNotifications() {
-            fetch("{% url 'unsent_notifications' %}")
-                .then(response => response.json())
-                .then(data => {
-                    if (data.notifications) {
-                        data.notifications.forEach(notification => {
-                            displayNotification(notification.notification_info, notification.notification_link);
-                        });
-                    }
-                })
-                .catch(error => console.error('Fehler beim Abrufen von Benachrichtigungen:', error));
-        }
-    
-        // Funktion aufrufen, wenn Seite geladen wird
-        document.addEventListener('DOMContentLoaded', function() {
-            fetchUnsentNotifications();
-        });
-
-        {% endif %}
-    </script> 
-
-    {% endcomment %}
 
 </body>
 </html>

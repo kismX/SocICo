@@ -1,9 +1,7 @@
-from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render
-from django.views.decorators.http import require_POST
+from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Notification
 
-# für einfache notifications ohne websockets
 def create_notification(to_user, from_user, notification_type, notification_info, notification_link):
     notification = Notification.objects.create(
         to_user=to_user,
@@ -18,34 +16,21 @@ def create_notification(to_user, from_user, notification_type, notification_info
 
 def get_notifications(request):
     if request.user.is_authenticated:
-        notifications = Notification.objects.filter(to_user=request.user, is_read=False)
-        return render(request, 'notifications.html', {'notifications': notifications})
+        notifications_new = Notification.objects.filter(to_user=request.user, is_read=False)
+        notifications_read = Notification.objects.filter(to_user=request.user, is_read=True)
+        #notifications_new_count = notifications_new.count()
+        return render(request, 'notifications.html', {'notifications_new': notifications_new, 'notifications_read': notifications_read})
     else:
         return HttpResponse("Nicht authentifiziert.")
-    
 
-@require_POST
-def mark_as_read(request):
-    notification_id = request.POST.get('notification_id')
-    try:
-        notification = Notification.objects.get(id=notification_id, to_user=request.user)
+
+def mark_notification_as_read(request, notification_id):
+    notification = get_object_or_404(Notification, id=notification_id, to_user=request.user)
+    
+    # wenn notification, hole url zum redirecten und  notification = is_read
+    if notification:
+        target_url = notification.notification_link
         notification.is_read = True
         notification.save()
-        return JsonResponse({'status': 'success'})
-    except Notification.DoesNotExist:
-        return JsonResponse({'status': 'error', 'message': 'Notification not found'}, status=404)
-
-
-def get_unsent_notifications(request):
-    if request.user.is_authenticated:
-        unsent_notifications = Notification.objects.filter(
-            to_user=request.user, 
-            is_sent=False
-        ).values() 
-
-        # notifications als gesendet markieren
-        unsent_notifications.update(is_sent=True)
-
-        return JsonResponse({"notifications": list(unsent_notifications)})
-    else:
-        return JsonResponse({"error": "Nicht authentifiziert"}, status=401)
+    
+    return redirect(target_url)
