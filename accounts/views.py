@@ -4,17 +4,16 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.http import JsonResponse
 from .forms import UpdateUserForm, UpdateProfileForm
-from posts.models import Post # für post anzeigen des users auf profile_detail
+from posts.models import Post
 from posts.forms import PostForm
 from basics.utils import get_domain
 
-# 2023-11-22 hinzugefügt für user adden requests etc
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from .models import Profile, Friendship
 from django.utils import timezone # für friend connecten
 from django.contrib import messages # wird verwendet um meldungen durch die views oder auch verarbeitung an den user zu schicken
-
+from PIL import Image
 # für Ajax invisible_check
 from django.views.decorators.http import require_POST
 
@@ -63,34 +62,28 @@ class UserProfileDetailView(LoginRequiredMixin, DetailView):
             if post.link:
                 post.domain = get_domain(post.link)
 
-
         ##### nun fügen wir dem context hinzu  ####
+        context.update({
+            'freunde': freunde,   #freundesobjekte
+            'freunde_namelist': [freund.from_user.username if user != freund.from_user else freund.to_user.username for freund in freunde], # eine liste mit den usernamen der freunde
+            'freund_ausgehend': freunde_ausgehend, # friendrequests ausgehend: objekt-queryset
+            'freund_ausgehend_namelist': [freund.to_user.username for freund in freunde_ausgehend],   # friendrequests ausgehend: usernamen-liste
+            'freund_eingehend': freunde_eingehend,
+            'freund_eingehend_namelist': [freund.from_user.username for freund in freunde_eingehend],
+            'num_freunde': freunde.count(),    # anzahl der freunde
+            
+            # für profil-user:
+            'profil_freunde': profil_freunde,
+            'num_profil_freunde': profil_freunde.count(),
+            # posts des users auf profil:
+            'user_posts': user_posts,
+            'profile_user_posts': profile_user_posts,
+            # wenn benutzer auf seinem eigenen profil, dann kann er posten:
+            'post_form': PostForm(),
+        })
 
-        # für eingeloggten user
-        context['freunde'] = freunde   #freundesobjekte
-        context['freunde_namelist'] = [freund.from_user.username if user != freund.from_user else freund.to_user.username for freund in freunde]  # eine liste mit den usernamen der freunde
-        
-        context['freund_ausgehend'] = freunde_ausgehend  # friendrequests ausgehend: objekt-queryset
-        context['freund_ausgehend_namelist'] = [freund.to_user.username for freund in freunde_ausgehend] # friendrequests ausgehend: usernamen-liste
-
-        context['freund_eingehend'] = freunde_eingehend  # friendrequest eingehend: object-queryset
-        context['freund_eingehend_namelist'] = [freund.from_user.username for freund in freunde_eingehend]  # friendrequest eingehend: usernamen-liste
-
-        context['num_freunde'] = freunde.count()    # anzahl der freunde
         if freund_profil:
-            context['freund_seit'] = freund_seit        # seit wann befreundet
-
-        # für profil-user:
-        context['profil_freunde'] = profil_freunde
-        context['num_profil_freunde'] = profil_freunde.count()
-
-        # posts des users auf profil
-        context['user_posts'] = user_posts
-        context['profile_user_posts'] = profile_user_posts
-
-        # wenn benutzer auf seinem eigenen profil, dann kann er posten:
-        #if user == profil_user:
-        context['post_form'] = PostForm()
+            context['freund_seit'] = freund_seit   # seit wann befreundet
         
         return context
 
@@ -136,15 +129,27 @@ def profile(request):
             # altes bild durch neues ersetzen:
             new_image = request.FILES.get('avatar')
             old_image = getattr(profile_instance, 'avatar')
-            
+
             if new_image == None:
                 profile = profile_form.save(commit=False)
                 profile.save(update_fields=['age', 'gender', 'location', 'bio', 'interests'])
             elif old_image == 'default.jpg':
                 profile_form.save()
+                my_profile = Profile.objects.get(id=request.user.id)
+                img = Image.open(my_profile.avatar.path)
+                if img.height > 200 or img.width > 200:
+                    new_img = (200, 200)
+                    img.thumbnail(new_img)
+                    img.save(my_profile.avatar.path)
             else:
                 old_image.delete()
                 profile_form.save()
+                my_profile = Profile.objects.get(id=request.user.id)
+                img = Image.open(my_profile.avatar.path)
+                if img.height > 200 or img.width > 200:
+                    new_img = (200, 200)
+                    img.thumbnail(new_img)
+                    img.save(my_profile.avatar.path)
 
             user_form.save()
             messages.success(request, 'Your Profile is updated successfully')
@@ -180,7 +185,7 @@ def friend_requests(request):
 
 
 @login_required
-def accept_reject_friend(request, friendship_id, action):   # friendship_id und action kommen wieder aus urls.py
+def accept_reject_friend(request, friendship_id, action):
     friendship = Friendship.objects.get(id=friendship_id)
 
     if action == 'accept':

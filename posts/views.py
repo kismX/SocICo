@@ -1,8 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
+
 from .models import Post, Comment
+from notifications.models import Notification
 from .forms import PostForm, CommentForm, EventForm
 from basics.utils import get_domain
+
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+
+from notifications.views import create_notification
 
 # views zum posten
 def create_post(request):
@@ -12,6 +19,13 @@ def create_post(request):
             post = form.save(commit=False)
             post.user = request.user
             post.save()
+
+            # notification erstellen - ohne websockets
+            if post.user != request.user:
+                notification_info = f"{request.user.username} hat einen neuen Beitrag auf deinem Profil erstellt."
+                notification_link = f"/posts/post/{post.id}/"
+                create_notification(request.user, request.user, 'post', notification_info, notification_link)
+            
             return redirect('profile_detail', pk=post.user.id)
     else:
         form = PostForm()
@@ -51,6 +65,12 @@ def post_detail(request, post_id):
             comment.post = post # verknüfen nun mit post aus post Modell mit der aktuellen post_id
             comment.user = request.user # verknüpfen mit aktuellem request.user aus CustomUser modell
             comment.save() # jetzt speichern wir das objekt angepasst in database
+            
+            # notification erstellen ohne websockets
+            if post.user != request.user:
+                notification_info = f"{request.user.username} hat deinem Beitrag einen Kommentar hinzugefügt."
+                notification_link = f"/posts/post/{post.id}/"
+                create_notification(post.user, request.user, 'comment', notification_info, notification_link)
             return redirect('post_detail', post_id=post.id)
     else:
         comment_form = CommentForm()
@@ -93,29 +113,44 @@ def comment_delete(request, comment_id):
     return render(request, 'posts/comment_delete.html', {'comment': comment})
 
 
-# liken (ajax)
-from django.http import JsonResponse
-
+# OHNE WEBSOCKETS VERSIONs
 def like_post_ajax(request):
     post_id = request.POST.get('post_id')
     post = get_object_or_404(Post, id=post_id)
     liked = False
+
     if post.likes.filter(id=request.user.id).exists():
         post.likes.remove(request.user)
     else:
         post.likes.add(request.user)
         liked = True
+
+        # Benachrichtigung erstellen, wenn Post geliked wird
+        if post.user != request.user:
+            notification_info = f"{request.user.username} hat deinen Beitrag geliked."
+            notification_link = f"/posts/post/{post.id}/"
+            create_notification(post.user, request.user, 'like', notification_info, notification_link)
+
     return JsonResponse({'liked': liked, 'total_likes': post.total_likes()})
+
 
 def like_comment_ajax(request):
     comment_id = request.POST.get('comment_id')
     comment = get_object_or_404(Comment, id=comment_id)
     liked = False
+
     if comment.likes.filter(id=request.user.id).exists():
         comment.likes.remove(request.user)
     else:
         comment.likes.add(request.user)
         liked = True
+
+        # Benachrichtigung erstellen, wenn Kommentar geliked wird
+        if comment.user != request.user:
+            notification_info = f"{request.user.username} hat deinen Kommentar geliked."
+            notification_link = f"/post/{comment.post.id}/"
+            create_notification(comment.user, request.user, 'like', notification_info, notification_link)
+
     return JsonResponse({'liked': liked, 'total_likes_comment': comment.total_likes_comment()})
 
 
@@ -134,7 +169,7 @@ def like_list_comment(request, comment_id):
 
 
 
-# views zu events
+# views zu events - bald
 def create_event(request):
     if request.method == 'POST':
         form = EventForm(request.POST, request.FILES)
