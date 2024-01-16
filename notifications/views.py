@@ -16,9 +16,9 @@ def create_notification(to_user, from_user, notification_type, notification_info
 
 def get_notifications(request):
     if request.user.is_authenticated:
-        notifications_new = Notification.objects.filter(to_user=request.user, is_read=False)
-        notifications_read = Notification.objects.filter(to_user=request.user, is_read=True)
-        return render(request, 'notifications.html', {'notifications_new': notifications_new, 'notifications_read': notifications_read})
+        notifications_new = Notification.objects.filter(to_user=request.user, is_read=False).order_by('-created_at')
+        notifications_read = Notification.objects.filter(to_user=request.user, is_read=True).order_by('-created_at')
+        return render(request, 'notifications/notifications.html', {'notifications_new': notifications_new, 'notifications_read': notifications_read})
     else:
         return HttpResponse("Nicht authentifiziert.")
 
