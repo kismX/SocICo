@@ -1,5 +1,5 @@
 - [X] requirements.txt aktualisieren
 - [ ] commands txt mit allen wichtigen befehlen (git und so)
-- [ ] bilder löschen
-- [ ] chats selber erstellen / private chats
-- [ ] profilbild in chats?
+- [X] bilder löschen
+- [X] chats selber erstellen / private chats
+- [X] profilbild in chats?
