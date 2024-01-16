@@ -31,7 +31,6 @@
 
 {% else %}
 
-
     <!-- zeigen wir oben den usernamen des Profilinhabers an -->
     <h2> {{ profile.user }}</h2>
     <br>
@@ -40,8 +39,8 @@
     <p><strong>Alter: </strong>{{ profile.age }}</p>
     <p><strong>Geschlecht: </strong>{{ profile.gender }}</p>
     <p><strong>Wohnort: </strong>{{ profile.location }}</p>
-    <p><strong>Land: </strong>{{ user.country }}</p>
-    <p><strong>Stadt: </strong>{{ user.city }}</p>
+    <p><strong>Land: </strong>{{ profile.user.country }}</p>
+    <p><strong>Stadt: </strong>{{ profile.user.city }}</p>
     <p><strong>Bio: </strong>{{ profile.bio }}</p>
     <p><strong>Interessen: </strong>{{ profile.interests }}</p>
 

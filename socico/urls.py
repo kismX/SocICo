@@ -30,6 +30,7 @@ urlpatterns = [
     path('rooms/', include('chats.urls')),         
     path('searchers/', include('searchers.urls')),
     path('posts/', include('posts.urls')),
+    path('api/', include('apis.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -94,8 +94,8 @@ def create_group_chat(request):
         else:
             friends_list.append(friend.to_user)
     
-    input_list = request.GET.getlist("input_all_users")
-    input_name = request.GET.get("room_name")
+    input_list = request.POST.getlist("input_all_users")
+    input_name = request.POST.get("room_name")
     rooms = Room.objects.all()
     id_list = [user]
 
@@ -120,7 +120,7 @@ def create_group_chat(request):
                     Room.objects.create(name=input_name, slug='_'.join(sorted_id_list_strings), user_list=id_list)
                 except (errors.UniqueViolation, IntegrityError):
                     print('Room already exists')
-        
+        #print('redirect')
         return redirect('rooms')
 
     context = {

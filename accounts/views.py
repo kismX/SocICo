@@ -15,6 +15,11 @@ from django.contrib import messages # wird verwendet um meldungen durch die view
 
 from cities_light.models import City
 
+def load_cities(request):
+    country_id = request.GET.get('country')
+    cities = City.objects.filter(country_id=country_id).order_by('name')
+    return render(request, 'city_dropdown_list_options.html', {'cities': cities})
+
 # erstmal alle Templates zum createn, anzeigen und editieren von profiles der user
 class UserProfileListView(LoginRequiredMixin, ListView): 
     model = Profile

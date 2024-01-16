@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'chats',
     'searchers',
     'posts',
+    'rest_framework',
+    'apis',
 ]
 
 MIDDLEWARE = [

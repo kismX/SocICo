@@ -3,7 +3,7 @@ from .views import (
     UserProfileListView, UserProfileDetailView, 
     UserProfileCreateView, UserProfileUpdateView, UserProfileDeleteView,
     friend_requests, send_friend_request, accept_reject_friend, profile, 
-    remove_friend, invisible_check,
+    remove_friend, invisible_check, load_cities
     )
 
 urlpatterns = [    
@@ -23,5 +23,7 @@ urlpatterns = [
     path('send_friend_request/<int:to_user_id>/', send_friend_request, name='send_friend_request'), # das to_user_id wird aus template geholt und an 'send_friend_request' gesendet
     path('withdraw_friend_request/<int:profile_id>/', remove_friend, name='withdraw_friend_request'), 
     path('remove_friend/<int:profile_id>/', remove_friend, name='remove_friend'), 
+
+    path('ajax/load-cities/', load_cities, name='ajax_load_cities')
 
 ]
