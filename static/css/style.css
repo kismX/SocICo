@@ -106,11 +106,8 @@ h1, h2, h3, h4{
 
 /* Chat */
 
-.chat-container :nth-child(1){
+.cc-chatwindow{
     flex: 3 0 80%;
-}
-.chat-container :nth-child(2){
-    flex: 1 0 15%;
 }
 .chat-messages {
     height: 400px;
@@ -176,14 +173,34 @@ h1, h2, h3, h4{
 .chat-form form{
     justify-content: space-between;
 }
-.chat-namelist{
+.cc-namelist{
     padding: 20px;
     font-family: "PoppinsMedium";
     background-color: white;
     border-radius: 10px;
+    flex: 1 0 15%;
 }
-.chat-namelist a{
+.cc-namelist a{
+    gap: 10px;
+    align-items: center;
+    display: flex;
+}
+.cc-namelist img{
+    background-color: white;
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border: 2px solid #40281A;
+    border-radius: 10%;
+    box-shadow: 3px 3px 2px 1px #40281a17;
+}
+.cc-namelist p{
     margin: 5px 0;
+    color: #40281A;
+}
+.cc-namelist hr{
+    border: 0.2px solid #40281a31;
+    margin: 10px 0;
 }
 
 /* Profil Liste */

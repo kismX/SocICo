@@ -51,7 +51,7 @@ def room(request, slug):
     for id in room.user_list:
         if id != request.user.id:
             profile = profiles.get(id=id)
-            username_list.append(profile.username)
+            username_list.append(profile)
 
     return render(request, 'chats/room.html', {'room': room, 'messages': messages, 'username_list': username_list})
 

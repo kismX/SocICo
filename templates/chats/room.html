@@ -5,7 +5,7 @@
 {% block content %}
     <div class="flex-wrap-container chat-container">
 
-        <div>
+        <div class="cc-chatwindow">
             <div class="chat-messages" id="chat-messages">
                 
                     {% for message in messages %}
@@ -30,9 +30,13 @@
             </div>
         </div>
 
-        <div class="chat-namelist">
-            {% for name in username_list %}
-            <a href="#">{{ name }}</a>
+        <div class="cc-namelist">
+            {% for user in username_list %}
+            <a href="{% url 'profile_detail' user.profile.pk %}">
+                <img src="{{ user.profile.avatar.url }}" alt="">
+                <p>{{ user.username }}</p>
+            </a>
+            <hr>
             {% endfor %}
         </div>
     </div>
