@@ -13,10 +13,11 @@ from django.contrib.auth import get_user_model
 from .models import Profile, Friendship
 from django.utils import timezone # für friend connecten
 from django.contrib import messages # wird verwendet um meldungen durch die views oder auch verarbeitung an den user zu schicken
+from django.shortcuts import get_object_or_404
 from PIL import Image
 # für Ajax invisible_check
 from django.views.decorators.http import require_POST
-
+from notifications.views import create_notification
 
 # erstmal alle Templates zum createn, anzeigen und editieren von profiles der user
 class UserProfileListView(LoginRequiredMixin, ListView): 
@@ -162,8 +163,8 @@ def profile(request):
     
 
 @login_required
-def send_friend_request(request, to_user_id):    # das to_user_id kommt aus urls.py hier rein
-    to_user = get_user_model().objects.get(id=to_user_id)
+def send_friend_request(request, to_user_id):
+    to_user = get_object_or_404(get_user_model(), id=to_user_id)
 
     # nun mal checken, ob bereits eine anfrage gibt. 
     # wenn 'from_user' = angemeldeter user und 'to_user' (übermittelte to_user_id) in friendship enthalten, gibt es true aus ...
@@ -172,6 +173,10 @@ def send_friend_request(request, to_user_id):    # das to_user_id kommt aus urls
         messages.warning(request, 'Du hast bereits ne Anfrage an den user gestellt') 
     else:
         Friendship.objects.create(from_user=request.user, to_user=to_user, status='pending')  # neu: 'status' auf pending, weil anfrage noch ausstehend
+        #notification erstellen:
+        notification_info = f"{request.user.username} schickt dir eine Freundschaftsanfrage."
+        notification_link = f"/accounts/friend_requests/"
+        create_notification(to_user, request.user, 'friendrequest', notification_info, notification_link)
         # message geht auch ins admin
         messages.success(request, f'Deine Anfrage wurde an {to_user.username} gesendet, Dikka')  
     return redirect('profile_detail', pk=to_user_id)
@@ -191,7 +196,11 @@ def accept_reject_friend(request, friendship_id, action):
     if action == 'accept':
         friendship.accepted_at = timezone.now()
         friendship.status = 'accepted'
-        friendship.save() # save hier lassen  :D !!
+        friendship.save()
+        # Benachrichtigung wenn akzeptiert:
+        notification_info = f"{friendship.from_user.username} hat deine Freundschaftsanfrage akzeptiert."
+        notification_link = f"/accounts/profiles/{friendship.to_user.id}"
+        create_notification(friendship.from_user, friendship.to_user, 'friendrequest_accepted', notification_info, notification_link)
     elif action == 'reject':
         friendship.delete()
     return redirect('friend_requests')
