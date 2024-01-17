@@ -4,7 +4,7 @@
 
 <h3>{{ post.user }} teilte..</h3>
 {% if post.text %}
-    <p>{{ post.text }}</p>
+    <p>{{ post.text|safe }}</p>
 {% endif %}
 
 {% if post.image %}
@@ -36,7 +36,7 @@
 <h3>Kommentare</h3>
 {% for comment in comments %}
     <p><strong><a href="{% url 'profile_detail' pk=comment.user.id %}">{{ comment.user.username }}</a> </strong> <em>antwortete am {{ comment.created_at|date:"d.m.Y, H:i" }}:</em><br>
-        {{ comment.comment }}</p>
+        {{ comment.comment|safe }}</p>
 
 
     <!-- Like handling Kommentar -->

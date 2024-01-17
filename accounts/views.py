@@ -202,6 +202,7 @@ def accept_reject_friend(request, friendship_id, action):
         notification_link = f"/accounts/profiles/{friendship.to_user.id}"
         create_notification(friendship.from_user, friendship.to_user, 'friendrequest_accepted', notification_info, notification_link)
     elif action == 'reject':
+        friendship.delete_notifications()
         friendship.delete()
     return redirect('friend_requests')
 

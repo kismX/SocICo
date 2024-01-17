@@ -9,7 +9,7 @@ from basics.utils import get_domain
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 
-from notifications.views import create_notification
+from notifications.views import create_notification, mention_users_in_text
 
 # views zum posten
 def create_post(request):
@@ -18,6 +18,10 @@ def create_post(request):
         if form.is_valid():
             post = form.save(commit=False)
             post.user = request.user
+            post.save()
+
+            # nun durch die mention-funktion schicken
+            post.text = mention_users_in_text(request, post.text, post)
             post.save()
 
             # notification erstellen - ohne websockets
@@ -65,7 +69,13 @@ def post_detail(request, post_id):
             comment.post = post # verknüfen nun mit post aus post Modell mit der aktuellen post_id
             comment.user = request.user # verknüpfen mit aktuellem request.user aus CustomUser modell
             comment.save() # jetzt speichern wir das objekt angepasst in database
-            
+
+            # nun in die mention-funktion für erwähnung
+            #comment.comment = mention_users_in_text(request, comment.comment, None, comment)
+            comment.comment = mention_users_in_text(request, comment.comment, comment)
+            print(comment.comment)
+            comment.save()
+
             # notification erstellen ohne websockets
             if post.user != request.user:
                 notification_info = f"{request.user.username} hat deinem Beitrag einen Kommentar hinzugefügt."

@@ -151,7 +151,7 @@
                 <div>
                     <strong><a href="{% url 'profile_detail' pk=post.user.id %}">{{ post.user.username }}</a></strong> <em> teilte am <strong>{{ post.created_at|date:"d.m.Y H:i" }}</strong>:</em><br>
                     {% if post.image %}<img src="{{ post.image.url }}" alt="Post image"><br>{% endif %}
-                    {% if post.text %}{{ post.text|truncatechars:100 }}{% endif %}
+                    {% if post.text %}{{ post.text|truncatechars:100|safe }}{% endif %}
                     {% if post.link %}...Klick: <a href="{{ post.link }}">{{ post.domain }}</a>{% endif %}<br>
                     {% if post.event %}<p>Veranstaltung: {{ post.event.title }}</p>{% endif %}
                     
