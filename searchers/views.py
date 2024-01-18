@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.utils import timezone
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 # für Terms-Model
 from fuzzywuzzy import process, fuzz # library zum vergleich von wörtern
@@ -54,13 +54,25 @@ def user_filter(request):
 
     # weitere suchkriterien - age, gender, location...:
     if age:
-        users = users.filter(profile__age=age)
-    
+        #users = users.filter(profile__age=age)
+        age = int(age)
+        current_year = datetime.now().year
+        birth_year = current_year - age
+        users = users.filter(profile__user__birthdate__year__exact=birth_year)
+        
     if min_age:
-         users = users.filter(profile__age__gte=min_age)  #gte = g und gleich dem wert
+        #users = users.filter(profile__age__gte=min_age)   #gte = g und gleich dem wert
+        min_age = int(min_age)
+        current_year = datetime.now().year
+        birth_year = current_year - min_age
+        users = users.filter(profile__user__birthdate__year__lte=birth_year)
 
     if max_age:
-         users = users.filter(profile__age__lte=max_age)  #lte = kleiner und gleich dem wert
+        #users = users.filter(profile__age__lte=max_age)  #lte = kleiner und gleich dem wert
+        max_age = int(max_age)
+        current_year = datetime.now().year
+        birth_year = current_year - max_age
+        users = users.filter(profile__user__birthdate__year__gte=birth_year)
 
     if gender:
         users = users.filter(profile__gender=gender)
@@ -74,10 +86,18 @@ def user_filter(request):
         last_online_delta = timezone.now() - timedelta(days=days_num) #errechne mir einen zeitpunkt: aktuell minus der tage, die der user eingegeben hat
         users = users.filter(profile__last_online__gte=last_online_delta) # alle user die ab dem zeitpunkt bis heut online waren werden aufgelistet
     
+    print(f"Number of Users Found: {users.count()}")
 
-    context = {'users': users, 'interests': interests, 'interest_list': interest_list, 'similar_interests': similar_interests,
-               'age': age, 'min_age': min_age, 'max_age': max_age, 'gender': gender, 
-               'location': location, 'last_online': last_online}
+    context = {'users': users, 
+               'interests': interests, 
+               'interest_list': interest_list, 
+               'similar_interests': similar_interests,
+               'age': age, 
+               'min_age': min_age, 
+               'max_age': max_age, 
+               'gender': gender, 
+               'location': location, 
+               'last_online': last_online}
     
     return render(request, 'searchers/user_filter.html', context)
 

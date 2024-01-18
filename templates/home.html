@@ -3,7 +3,7 @@
 {% block title %}Home | {% endblock %}
 
 {% block content %}
-
+{% load like_tags %}
 
 {% if user.is_authenticated %}
 <section class="row">
@@ -23,30 +23,37 @@
     <em>Was user gepostet haben (wird angepasst auf nur posts von freunden):</em>
     <br>
     <br>
+
+    <!-- Anzeigen der Posts (Text, img, Link) -->
     {% if posts %}
         {% for post in posts %}
             <div>
                 <p><strong><a href="{% url 'profile_detail' pk=post.user.id %}">{{ post.user.username }}</a></strong> <em> teilte am <strong>{{ post.created_at|date:"d.m.Y H:i" }}</strong>:</em></p>
-                <hr>
-                {% if post.image %}<img src="{{ post.image.url }}" alt="Post image">{% endif %}
-                {% if post.text %}<p>{{ post.text|truncatechars:100 }}</p>{% endif %}
-                {% if post.link %}...KLick: <a href="{{ post.link }}">{{ post.domain }}</a>{% endif %}
+                {% if post.image %}<img src="{{ post.image.url }}" alt="Post image"><br>{% endif %}
+                {% if post.text %}<p>{{ post.text|truncatechars:100|safe }}</p>{% endif %}
+                {% if post.link %}... URL: <a href="{{ post.link }}">{{ post.domain }}</a><br>{% endif %}
                 {% if post.event %}<p>Veranstaltung: {{ post.event.title }}</p>{% endif %}
                
-                <form action="{% url 'like_post' post.id %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit">Like</button>
-                </form>
 
-                <strong><em>
-                    {{ post.likes.count }} Likes
+                <!-- Like und Kommentar Handling -->
+                {% if post|has_liked_post:request.user %}
+                    <button class="like-home-post-btn" data-post-id="{{ post.id }}">UNLIKE</button>
+                {% else %}
+                    <button class="like-home-post-btn" data-post-id="{{ post.id }}">LIKE</button>
+                {% endif %}
+                <strong>
+                    <a href="{% url 'likelist_post' post.id %}">
+                        <span class="home-post-likes-count">{{ post.likes.count }} Likes</span>
+                    </a>
+                
+                    
                     <a href="{% url 'post_detail' post.id %}"> | {{ post.comments.count }} Kommentare</a>
                     {% if request.user == post.user or request.user.is_superuser %}
                             <a href="{% url 'edit_post' post.id %}">| Bearbeiten</a>
-                            <a href="{% url 'delete_post' post.id %}">| Löschen</a><br>
+                            <a href="{% url 'delete_post' post.id %}">| Löschen</a>
                     {% endif %}
-                    <br><a href="{% url 'post_detail' post.id %}" class="details-link">Mehr erfahren</a>
-                </strong></em>
+                    <br><em><a href="{% url 'post_detail' post.id %}" class="details-link">Mehr erfahren</a></em>
+                </strong>
 
                 <br> <br>
             </div>
@@ -69,5 +76,36 @@
     <a href="{% url 'signup' %}">Registrieren</a> -->
 {% endif %}
     
+
+
+<!-- AXAX-->
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.like-home-post-btn').click(function(e){
+            e.preventDefault();
+            var postId = $(this).data('post-id');
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+            var btn = $(this); 
+            var likeCountSpan = btn.closest('div').find('.home-post-likes-count'); 
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'like_post_ajax' %}',
+                data: {
+                    'csrfmiddlewaretoken': csrfToken,
+                    'post_id': postId
+                },
+                success: function(response){
+                    if(response.liked){
+                        btn.text('UNLIKE');
+                    } else {
+                        btn.text('LIKE');
+                    }
+                    likeCountSpan.text(response.total_likes + ' Likes');
+                }
+            });
+        });
+    });
+</script>
 
 {% endblock %}

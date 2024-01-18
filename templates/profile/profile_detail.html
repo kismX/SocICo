@@ -1,41 +1,39 @@
 {% extends 'base.html' %}
-
 {% block title %}Profil | {% endblock %}
-
 {% block content %}
+{% load like_tags %}
 
 <section class="row">
+    <!-- Invisible Bedingung -->
 {% if profile.user.profile.invisible and profile.user != request.user and profile.user.username not in freunde_namelist %}
     <p>Das Profil von <strong>{{ profile.user.username }}</strong> ist leider nur für Freunde sichtbar.</p>
+    
+    <!-- Friendrequest Handling wenn Invisible -->
     {% if profile.user.username not in freunde_namelist %}
-
         {% if profile.user.username not in freund_eingehend_namelist and profile.user.username not in freund_ausgehend_namelist %}
             <a href="{% url 'send_friend_request' to_user_id=profile.user.id %}">Freundschaftsanfrage senden</a> <br><br>
             oder einfach:
             <a href="{% url 'profile_detail' pk=request.user.id %}">Ab nach Hause</a> <br>
-            
         {% else %}
-
             {% if profile.user.username in freund_ausgehend_namelist %}
                 <strong>{{ profile.user.username }}</strong> hat von dir einen Friendrequest erhalten! <br>
                 Willste doch nicht? <a href="{% url 'withdraw_friend_request' profile_id=profile.id %}">'n Rückzieher machen!</a>
             {% elif profile.user.username in freund_eingehend_namelist %}
                 Hey, Du hast eine Freundesanfrage von <strong>{{ profile.user.username }}</strong> bekommen, Bro! <br>
                 <a href="{% url 'friend_requests' %}">Zu Deinen Friendrequests!</a>
+                oder einfach:
+                <a href="{% url 'profile_detail' pk=request.user.id %}">Ab nach Hause</a> <br>
             {% endif %}
-
         {% endif %}
 
     {% endif %}
 
-
 {% else %}
-
-    <!-- zeigen wir oben den usernamen des Profilinhabers an -->
+    <!-- Wenn profil sichtbar, Profiluser mit Infos -->
     <h2> {{ profile.user }}</h2>
     <br>
-    <!-- hier sind die Profildetails des Users -->
     <p><img src="{{ profile.avatar.url }}" alt="avatar"> </p>
+    <p><strong>B-Day: </strong>{{ profile.user.birthdate|date:"d.m.Y" }}</p>
     <p><strong>Alter: </strong>{{ profile.age }}</p>
     <p><strong>Geschlecht: </strong>{{ profile.gender }}</p>
     <p><strong>Wohnort: </strong>{{ profile.location }}</p>
@@ -46,21 +44,19 @@
 
     <br><br>
 
-
-    <!-- Wenn der angemeldete user.id nicht identisch ist mit der profil.id ..   -->
-    <!-- und wenn dieser profiluser nicht unter den users friends ist und auch kein friendrequest besteht  -->
-    <!-- dann wirdein friendrequest-link,angezeigt werden, ansonsten auf friendrequests verwiesen -->
-
+    <!-- Wenn angemeldete user.id != profil.id -->
+    <!-- kann man Chat mit Profiluser erstellen -->
+    <!-- und wenn Profiluser nicht unter Freunden und auch kein friendrequest besteht  -->
+    <!-- dann wird friendrequest ermöglicht -->
+    <!-- und wenn unter freunden, kann man auch freundschaft beenden -->
     {% if request.user.id != profile.user.id %}
 
         <a href="{% url 'create_chat' own_id=request.user.id foreign_id=profile.user.id%}">Chat erstellen</a>
 
         {% if profile.user.username not in freunde_namelist %}
-
             {% if profile.user.username not in freund_eingehend_namelist and profile.user.username not in freund_ausgehend_namelist %}
                 <a href="{% url 'send_friend_request' to_user_id=profile.user.id %}">Freundschaftsanfrage senden</a>
             {% else %}
-
                 {% if profile.user.username in freund_ausgehend_namelist %}
                     <strong>{{ profile.user.username }}</strong> hat von dir einen Friendrequest erhalten! <br>
                     Willste doch nicht? <a href="{% url 'withdraw_friend_request' profile_id=profile.id %}">'n Rückzieher machen!</a>
@@ -68,29 +64,31 @@
                     Hey, Du hast eine Freundesanfrage von <strong>{{ profile.user.username }}</strong> bekommen, Bro! <br>
                     <a href="{% url 'friend_requests' %}">Zu Deinen Friendrequests!</a>
                 {% endif %}
-
             {% endif %}
-
         {% else %}
             <strong>{{ profile.user.username }}</strong> ist seit <strong>{{ freund_seit|date:"d.m.Y" }}</strong> dein Freund! <br>
             ....keine Lust auf die Freundschaft? <a href="{% url 'remove_friend' profile_id=profile.id %}">Freundschaft Beenden</a> 
         {% endif %}
 
+    <!-- und ist request.user.id == profil.user.id > Eigenes Profil -->
     {% else %}
         <p>Du befindest dich auf DEINEM Profil, <strong>{{ request.user.username }}</strong>.</p>
-        <form method="post" action="{% url 'invisible_check' %}">
-            {% csrf_token %}
-            <label for="invisible">Profil nur für Freunde sichtbar:</label>
-            <input type="checkbox" name="invisible" {% if request.user.profile.invisible %}checked{% endif %}>
-            <button type="submit">Speichern</button>
-        </form>
+        
+        Profil für Fremde: 
+        <button id="visibility-toggle-btn" data-visible="{{ request.user.profile.invisible }}">
+            {% if request.user.profile.invisible %}
+                UNSICHTBAR
+            {% else %}
+                SICHTBAR
+            {% endif %}
+        </button>
     {% endif %}
 
     <br><br><br>
 
 
 
-
+    <!-- Freunde auf Profil anzeigen unf auf deren Profile verlinken -->
     <p>--------------------------------------------------</p>
     {% if request.user != profile.user %}
         <h3>{{ profile.user.username }}'s Freunde </h3>  
@@ -126,14 +124,16 @@
 
 
 
-
+    <!-- Post-Funktion auf dem User-Profil -->
     <p>--------------------------------------------------</p>
 
     <br><br><br>
 
     <h2>Timeline</h2>
 
+    <!-- eigenes Profil -->
     {% if request.user == profile.user or request.user.is_superuser %}
+        <!-- Post-Form -->
         <p><strong> Teilen macht Spaß! </strong></p>
 
         <div>
@@ -146,31 +146,36 @@
         </div>
         <bt><br><br>
 
-    
+        
+        <!-- Posts des eigenen Profils anzeigen -->
         {% if profile_user_posts %}
             <p><strong> Hier siehst du deine Posts: </strong></p><br>
 
             {% for post in profile_user_posts %}
                 <div>
                     <strong><a href="{% url 'profile_detail' pk=post.user.id %}">{{ post.user.username }}</a></strong> <em> teilte am <strong>{{ post.created_at|date:"d.m.Y H:i" }}</strong>:</em><br>
-                    {% if post.image %}<img src="{{ post.image.url }}" alt="Post image">{% endif %}<br>
-                    {% if post.text %}{{ post.text|truncatechars:100 }}{% endif %}
+                    {% if post.image %}<img src="{{ post.image.url }}" alt="Post image"><br>{% endif %}
+                    {% if post.text %}{{ post.text|truncatechars:100|safe }}{% endif %}
                     {% if post.link %}...Klick: <a href="{{ post.link }}">{{ post.domain }}</a>{% endif %}<br>
                     {% if post.event %}<p>Veranstaltung: {{ post.event.title }}</p>{% endif %}
-
-                    <form action="{% url 'like_post' post.id %}" method="post">
-                        {% csrf_token %}
-                        <button type="submit">Like</button>
-                    </form>
-                    <strong><em>
-                        {{ post.likes.count }} Likes
+                    
+                    <strong>
+                        {% if post|has_liked_post:request.user %}
+                            <button class="like-post-btn" data-post-id="{{ post.id }}">UNLIKE</button>
+                        {% else %}
+                            <button class="like-post-btn" data-post-id="{{ post.id }}">LIKE</button>
+                        {% endif %}
+                        
+                        <a href="{% url 'likelist_post' post.id %}">
+                            <span class="post-likes-count">{{ post.likes.count }} Likes</span>
+                        </a>
                         <a href="{% url 'post_detail' post.id %}"> | {{ post.comments.count }} Kommentare</a>
                         {% if request.user == post.user or request.user.is_superuser %}
                             <a href="{% url 'edit_post' post.id %}">| Bearbeiten</a>
                             <a href="{% url 'delete_post' post.id %}">| Löschen</a><br>
                         {% endif %}
-                        <a href="{% url 'post_detail' post.id %}" class="details-link">Mehr erfahren</a><br>
-                    </strong></em>
+                        <em><a href="{% url 'post_detail' post.id %}" class="details-link">Mehr erfahren</a></em><br>
+                    </strong>
 
                     <br> <br>
                 </div>
@@ -179,23 +184,43 @@
         {% else %}
                 <div>
                     Du hast ja noch gar nichts geteilt ?!? - <a href="{% url 'create_post' %}">Jetzt nachholen!</a><br><br><br>
+                </div>
         {% endif %}
     
-
+    <!-- Profile der anderen -->
     {% else %}
         {% if profile_user_posts %}
             <p><strong>Hier siehst du {{ profile.user.username }}'s Posts:</strong> </p><br>
             {% for post in profile_user_posts %}
             <div>
                 <p><strong><a href="{% url 'profile_detail' pk=post.user.id %}">{{ post.user.username }}</a></strong> <em> teilte am <strong>{{ post.created_at|date:"d.m.Y H:i" }}</strong>:</em></p>
-                <hr>
+                <hr><br>
                 {% if post.image %}<img src="{{ post.image.url }}" alt="Post image">{% endif %}
                 {% if post.text %}<p>{{ post.text }}</p>{% endif %}
                 {% if post.link %}...Klick: <a href="{{ post.link }}">{{ post.domain }}</a>{% endif %}
                 {% if post.event %}<p>Veranstaltung: {{ post.event.title }}</p>{% endif %}
-
-                <br> <br>
+                <br>
+                <strong>
+                    {% if post|has_liked_post:request.user %}
+                        <button class="like-post-btn" data-post-id="{{ post.id }}">UNLIKE</button>
+                    {% else %}
+                        <button class="like-post-btn" data-post-id="{{ post.id }}">LIKE</button>
+                    {% endif %}
+                    
+                    <a href="{% url 'likelist_post' post.id %}">
+                        <span class="post-likes-count">{{ post.likes.count }} Likes</span>
+                    </a>
+                    <a href="{% url 'post_detail' post.id %}"> | {{ post.comments.count }} Kommentare</a>
+                    {% if request.user == post.user or request.user.is_superuser %}
+                        <a href="{% url 'edit_post' post.id %}">| Bearbeiten</a>
+                        <a href="{% url 'delete_post' post.id %}">| Löschen</a><br>
+                    {% endif %}
+                    <br>
+                    <em><a href="{% url 'post_detail' post.id %}" class="details-link">Mehr erfahren</a></em><br>
+                </strong>
             </div>
+            <br><br>
+            
             {% endfor %}
         
         {% else %}
@@ -209,3 +234,64 @@
 {% endif %}
 </section>
 {% endblock content %}
+
+
+
+{% block scripts %}
+<!-- AJAX Skript -->
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.like-post-btn').click(function(e){
+            e.preventDefault();
+            var postId = $(this).data('post-id');
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+            var btn = $(this);
+            var likeCountSpan = btn.closest('strong').find('.post-likes-count');
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'like_post_ajax' %}',
+                data: {
+                    'csrfmiddlewaretoken': csrfToken,
+                    'post_id': postId
+                },
+                success: function(response){
+                    if(response.liked){
+                        btn.text('UNLIKE');
+                    } else {
+                        btn.text('LIKE');
+                    }
+                    likeCountSpan.text(response.total_likes + ' Likes');
+                }
+            });
+        });
+
+        $('#visibility-toggle-btn').click(function() {
+            var csrfToken = $('[name=csrfmiddlewaretoken]').val();
+            var isVisible = $(this).data('visible');
+    
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'invisible_check' %}',
+                data: {
+                    'csrfmiddlewaretoken': csrfToken,
+                    'visible': isVisible
+                },
+                success: function(response) {
+                    if (response.visible) {
+                        $('#visibility-toggle-btn').text('UNSICHTBAR').data('visible', false);
+                    } else {
+                        $('#visibility-toggle-btn').text('SICHTBAR').data('visible', true);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert("Ein Fehler ist aufgetreten: " + error);
+                }
+            });
+        });
+            
+    });
+</script>
+
+{% endblock scripts %}
+

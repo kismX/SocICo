@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/menu.css' %}">
-
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> <!-- Um Ajax zu nutzen -->
     <title>{% block title %}{% endblock %}Seeeker</title>
 </head>
 <body>
@@ -21,7 +22,19 @@
                 {% if user.is_authenticated %}
                     <a class="mm-link" href="{% url 'profile_detail' pk=request.user.id %}">{{ request.user.username }}</a>
                     <a class="logout" href="{% url 'logout' %}">Logout</a>
+    
+                <!-- notifications in Nav -->
+                {% if notifications_new_count != 0 %}
+                    <a href="{% url 'notifications' %}">
+                        {{ notifications_new_count }} NEWS
+                    </a>
                 {% else %}
+                    <a href="{% url 'notifications' %}">
+                        {{ notifications_new_count }} NEWS 
+                    </a>
+                {% endif %}
+   
+            {% else %}
                     <a class="mm-link bold" href="{% url 'login' %}">Login</a>
                     <a class="mm-link" href="{% url 'signup' %}">Registrieren</a>
                 {% endif %}
@@ -43,6 +56,8 @@
                 <a href="{% url 'profile_edit' %}">Profil bearbeiten</a>
                 <a href="{% url 'user_filter' %}">Seeeeeek</a>
                 <a href="{% url 'add_terms' %}">Wörterliste++ (nur für uns)</a>
+                <a href="{% url 'notifications' %}">Benachrichtigungen</a>
+
                 
                 <a href="{% url 'rooms' %}">Chatrooms</a> 
                 <a href="{% url 'group_chat' %}">Gruppe erstellen</a>
@@ -69,12 +84,15 @@
     {% endblock scripts %}
 
     <script>
+        // JavaScript für Dropdownmenue
+
         var sideBar = document.querySelector('.side-bar');
 
         document.getElementById('burger-menu').onclick = function(e){
             sideBar.classList.toggle('slide');
         }
     </script>
+
 
 </body>
 </html>

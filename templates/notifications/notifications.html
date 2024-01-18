@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block title %}Notifications | {% endblock %}
+{% block content %}
+
+{% if request.user.is_authenticated %}
+    <h2>Benachrichtigungen</h2>
+
+    <h3>{{ notifications_new_count }} Neuigkeiten:</h3>    
+    <ul>
+        {% for notification in notifications_new %}
+            {% if notification.notification_type == 'like' %}
+                <li>
+                    <a href="{% url 'mark_notification_as_read' notification.id %}"><strong>LIKE</strong></a><em> von <strong><a href="{% url 'profile_detail' notification.from_user.id %}">{{ notification.from_user }}</a></strong> am <strong>{{ notification.created_at|date:"d.m.Y H:i" }}</strong></em>
+                </li>
+            {% elif notification.notification_type == 'post' %}
+                <li>
+                    <a href="{% url 'mark_notification_as_read' notification.id %}"><strong>POST</strong></a><em> von <strong><a href="{% url 'profile_detail' notification.from_user.id %}">{{ notification.from_user }}</a></strong> am <strong>{{ notification.created_at|date:"d.m.Y H:i" }}</strong></em>
+                </li>
+            {% elif notification.notification_type == 'comment' %}
+                <li>
+                    <a href="{% url 'mark_notification_as_read' notification.id %}"><strong>KOMMENTAR</strong></a><em> von <strong><a href="{% url 'profile_detail' notification.from_user.id %}">{{ notification.from_user }}</a></strong> am <strong>{{ notification.created_at|date:"d.m.Y H:i" }}</strong></em>
+                </li>
+            {% elif notification.notification_type == 'friendrequest' %}
+                <li>
+                    <a href="{% url 'mark_notification_as_read' notification.id %}"><strong>FREUNDSCHAFTSANFRAGE</strong></a><em> von <strong><a href="{% url 'profile_detail' notification.from_user.id %}">{{ notification.from_user }}</a></strong> am <strong>{{ notification.created_at|date:"d.m.Y H:i" }}</strong></em>
+                </li>
+            {% elif notification.notification_type == 'friendrequest_accepted' %}
+                <li>
+                    <a href="{% url 'mark_notification_as_read' notification.id %}"><strong>FREUNDSCHAFT</strong></a><em> mit <strong><a href="{% url 'profile_detail' notification.from_user.id %}">{{ notification.from_user }}</a></strong> am <strong>{{ notification.created_at|date:"d.m.Y H:i" }}</strong></em>
+                </li>
+            {% elif notification.notification_type == 'mention' %}
+                <li>
+                    <a href="{% url 'mark_notification_as_read' notification.id %}"><strong>ERWÄHNUNG</strong></a><em> durch <strong><a href="{% url 'profile_detail' notification.from_user.id %}">{{ notification.from_user }}</a></strong> am <strong>{{ notification.created_at|date:"d.m.Y H:i" }}</strong></em>
+                </li>
+            {% endif %}
+        {% empty %}
+            <li>Nix neues passiert..</li>
+        {% endfor %}
+        <br><br><br>
+    </ul>
+
+    <h3>Was bisher geschah:</h3>
+    <ul>
+        {% for notification in notifications_read %}
+            {% if notification.notification_type == 'like' %}
+                <li>
+                    <a href="{{ notification.notification_link }}">LIKE</a><em> von <strong><a href="{% url 'profile_detail' notification.from_user.id %}">{{ notification.from_user }}</a></strong> am <strong>{{ notification.created_at|date:"d.m.Y H:i" }}</strong></em>
+                    <br>
+                </li>
+            {% elif notification.notification_type == 'post' %}
+                <li>
+                    <a href="{{ notification.notification_link }}">POST</a><em> von <strong><a href="{% url 'profile_detail' notification.from_user.id %}">{{ notification.from_user }}</a></strong> am <strong>{{ notification.created_at|date:"d.m.Y H:i" }}</strong></em>
+                    <br>
+                </li>
+            {% elif notification.notification_type == 'comment' %}
+                <li>
+                    <a href="{{ notification.notification_link }}">KOMMENTAR</a><em> von <strong><a href="{% url 'profile_detail' notification.from_user.id %}">{{ notification.from_user }}</a></strong> am <strong>{{ notification.created_at|date:"d.m.Y H:i" }}</strong></em>
+                    <br>
+                </li>
+            {% elif notification.notification_type == 'friendrequest' %}
+                <li>
+                    <a href="{{ notification.notification_link }}">FREUNDSCHAFTSANFRAGE</a><em> von <strong><a href="{% url 'profile_detail' notification.from_user.id %}">{{ notification.from_user }}</a></strong> am <strong>{{ notification.created_at|date:"d.m.Y H:i" }}</strong></em>
+                    <br>
+                </li>
+            {% elif notification.notification_type == 'friendrequest_accepted' %}
+            <li>
+                <a href="{{ notification.notification_link }}">FREUNDSCHAFT</a><em> mit <strong><a href="{% url 'profile_detail' notification.from_user.id %}">{{ notification.from_user }}</a></strong> am <strong>{{ notification.created_at|date:"d.m.Y H:i" }}</strong></em>
+                <br>
+            </li>
+            {% elif notification.notification_type == 'mention' %}
+            <li>
+                <a href="{{ notification.notification_link }}">ERWÄHNUNG</a><em> durch <strong><a href="{% url 'profile_detail' notification.from_user.id %}">{{ notification.from_user }}</a></strong> am <strong>{{ notification.created_at|date:"d.m.Y H:i" }}</strong></em>
+                <br>
+            </li>
+            {% endif %}
+        {% empty %}
+            <li>Vorher war noch nix..</li>
+
+        {% endfor %}
+    </ul>
+
+{% else %}
+    <p>Nicht authentifiziert.</p>
+{% endif %}
+
+
+{% endblock %}

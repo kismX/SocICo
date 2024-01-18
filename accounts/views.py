@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, DeleteView, CreateView, DetailView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
+from django.http import JsonResponse
 from .forms import UpdateUserForm, UpdateProfileForm
-from posts.models import Post # für post anzeigen des users auf profile_detail
+from posts.models import Post
 from posts.forms import PostForm
 from basics.utils import get_domain
 
@@ -12,6 +13,11 @@ from django.contrib.auth import get_user_model
 from .models import Profile, Friendship
 from django.utils import timezone # für friend connecten
 from django.contrib import messages # wird verwendet um meldungen durch die views oder auch verarbeitung an den user zu schicken
+from django.shortcuts import get_object_or_404
+from PIL import Image
+# für Ajax invisible_check
+from django.views.decorators.http import require_POST
+from notifications.views import create_notification
 
 from cities_light.models import City
 
@@ -64,34 +70,28 @@ class UserProfileDetailView(LoginRequiredMixin, DetailView):
             if post.link:
                 post.domain = get_domain(post.link)
 
-
         ##### nun fügen wir dem context hinzu  ####
+        context.update({
+            'freunde': freunde,   #freundesobjekte
+            'freunde_namelist': [freund.from_user.username if user != freund.from_user else freund.to_user.username for freund in freunde], # eine liste mit den usernamen der freunde
+            'freund_ausgehend': freunde_ausgehend, # friendrequests ausgehend: objekt-queryset
+            'freund_ausgehend_namelist': [freund.to_user.username for freund in freunde_ausgehend],   # friendrequests ausgehend: usernamen-liste
+            'freund_eingehend': freunde_eingehend,
+            'freund_eingehend_namelist': [freund.from_user.username for freund in freunde_eingehend],
+            'num_freunde': freunde.count(),    # anzahl der freunde
+            
+            # für profil-user:
+            'profil_freunde': profil_freunde,
+            'num_profil_freunde': profil_freunde.count(),
+            # posts des users auf profil:
+            'user_posts': user_posts,
+            'profile_user_posts': profile_user_posts,
+            # wenn benutzer auf seinem eigenen profil, dann kann er posten:
+            'post_form': PostForm(),
+        })
 
-        # für eingeloggten user
-        context['freunde'] = freunde   #freundesobjekte
-        context['freunde_namelist'] = [freund.from_user.username if user != freund.from_user else freund.to_user.username for freund in freunde]  # eine liste mit den usernamen der freunde
-        
-        context['freund_ausgehend'] = freunde_ausgehend  # friendrequests ausgehend: objekt-queryset
-        context['freund_ausgehend_namelist'] = [freund.to_user.username for freund in freunde_ausgehend] # friendrequests ausgehend: usernamen-liste
-
-        context['freund_eingehend'] = freunde_eingehend  # friendrequest eingehend: object-queryset
-        context['freund_eingehend_namelist'] = [freund.from_user.username for freund in freunde_eingehend]  # friendrequest eingehend: usernamen-liste
-
-        context['num_freunde'] = freunde.count()    # anzahl der freunde
         if freund_profil:
-            context['freund_seit'] = freund_seit        # seit wann befreundet
-
-        # für profil-user:
-        context['profil_freunde'] = profil_freunde
-        context['num_profil_freunde'] = profil_freunde.count()
-
-        # posts des users auf profil
-        context['user_posts'] = user_posts
-        context['profile_user_posts'] = profile_user_posts
-
-        # wenn benutzer auf seinem eigenen profil, dann kann er posten:
-        #if user == profil_user:
-        context['post_form'] = PostForm()
+            context['freund_seit'] = freund_seit   # seit wann befreundet
         
         return context
 
@@ -140,15 +140,27 @@ def profile(request):
             # altes bild durch neues ersetzen:
             new_image = request.FILES.get('avatar')
             old_image = getattr(profile_instance, 'avatar')
-            
+
             if new_image == None:
                 profile = profile_form.save(commit=False)
                 profile.save(update_fields=['age', 'gender', 'location', 'bio', 'interests'])
             elif old_image == 'default.jpg':
                 profile_form.save()
+                my_profile = Profile.objects.get(id=request.user.id)
+                img = Image.open(my_profile.avatar.path)
+                if img.height > 200 or img.width > 200:
+                    new_img = (200, 200)
+                    img.thumbnail(new_img)
+                    img.save(my_profile.avatar.path)
             else:
                 old_image.delete()
                 profile_form.save()
+                my_profile = Profile.objects.get(id=request.user.id)
+                img = Image.open(my_profile.avatar.path)
+                if img.height > 200 or img.width > 200:
+                    new_img = (200, 200)
+                    img.thumbnail(new_img)
+                    img.save(my_profile.avatar.path)
 
             user_form.save()
             messages.success(request, 'Your Profile is updated successfully')
@@ -166,8 +178,8 @@ def profile(request):
     
 
 @login_required
-def send_friend_request(request, to_user_id):    # das to_user_id kommt aus urls.py hier rein
-    to_user = get_user_model().objects.get(id=to_user_id)
+def send_friend_request(request, to_user_id):
+    to_user = get_object_or_404(get_user_model(), id=to_user_id)
 
     # nun mal checken, ob bereits eine anfrage gibt. 
     # wenn 'from_user' = angemeldeter user und 'to_user' (übermittelte to_user_id) in friendship enthalten, gibt es true aus ...
@@ -176,6 +188,10 @@ def send_friend_request(request, to_user_id):    # das to_user_id kommt aus urls
         messages.warning(request, 'Du hast bereits ne Anfrage an den user gestellt') 
     else:
         Friendship.objects.create(from_user=request.user, to_user=to_user, status='pending')  # neu: 'status' auf pending, weil anfrage noch ausstehend
+        #notification erstellen:
+        notification_info = f"{request.user.username} schickt dir eine Freundschaftsanfrage."
+        notification_link = f"/accounts/friend_requests/"
+        create_notification(to_user, request.user, 'friendrequest', notification_info, notification_link)
         # message geht auch ins admin
         messages.success(request, f'Deine Anfrage wurde an {to_user.username} gesendet, Dikka')  
     return redirect('profile_detail', pk=to_user_id)
@@ -189,14 +205,19 @@ def friend_requests(request):
 
 
 @login_required
-def accept_reject_friend(request, friendship_id, action):   # friendship_id und action kommen wieder aus urls.py
+def accept_reject_friend(request, friendship_id, action):
     friendship = Friendship.objects.get(id=friendship_id)
 
     if action == 'accept':
         friendship.accepted_at = timezone.now()
         friendship.status = 'accepted'
-        friendship.save() # save hier lassen  :D !!
+        friendship.save()
+        # Benachrichtigung wenn akzeptiert:
+        notification_info = f"{friendship.from_user.username} hat deine Freundschaftsanfrage akzeptiert."
+        notification_link = f"/accounts/profiles/{friendship.to_user.id}"
+        create_notification(friendship.from_user, friendship.to_user, 'friendrequest_accepted', notification_info, notification_link)
     elif action == 'reject':
+        friendship.delete_notifications()
         friendship.delete()
     return redirect('friend_requests')
 
@@ -236,17 +257,11 @@ def update_activity_status(profile):
     profile.save(update_fields=['last_online'])
 
 
-#2023-12-16 - user nur für freude sichtbar
+@login_required
+@require_POST
 def invisible_check(request):
-    user = request.user.id
     profil = request.user.profile
-
-    #wennn im request.POST ein wert für 'invisible' enthalten ist (ckeckbox gehakt), dann führe aus:
-    if 'invisible' in request.POST:
-        profil.invisible = True
-    else:
-        profil.invisible = False
-
+    profil.invisible = not profil.invisible
     profil.save()
-    return redirect('profile_detail', pk=user)
-
+    
+    return JsonResponse({'visible': profil.invisible})
