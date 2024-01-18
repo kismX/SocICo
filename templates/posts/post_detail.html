@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 
-
+<section class="row">
 <h3>{{ post.user }} teilte..</h3>
 {% if post.text %}
     <p>{{ post.text }}</p>
@@ -63,5 +63,5 @@
     <p><a href="{% url 'login' %}">Logge dich ein</a>, um zu kommentieren.</p>
 {% endif %}
 
-
+</section>
 {% endblock %}

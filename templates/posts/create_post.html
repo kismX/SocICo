@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<section class="row">
 <h3> Teil deinen Kram </h3>
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
@@ -8,5 +9,5 @@
     <button type="submit">Posten</button>
 </form>
 
-
+</section>
 {% endblock %}

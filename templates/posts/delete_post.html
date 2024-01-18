@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
 
-
+<section class="row">
 <form method="post">
     {% csrf_token %}
     <p>Sicher, dass du diesen Post löschen willst: "{{ post.text }}"?</p>
     <button type="submit">Löschen</button>
     <a href="{% url 'profile_detail' pk=request.user.id %}">Abbrechen</a>
 </form>
-
+</section>
 
 {% endblock %}

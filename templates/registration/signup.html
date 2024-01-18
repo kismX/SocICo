@@ -4,13 +4,14 @@
 
 {% block content %}
 
-<h2>Hier kannst du dich registrieren</h2>
-<form method="post" id="RegisterForm" data-cities-url="{% url 'ajax_load_cities' %}" novalidate>
-    {% csrf_token %}
-    {{ form.as_p }}
-<button type="submit">Sign Up</button>
-</form>
-
+<section class="row">
+  <h2>Hier kannst du dich registrieren</h2>
+  <form method="post" id="RegisterForm" data-cities-url="{% url 'ajax_load_cities' %}" novalidate>
+      {% csrf_token %}
+      {{ form.as_p }}
+    <button type="submit">Sign Up</button>
+  </form>
+</section>
 {% endblock %}
 
 {% block scripts %}

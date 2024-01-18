@@ -1,40 +1,40 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<section class="row">
+    <h2>Freundschaftsanfragen</h2>
+    <br><br>
+    <h3> Eingehende Freundschaftsanfragen </h3>
 
-<h2>Freundschaftsanfragen</h2>
-<br><br>
-<h3> Eingehende Freundschaftsanfragen </h3>
+    {% if incoming_requests %}
+        {% for request in incoming_requests %}
+        <li><strong>{{ request.from_user.username }}</strong> möchte dich adden. 
+        <a href="{% url 'accept_friend' friendship_id=request.id %}">Annehmen</a>  |  <a href="{% url 'reject_friend' friendship_id=request.id %}">Ablehnen</a></li>
+        {% endfor %}
 
-{% if incoming_requests %}
-    {% for request in incoming_requests %}
-    <li><strong>{{ request.from_user.username }}</strong> möchte dich adden. 
-    <a href="{% url 'accept_friend' friendship_id=request.id %}">Annehmen</a>  |  <a href="{% url 'reject_friend' friendship_id=request.id %}">Ablehnen</a></li>
-    {% endfor %}
-
-{% else %}
-    <p>keine Freundesanfragen!</p><br>
-{% endif %}
-
-
-<br><br>
-<h3>Ausgehende Freundschaftsanfragen </h3>
-
-{% if outgoing_requests %}
-    {% for request in outgoing_requests %}
-    Du hast eine Anfrage an <strong>{{ request.to_user.username }}</strong> gesendet. <br>
-    {% endfor %}
-
-{% else %}
-    <p>keine ausgehenden Freundesanfragen!</p>
-{% endif %}
+    {% else %}
+        <p>keine Freundesanfragen!</p><br>
+    {% endif %}
 
 
+    <br><br>
+    <h3>Ausgehende Freundschaftsanfragen </h3>
+
+    {% if outgoing_requests %}
+        {% for request in outgoing_requests %}
+        Du hast eine Anfrage an <strong>{{ request.to_user.username }}</strong> gesendet. <br>
+        {% endfor %}
+
+    {% else %}
+        <p>keine ausgehenden Freundesanfragen!</p>
+    {% endif %}
 
 
-<br><br>
-<p></p>
-<a href="{% url 'profile_detail' pk=request.user.id %}">>>>Zu MEINEM Profil>>></a><br>
 
 
+    <br><br>
+    <p></p>
+    <a href="{% url 'profile_detail' pk=request.user.id %}">>>>Zu MEINEM Profil>>></a><br>
+
+</section>
 {% endblock content %}

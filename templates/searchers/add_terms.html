@@ -1,55 +1,55 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<section class="row">
+    <h2>Füge neuen Begriff hinzu</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <label for="id_word">Wort:</label>
+            {{ form.word }}
+        </div>
+        <button type="submit">Speichern</button>
+    </form>
 
-<h2>Füge neuen Begriff hinzu</h2>
-<form method="post">
-    {% csrf_token %}
-    <div>
-        <label for="id_word">Wort:</label>
-        {{ form.word }}
+    <br>
+    <br>
+
+    <h2>Aktuelles Wörterbuch</h2>
+    <p> Diese Liste an Wörtern sollte immer meher erweitert werden, da diese dazu dient <br>
+        die Suchbegriffe des Users zu erweitern, falls dieser keine Treffer hat aufgrund spelling usw. <br>
+        Auf Dauer kann hier zusätzlich auch über eine API eine Wortliste integriert werden! <br> 
+        Denke daran, dass diese Liste Datenbankabhängig ist und zunächst leer!</p>
+    <br>
+
+
+    {% for term in terms %}
+        {{ term.word }} <a href="{% url 'delete_term' term.id %}">Löschen</a> <br>
+    {% empty %}
+        Keine Wörter vorhanden!
+    {% endfor %}
+
+
+    <div class="pagination">
+        <span class="step-links">
+            <br><br>
+            {% if terms.has_next %}
+                <a href="?page={{ terms.next_page_number }}">nächste</a> | 
+                <a href="?page={{ terms.paginator.num_pages }}">letzte &raquo;</a>
+            {% endif %}
+
+            {% if terms.has_previous %}
+                <a href="?page=1">&laquo; erste</a>
+                <a href="?page={{ terms.previous_page_number }}">vorherige</a>
+            {% endif %}
+            <br>
+            <strong>
+                <span class="current">
+                    Seite {{ terms.number }} von {{ terms.paginator.num_pages }}
+                </span>
+            </strong>
+        </span>
     </div>
-    <button type="submit">Speichern</button>
-</form>
 
-<br>
-<br>
-
-<h2>Aktuelles Wörterbuch</h2>
-<p> Diese Liste an Wörtern sollte immer meher erweitert werden, da diese dazu dient <br>
-    die Suchbegriffe des Users zu erweitern, falls dieser keine Treffer hat aufgrund spelling usw. <br>
-    Auf Dauer kann hier zusätzlich auch über eine API eine Wortliste integriert werden! <br> 
-    Denke daran, dass diese Liste Datenbankabhängig ist und zunächst leer!</p>
-<br>
-
-
-{% for term in terms %}
-    {{ term.word }} <a href="{% url 'delete_term' term.id %}">Löschen</a> <br>
-{% empty %}
-    Keine Wörter vorhanden!
-{% endfor %}
-
-
-<div class="pagination">
-    <span class="step-links">
-        <br><br>
-        {% if terms.has_next %}
-            <a href="?page={{ terms.next_page_number }}">nächste</a> | 
-            <a href="?page={{ terms.paginator.num_pages }}">letzte &raquo;</a>
-        {% endif %}
-
-        {% if terms.has_previous %}
-            <a href="?page=1">&laquo; erste</a>
-            <a href="?page={{ terms.previous_page_number }}">vorherige</a>
-        {% endif %}
-        <br>
-        <strong>
-            <span class="current">
-                Seite {{ terms.number }} von {{ terms.paginator.num_pages }}
-            </span>
-        </strong>
-    </span>
-</div>
-
-
+</section>
 {% endblock %}

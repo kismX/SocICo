@@ -3,7 +3,7 @@
 {% block title %}Chatrooms | {% endblock %}
 
 {% block content %}
-
+<section class="row">
 <h2>Private Chats:</h2>
 {% for key, value in private_dict.items %}
     <div class="flex-wrap-container rooms-list">
@@ -25,5 +25,5 @@
                 <a class="chat-form-button" href="{% url 'room' key %}">></a>
     </div>
 {% endfor %}
-
+</section>
 {% endblock content%}

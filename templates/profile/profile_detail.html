@@ -4,7 +4,7 @@
 
 {% block content %}
 
-
+<section class="row">
 {% if profile.user.profile.invisible and profile.user != request.user and profile.user.username not in freunde_namelist %}
     <p>Das Profil von <strong>{{ profile.user.username }}</strong> ist leider nur für Freunde sichtbar.</p>
     {% if profile.user.username not in freunde_namelist %}
@@ -207,5 +207,5 @@
     {% endif %}
 
 {% endif %}
-
+</section>
 {% endblock content %}

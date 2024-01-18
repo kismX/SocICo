@@ -6,6 +6,7 @@
 
 
 {% if user.is_authenticated %}
+<section class="row">
     <br>
     Hi {{ user.username }}
     <a href="{% url 'logout' %}">Logout</a>
@@ -55,11 +56,17 @@
     {% else %}
         <p> ok... bisher hat noch keiner was geteilt, sei der erste: <a href="{% url 'create_post' %}">KLICK</a> </p>
     {% endif %}
-
+</section>
 {% else %}
-    <p>Bitte log Dich ein!</p>
-    <a href="{% url 'login' %}">Login</a>
-    <a href="{% url 'signup' %}">Registrieren</a>
+<section class="home-slider">
+    <div>
+        <p>Seeek</p>
+        <p>Friendship</p>
+    </div>
+</section>
+    
+    <!-- <a href="{% url 'login' %}">Login</a>
+    <a href="{% url 'signup' %}">Registrieren</a> -->
 {% endif %}
     
 

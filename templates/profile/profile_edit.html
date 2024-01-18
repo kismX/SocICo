@@ -1,48 +1,48 @@
 {% extends "base.html" %}
 
 {% block content %}
+<section class="row">
+  <h1>Profil bearbeiten</h1>
+  <img src="{{ user.profile.avatar.url }}"/>
 
-<h1>Profil bearbeiten</h1>
-<img src="{{ user.profile.avatar.url }}"/>
+  <form method="post" id="ProfileForm" enctype="multipart/form-data" data-cities-url="{% url 'ajax_load_cities' %}" novalidate>
+      {% csrf_token %}
 
-<form method="post" id="ProfileForm" enctype="multipart/form-data" data-cities-url="{% url 'ajax_load_cities' %}" novalidate>
-    {% csrf_token %}
+      <label>Username:</label>
+          {{ user_form.username }}
+      <label>Email:</label>
+          {{ user_form.email }}
+      <label>Country:</label>
+          {{ user_form.country }}
+      <label>City:</label>
+          {{ user_form.city }}
 
-    <label>Username:</label>
-        {{ user_form.username }}
-    <label>Email:</label>
-        {{ user_form.email }}
-    <label>Country:</label>
-        {{ user_form.country }}
-    <label>City:</label>
-        {{ user_form.city }}
+      <br><br>
+      <a href="#">Change Password:</a><br><br>
+      <hr>
+      <label>Change Avatar:</label>
+          {{ profile_form.avatar }}
+      <br><br>
+      <label>Alter:</label>
+      {{ profile_form.age }}
+      <br><br>
+      <label>Geschlecht:</label>
+      {{ profile_form.gender }}
+      <br><br>
+      <label>Wohnort:</label>
+      {{ profile_form.location }}
+      <br><br>
+      <label>Bio:</label>
+          {{ profile_form.bio }}
+      <br><br>
+      <label>Interessen:</label>
+          {{ profile_form.interests }}
+      <br><br>
 
-    <br><br>
-    <a href="#">Change Password:</a><br><br>
-    <hr>
-    <label>Change Avatar:</label>
-        {{ profile_form.avatar }}
-    <br><br>
-    <label>Alter:</label>
-    {{ profile_form.age }}
-    <br><br>
-    <label>Geschlecht:</label>
-    {{ profile_form.gender }}
-    <br><br>
-    <label>Wohnort:</label>
-    {{ profile_form.location }}
-    <br><br>
-    <label>Bio:</label>
-        {{ profile_form.bio }}
-    <br><br>
-    <label>Interessen:</label>
-        {{ profile_form.interests }}
-    <br><br>
+      <button type="submit">Änderungen speichern</button>
+  </form>
 
-    <button type="submit">Änderungen speichern</button>
-</form>
-
-
+</section>
 {% endblock content %}
 
 {% block scripts %}

@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div>
-        <form action="" method="post">
-            {% csrf_token %}
-            <p>Sicher, dass du Dein Profil killen willst? <strong>"{{ profile.user }}"</strong>?</p>
-            <input class="button" type="submit" value="Delete">
-        </form>
-    </div>
+<section class="row">
+    <form action="" method="post">
+        {% csrf_token %}
+        <p>Sicher, dass du Dein Profil killen willst? <strong>"{{ profile.user }}"</strong>?</p>
+        <input class="button" type="submit" value="Delete">
+    </form>
+</section>
 {% endblock content %}

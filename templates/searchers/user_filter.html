@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<section class="row">
     <h1>Buddy Suche</h1>
 <br><br>
     <form method="GET" action="{% url 'user_filter' %}">
@@ -73,5 +74,5 @@
     
     <br>
     <br>
-  
+</section>
 {% endblock %}

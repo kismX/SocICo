@@ -4,7 +4,7 @@
 
 {% block content %}
 
-
+<section class="row">
 {% if post_user_likes %}
     <h3>Diesen Post haben folgende Leute geliked:</h3>
     {% for user in post_user_likes %}
@@ -26,5 +26,5 @@
 
 <br><br>
 <a href="javascript:history.back()">Zurück</a>
-
+</section>
 {% endblock %}
