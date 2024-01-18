@@ -3,11 +3,29 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import CustomUser, Profile
+from datetime import date
 
 class CustomUserCreationForm(UserCreationForm):
+    birthdate = forms.DateField(
+    widget=forms.DateInput(attrs={'type': 'date', 'format': 'dd-mm-yyyy'}),
+    help_text="Format: TT-MM-JJJJ"
+    )
+    
+    # die funktion muss "clean_"irgendwas heißen, weil isvalid bei einem formaufruf immer schaut,
+    # ob ea eine clean_ method gibt, um daten zu bereinigen
+    def clean_birthdate(self): 
+        birthdate = self.cleaned_data.get('birthdate')
+        today = date.today()
+        age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
+
+        if age < 18:
+            raise forms.ValidationError("Wir (unter 18 Jahre alt) müssen draußern bleiben!")
+
+        return birthdate
+
     class Meta:
         model = CustomUser
-        fields = UserCreationForm.Meta.fields + ('name', )
+        fields = UserCreationForm.Meta.fields + ('name', 'birthdate',)
 
 class CustomUserChangeForm(UserChangeForm):
     class Meta:

@@ -5,11 +5,13 @@ from django.utils import timezone
 from django.db.models.signals import pre_delete
 from django.shortcuts import get_object_or_404
 from django.dispatch import receiver
+from datetime import date
 #from PIL import Image
 
 
 class CustomUser(AbstractUser):
     name = models.CharField(null=True, blank=True, max_length=60)
+    birthdate = models.DateField(default=timezone.datetime(1955, 2, 24), null=False, blank=False)
 
 
 class Profile(models.Model):
@@ -20,7 +22,6 @@ class Profile(models.Model):
     ]
     
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
-    age = models.IntegerField(blank=True, null=True)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True) 
     location = models.CharField(max_length=255, blank=True)
     bio = models.TextField(blank=True)

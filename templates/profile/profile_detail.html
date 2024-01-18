@@ -32,6 +32,7 @@
     <h2> {{ profile.user }}</h2>
     <br>
     <p><img src="{{ profile.avatar.url }}" alt="avatar"> </p>
+    <p><strong>B-Day: </strong>{{ profile.user.birthdate|date:"d.m.Y" }}</p>
     <p><strong>Alter: </strong>{{ profile.age }}</p>
     <p><strong>Geschlecht: </strong>{{ profile.gender }}</p>
     <p><strong>Wohnort: </strong>{{ profile.location }}</p>
