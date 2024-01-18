@@ -158,7 +158,7 @@ def like_comment_ajax(request):
         # Benachrichtigung erstellen, wenn Kommentar geliked wird
         if comment.user != request.user:
             notification_info = f"{request.user.username} hat deinen Kommentar geliked."
-            notification_link = f"/post/{comment.post.id}/"
+            notification_link = f"/posts/post/{comment.post.id}/"
             create_notification(comment.user, request.user, 'like', notification_info, notification_link)
 
     return JsonResponse({'liked': liked, 'total_likes_comment': comment.total_likes_comment()})
