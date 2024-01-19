@@ -7,10 +7,11 @@ from cities_light.models import Country, City
 from datetime import date
 
 class CustomUserCreationForm(UserCreationForm):
+    email = forms.EmailField(required=True, help_text='z.B. icke@email.com')
     birthdate = forms.DateField(
-    widget=forms.DateInput(attrs={'type': 'date', 'format': 'dd-mm-yyyy'}),
-    help_text="Format: TT-MM-JJJJ"
-    )
+        widget=forms.DateInput(attrs={'type': 'date', 'format': 'dd-mm-yyyy'}),
+        help_text="Format: TT-MM-JJJJ"
+        )
     
     # die funktion muss "clean_"irgendwas heißen, weil isvalid bei einem formaufruf immer schaut,
     # ob ea eine clean_ method gibt, um daten zu bereinigen
@@ -26,7 +27,7 @@ class CustomUserCreationForm(UserCreationForm):
 
     class Meta:
         model = CustomUser
-        fields = UserCreationForm.Meta.fields + ('name', 'country', 'city', 'birthdate',)
+        fields = UserCreationForm.Meta.fields + ('name', 'email', 'country', 'city', 'birthdate',)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

@@ -4,6 +4,8 @@ from django.views.generic import CreateView
 from posts.models import Post
 from accounts.forms import CustomUserCreationForm
 from .utils import get_domain
+from django.contrib.auth import login
+from django.shortcuts import redirect
 
 #password change
 from django.contrib.auth.views import PasswordChangeView
@@ -13,6 +15,11 @@ class SignUpView(CreateView):
     form_class = CustomUserCreationForm
     success_url = reverse_lazy('login')
     template_name = 'registration/signup.html'
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
+        return redirect(reverse_lazy('profile_edit'))
 
 
 class ChangePasswordView(SuccessMessageMixin, PasswordChangeView):
