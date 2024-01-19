@@ -34,8 +34,8 @@
 }
 
 body{
-    background-color: #F2EFDF;
-    color: #40281A;
+    background-color: #1a1a1a;
+    color: #ffffff;
 }
 h1, h2, h3, h4{
     font-family: "PoppinsBold";
@@ -81,7 +81,22 @@ h1, h2, h3, h4{
     opacity: 0.7;
 }
 
-/* Alle Räume */
+/* Uhrzeit-Section */
+
+.clock-section{
+    background-color: white;
+    padding: 5px 5vw;
+    font-family: 'PoppinsRegular';
+    color: #000;
+    text-align: end;
+    box-shadow: 0px 5px 20px #ffffff7e;
+}
+
+/* Login */
+
+
+
+/* Alle Chaträume */
 
 .rooms-list{
     background-color: #fff;

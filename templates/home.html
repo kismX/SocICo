@@ -90,7 +90,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '{% url 'like_post_ajax' %}',
+                url: '{% url "like_post_ajax" %}',
                 data: {
                     'csrfmiddlewaretoken': csrfToken,
                     'post_id': postId

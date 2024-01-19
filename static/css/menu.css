@@ -10,21 +10,22 @@
 }
 
 /* Main Menu */
-
+.menu{
+    position: fixed;
+    top: 0;
+    z-index: 2;
+}
 .main-menu{
     font-size: 1.3em;
     font-family: 'PoppinsRegular';
     background-color:#000000;
-    border-bottom: 1vmin solid;
+    border-bottom: 0.7vmin solid;
 	border-image: linear-gradient(0.25turn, red, yellow, lime, aqua, blue, magenta, red) 10;
     height: 7vh;
     width: 100vw;
     padding: 20px 0;
     justify-content: space-between;
     align-items: center;
-    position: fixed;
-    top: 0;
-    z-index: 2;
 }
 .main-menu a{
     color: #ffffff;

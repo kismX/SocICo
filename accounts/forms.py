@@ -20,13 +20,13 @@ class CustomUserCreationForm(UserCreationForm):
         age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
 
         if age < 18:
-            raise forms.ValidationError("Wir (unter 18 Jahre alt) müssen draußern bleiben!")
+            raise forms.ValidationError("Wir (unter 18 Jahre alt) müssen draußen bleiben!")
 
         return birthdate
 
     class Meta:
         model = CustomUser
-        fields = UserCreationForm.Meta.fields + ('name', 'country', 'city' 'birthdate',)
+        fields = UserCreationForm.Meta.fields + ('name', 'country', 'city', 'birthdate',)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
