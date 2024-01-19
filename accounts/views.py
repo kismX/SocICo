@@ -15,6 +15,7 @@ from django.utils import timezone # für friend connecten
 from django.contrib import messages # wird verwendet um meldungen durch die views oder auch verarbeitung an den user zu schicken
 from django.shortcuts import get_object_or_404
 from PIL import Image
+from datetime import date
 # für Ajax invisible_check
 from django.views.decorators.http import require_POST
 from notifications.views import create_notification
@@ -36,7 +37,6 @@ class UserProfileDetailView(LoginRequiredMixin, DetailView):
     model = Profile
     template_name = "profile/profile_detail.html"
 
-    #new 2023-11-28 friends anzeigen
     def get_context_data(self, **kwargs):
         # wir rufen die super()geordnete funktion auf, und speichern sie in context, um dann den standard-context zu erweitern
         context = super().get_context_data(**kwargs)
@@ -59,6 +59,10 @@ class UserProfileDetailView(LoginRequiredMixin, DetailView):
         else:
             freund_seit = None
 
+        # age berechnen
+        today = date.today()
+        age = today.year - user.birthdate.year - ((today.month, today.day) < (user.birthdate.month, user.birthdate.day))
+
         # timeline aus postings auf der profilseite anzeigen
         profile_user_posts = Post.objects.filter(user=profil_user.pk).order_by('-created_at')  # post-obj des profilusers
         user_posts = Post.objects.filter(user=user).order_by('-created_at') # post-obj des request-users
@@ -79,6 +83,7 @@ class UserProfileDetailView(LoginRequiredMixin, DetailView):
             'freund_eingehend': freunde_eingehend,
             'freund_eingehend_namelist': [freund.from_user.username for freund in freunde_eingehend],
             'num_freunde': freunde.count(),    # anzahl der freunde
+            'age': age,
             
             # für profil-user:
             'profil_freunde': profil_freunde,

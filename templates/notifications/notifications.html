@@ -3,6 +3,7 @@
 {% block content %}
 
 {% if request.user.is_authenticated %}
+<section class="row">
     <h2>Benachrichtigungen</h2>
 
     <h3>{{ notifications_new_count }} Neuigkeiten:</h3>    
@@ -10,7 +11,7 @@
         {% for notification in notifications_new %}
             {% if notification.notification_type == 'like' %}
                 <li>
-                    <a href="{% url 'mark_notification_as_read' notification.id %}"><strong>LIKE</strong></a><em> von <strong><a href="{% url 'profile_detail' notification.from_user.id %}">{{ notification.from_user }}</a></strong> am <strong>{{ notification.created_at|date:"d.m.Y H:i" }}</strong></em>
+                    <a href="{% url 'mark_notification_as_read' notification.id %}"><strong>LIKE</strong></a><em> von <strong><a href="{% url 'profile_detail' notification.from_user.id %}">{{ notification.from_user }}</a></strong> am <strong>{{ notification.created_at|date:"d.m.Y H:i" }}</strong></em>:
                 </li>
             {% elif notification.notification_type == 'post' %}
                 <li>
@@ -82,6 +83,6 @@
 {% else %}
     <p>Nicht authentifiziert.</p>
 {% endif %}
-
+</section>
 
 {% endblock %}

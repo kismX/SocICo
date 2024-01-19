@@ -1,5 +1,7 @@
 from django.contrib.auth.models import AnonymousUser
 from notifications.models import Notification
+from django.contrib.auth import get_user_model
+
 
 def make_context_global(request):
     context = {}
