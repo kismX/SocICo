@@ -148,7 +148,7 @@ def profile(request):
 
             if new_image == None:
                 profile = profile_form.save(commit=False)
-                profile.save(update_fields=['gender', 'location', 'bio', 'interests'])
+                profile.save(update_fields=['gender', 'bio', 'interests'])
             elif old_image == 'default.jpg':
                 profile_form.save()
                 my_profile = Profile.objects.get(id=request.user.id)
