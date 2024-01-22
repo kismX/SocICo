@@ -4,13 +4,26 @@
 
 {% block content %}
 
-<section class="row">
-    <h2>Hier kannst du dich einloggen</h2>
+<section class="login-section">
     <form class="login-form" method="post">
         {% csrf_token %}
-        {{ form }}
+        <div class="flex-wrap-container">
+            <div>
+                <label for="username">Username:</label>
+                {{ form.username }}
+            </div>
+            <div>
+                <label for="password">Passwort:</label>
+                {{ form.password }}
+            </div>
+        </div>
         <button type="submit">Login</button>
     </form>
+
+    <div class="login-signup-banner">
+        <p>Du hast noch keinen Account?</p>
+        <a href="{% url 'signup' %}">Hier gehts zur Registrierung!</a>
+    </div>
 </section>
 
 {% endblock %}

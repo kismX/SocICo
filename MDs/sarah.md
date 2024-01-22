@@ -8,3 +8,4 @@
 - [ ] passwort ändern implementieren
 - [ ] user_country-city.md fortführen
 - [ ] chat nachrichten links und rechts anzeigen
+- [ ] city filter bei profilbearbeiten filtert nicht wenn schon ein land ausgewählt ist

@@ -18,34 +18,28 @@
                 <a href="{% url 'home' %}">Seeeker</a>
             </div>
 
+            {% if user.is_authenticated %}
             <div class="flex menu-links">
-                <div class="flex">
-                    {% if user.is_authenticated %}
-                        <a class="mm-link" href="{% url 'profile_detail' pk=request.user.id %}">{{ request.user.username }}</a>
-                        
-                    <!-- notifications in Nav -->
+                <div class="flex menu-text">
+                    <a class="mm-link" href="{% url 'profile_detail' pk=request.user.id %}">{{ request.user.username }}</a>
                     {% if notifications_new_count != 0 %}
-                        <a class="mm-link" href="{% url 'notifications' %}">
-                            {{ notifications_new_count }} NEWS
-                        </a>
+                        <a class="mm-link" href="{% url 'notifications' %}">{{ notifications_new_count }} NEWS</a>
                     {% else %}
-                        <a class="mm-link" href="{% url 'notifications' %}">
-                            {{ notifications_new_count }} NEWS 
-                        </a>
+                        <a class="mm-link" href="{% url 'notifications' %}">{{ notifications_new_count }} NEWS </a>
                     {% endif %}
-
-                        <a class="logout" href="{% url 'logout' %}">Logout</a>
-    
-                {% else %}
-                        <a class="mm-link bold" href="{% url 'login' %}">Login</a>
-                        <a class="mm-link" href="{% url 'signup' %}">Registrieren</a>
-                    {% endif %}
-                </div>
+                    <a class="logout" href="{% url 'logout' %}">Logout</a>
+                </div>  
                 <div id="burger-menu">
                     <div class="line"></div>
                     <div class="line"></div>
                     <div class="line"></div>
                 </div>
+            {% else %}
+                <div class="flex menu-text">
+                    <a class="mm-link bold" href="{% url 'login' %}">Login</a>
+                    <a class="mm-link" href="{% url 'signup' %}">Registrieren</a>
+                </div>  
+            {% endif %} 
             </div>
         </nav>
 
@@ -56,28 +50,32 @@
         {% endif %}
     </div>
 
+    
     <div class="side-bar">
         <nav class="flex-wrap-container">
             {% if user.is_authenticated %}
-                <a href="{% url 'profile_detail' pk=request.user.id %}">Mein Profil</a>
+            <a href="{% url 'profile_detail' pk=request.user.id %}">Mein Profil</a>
 
-                <a href="{% url 'profile_list' %}">Alle User</a>
-                <a href="{% url 'profile_edit' %}">Profil bearbeiten</a>
-                <a href="{% url 'user_filter' %}">Seeeeeek</a>
-                <a href="{% url 'add_terms' %}">Wörterliste++ (nur für uns)</a>
-                <a href="{% url 'notifications' %}">Benachrichtigungen</a>
+            <a href="{% url 'profile_list' %}">Alle User</a>
+            <a href="{% url 'profile_edit' %}">Profil bearbeiten</a>
+            <a href="{% url 'user_filter' %}">Seeeeeek</a>
+            <a href="{% url 'add_terms' %}">Wörterliste++ (nur für uns)</a>
+            <a href="{% url 'notifications' %}">Benachrichtigungen</a>
 
-                
-                <a href="{% url 'rooms' %}">Chatrooms</a> 
-                <a href="{% url 'group_chat' %}">Gruppe erstellen</a>
+            
+            <a href="{% url 'rooms' %}">Chatrooms</a> 
+            <a href="{% url 'group_chat' %}">Gruppe erstellen</a>
 
-                <a class="logout" href="{% url 'logout' %}">Logout</a>
+            <a href="{% url 'logout' %}">Logout</a>
+
             {% else %}
-                <a href="{% url 'login' %}">Login</a>
-                <a href="{% url 'signup' %}">Registrieren</a>
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'signup' %}">Registrieren</a>
             {% endif %}
         </nav>
     </div>
+            
+        
     
     
     {% block content %}
@@ -93,11 +91,12 @@
     {% endblock scripts %}
 
     <script>
-        // JavaScript für Dropdownmenue
+        // Dropdownmenue
 
-        var sideBar = document.querySelector('.side-bar');
+        
 
         document.getElementById('burger-menu').onclick = function(e){
+            let sideBar = document.querySelector('.side-bar');
             sideBar.classList.toggle('slide');
         }
 

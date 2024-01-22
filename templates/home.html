@@ -66,9 +66,14 @@
 </section>
 {% else %}
 <section class="home-slider">
-    <div>
-        <p>Seeek</p>
-        <p>Friendship</p>
+    <div class="slider-text">
+        <p class="seek">Seeek</p>
+        <p class="slider-title">Friendship</p>
+    </div>
+    <div class="slider-buttons">
+        <a href="{% url 'login' %}">Login</a>
+        <hr>
+        <a href="{% url 'signup' %}">Registrieren</a>
     </div>
 </section>
     
@@ -90,7 +95,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '{% url "like_post_ajax" %}',
+                url: '{% url 'like_post_ajax' %}',
                 data: {
                     'csrfmiddlewaretoken': csrfToken,
                     'post_id': postId

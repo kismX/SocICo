@@ -4,11 +4,12 @@
 
 {% block content %}
 
-<section class="row">
-  <h2>Hier kannst du dich registrieren</h2>
+<section class="row signup-form">
+  <h1>Du möchtest ein Teil unserer farbenfrohen Community werden?</h1>
+  <p>Dann registriere dich ganz einfach hier:</p>
   <form method="post" id="RegisterForm" data-cities-url="{% url 'ajax_load_cities' %}" novalidate>
       {% csrf_token %}
-      {{ form.as_p }}
+      {{ form }}
     <button type="submit">Sign Up</button>
   </form>
 </section>
