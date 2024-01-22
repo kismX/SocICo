@@ -25,7 +25,7 @@ class Profile(models.Model):
     
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True) 
-    location = models.CharField(max_length=255, blank=True)
+    #location = models.CharField(max_length=255, blank=True)
     bio = models.TextField(blank=True)
     interests = models.TextField(blank=True, help_text='Gib interessen getrennt durch Komma an')
     avatar = models.ImageField(default='default.jpg', upload_to='profile_images')
@@ -42,14 +42,6 @@ class Profile(models.Model):
     def save(self, *args, **kwargs):
 
         super(Profile, self).save(*args, **kwargs)
-
-        # img = Image.open(self.avatar.path)
-
-        # if img.height > 100 or img.width > 100:
-        #     new_img = (100, 100)
-        #     img.thumbnail(new_img)
-        #     img.save(self.avatar.path)
-
 
 # neues model das eine Friednship darstellt
 # es hat den 'from_user', von dem die anfrage ausgeht und 'to_user' an den die anfrage geht
