@@ -13,10 +13,10 @@ class ProfileCompletionMiddleware:
 
     def __call__(self, request):
         response = self.get_response(request)
-
         if (
             request.user.is_authenticated and
             not is_profile_complete(request.user) and
+            request.path != '/media/default.jpg' and
             request.path != reverse('profile_edit')
         ):
             return redirect(reverse('profile_edit'))
