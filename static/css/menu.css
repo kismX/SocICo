@@ -23,13 +23,12 @@
 	border-image: linear-gradient(0.25turn, red, yellow, lime, aqua, blue, magenta, red) 10;
     height: 7vh;
     width: 100vw;
-    padding: 20px 0;
+    padding: 20px 0 10px 0;
     justify-content: space-between;
     align-items: center;
 }
 .main-menu a{
     color: #ffffff;
-    margin-right: 20px;
 }
 .menu-links{
     margin-right: 5vw;
@@ -39,6 +38,27 @@
     font-family: "PoppinsBold";
     margin-left: 5vw;
 }
+.menu-text{
+    display: flex;
+    align-items: center;
+}
+.menu-text a img{
+    width: 25px;
+}
+.mm-link{
+    margin-right: 5vw;
+}
+#notification{
+    position: relative;
+    background: linear-gradient(rgb(0, 242, 255), rgb(187, 0, 255));
+    height: 7vh;
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    z-index: 3;
+    right: -48px;
+    top: -13px;
+}
 
 /* Burger Menu */
 
@@ -47,9 +67,8 @@
     height: 25px;
     border-radius: 10px;
     cursor: pointer;
-    padding-top: 10px;
+    /* padding-top: 10px; */
     padding-bottom: 10px;
-    /* position: absolute; */
     right: 12vw;
     display: flex;
     flex-direction: column;
@@ -63,7 +82,7 @@
     border-radius: 50%;
 }
 .side-bar{
-    background-color: rgba(0, 0, 0, 0.478);
+    background-color: rgba(0, 0, 0, 0.915);
     width: 100vw;
     padding: 20px 0;
     text-align: left;
@@ -82,7 +101,6 @@
     background-color: #000000;
     padding: 5px 10px;
     border-radius: 5px;
-    /* box-shadow:3px 3px #40281A; */
 }
 .side-bar nav{
     margin: 0 10px;
@@ -128,7 +146,7 @@ footer a{
 
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 700px) {
     .menu-text{
         display: none;
     }

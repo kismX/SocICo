@@ -3,45 +3,71 @@
 {% block content %}
 {% load like_tags %}
 
-<section class="row">
+<section class="row" id="profile-detail">
     <!-- Invisible Bedingung -->
 {% if profile.user.profile.invisible and profile.user != request.user and profile.user.username not in freunde_namelist %}
-    <p>Das Profil von <strong>{{ profile.user.username }}</strong> ist leider nur für Freunde sichtbar.</p>
+    <p class="no-entry">Das Profil von {{ profile.user.username }} ist leider nur für Freunde sichtbar.</p>
     
     <!-- Friendrequest Handling wenn Invisible -->
     {% if profile.user.username not in freunde_namelist %}
         {% if profile.user.username not in freund_eingehend_namelist and profile.user.username not in freund_ausgehend_namelist %}
-            <a href="{% url 'send_friend_request' to_user_id=profile.user.id %}">Freundschaftsanfrage senden</a> <br><br>
-            oder einfach:
-            <a href="{% url 'profile_detail' pk=request.user.id %}">Ab nach Hause</a> <br>
+            <a class="colorfull-btn" href="{% url 'send_friend_request' to_user_id=profile.user.id %}">Freundschaftsanfrage senden</a>
         {% else %}
             {% if profile.user.username in freund_ausgehend_namelist %}
-                <strong>{{ profile.user.username }}</strong> hat von dir einen Friendrequest erhalten! <br>
-                Willste doch nicht? <a href="{% url 'withdraw_friend_request' profile_id=profile.id %}">'n Rückzieher machen!</a>
+                <p>{{ profile.user.username }} hat von dir einen Friendrequest erhalten!</p>
+                <p>Anfrage zurückziehen:</p>
+                <a class="colorfull-btn" href="{% url 'withdraw_friend_request' profile_id=profile.id %}">'n Rückzieher machen!</a>
             {% elif profile.user.username in freund_eingehend_namelist %}
-                Hey, Du hast eine Freundesanfrage von <strong>{{ profile.user.username }}</strong> bekommen, Bro! <br>
-                <a href="{% url 'friend_requests' %}">Zu Deinen Friendrequests!</a>
-                oder einfach:
-                <a href="{% url 'profile_detail' pk=request.user.id %}">Ab nach Hause</a> <br>
+                <p>Du hast eine Freundesanfrage von {{ profile.user.username }} bekommen!</p>
+                <a class="colorfull-btn" href="{% url 'friend_requests' %}">Zu Deinen Friendrequests!</a>
+                <a class="colorfull-btn color-change" href="{% url 'profile_detail' pk=request.user.id %}">Zurück zum Profil</a>
             {% endif %}
         {% endif %}
-
     {% endif %}
 
 {% else %}
     <!-- Wenn profil sichtbar, Profiluser mit Infos -->
-    <h2> {{ profile.user }}</h2>
-    <br>
-    <p><img src="{{ profile.avatar.url }}" alt="avatar"> </p>
-    <p><strong>B-Day: </strong>{{ profile.user.birthdate|date:"d.m.Y" }}</p>
-    <p><strong>Alter: </strong>{{ age }}</p>
-    <p><strong>Geschlecht: </strong>{{ profile.gender }}</p>
-    <p><strong>Land: </strong>{{ profile.user.country }}</p>
-    <p><strong>Stadt: </strong>{{ profile.user.city }}</p>
-    <p><strong>Bio: </strong>{{ profile.bio }}</p>
-    <p><strong>Interessen: </strong>{{ profile.interests }}</p>
-
-    <br><br>
+    <div class="flex avatar-user">
+        <img id="profile-avatar" src="{{ profile.avatar.url }}" alt="avatar">
+        <div class="w-100">
+            <h1> {{ profile.user }}</h1>
+            <hr id="hr-margin-none" class="dotted-line">
+            <div class="flex">
+                <p>{{ age }},</p>
+                <p>{{ profile.gender }}</p>
+            </div>
+            <hr id="hr-margin-none" class="dotted-line">
+            <div class="mq-flex birthdate-location">
+                <div class="mq-flex">
+                    <p class="bold">Geburtsdatum:</p>
+                    <p>{{ profile.user.birthdate|date:"d.m.Y" }}</p>
+                </div>
+                <div class="mq-flex">
+                    <p class="bold">Wohnort:</p>
+                    <p>{{ profile.user.country }}, {{ profile.user.city.name }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="profile-detail-list">
+        <div class="display-none">
+            <div>
+                <p class="bold">Geburtsdatum:</p>
+                <p>{{ profile.user.birthdate|date:"d.m.Y" }}</p>
+            </div>
+            <div>
+                <p class="bold">Wohnort</p>
+                <p>{{ profile.user.country }}, {{ profile.user.city.name }}</p>
+            </div>
+        </div>
+        <div class="profile-bio">
+            <p>{{ profile.bio }}</p>
+        </div>
+        <div>
+            <p class="bold">Interessen:</p>
+            <p>{{ profile.interests }}</p>
+        </div>
+    </div>
 
     <!-- Wenn angemeldete user.id != profil.id -->
     <!-- kann man Chat mit Profiluser erstellen -->
@@ -49,188 +75,156 @@
     <!-- dann wird friendrequest ermöglicht -->
     <!-- und wenn unter freunden, kann man auch freundschaft beenden -->
     {% if request.user.id != profile.user.id %}
-
-        <a href="{% url 'create_chat' own_id=request.user.id foreign_id=profile.user.id%}">Chat erstellen</a>
-
-        {% if profile.user.username not in freunde_namelist %}
-            {% if profile.user.username not in freund_eingehend_namelist and profile.user.username not in freund_ausgehend_namelist %}
-                <a href="{% url 'send_friend_request' to_user_id=profile.user.id %}">Freundschaftsanfrage senden</a>
-            {% else %}
-                {% if profile.user.username in freund_ausgehend_namelist %}
-                    <strong>{{ profile.user.username }}</strong> hat von dir einen Friendrequest erhalten! <br>
-                    Willste doch nicht? <a href="{% url 'withdraw_friend_request' profile_id=profile.id %}">'n Rückzieher machen!</a>
-                {% elif profile.user.username in freund_eingehend_namelist %}
-                    Hey, Du hast eine Freundesanfrage von <strong>{{ profile.user.username }}</strong> bekommen, Bro! <br>
-                    <a href="{% url 'friend_requests' %}">Zu Deinen Friendrequests!</a>
+    <section class="friend-chat-section">
+        <div>
+            <a class="colorfull-btn" id="chat-button" href="{% url 'create_chat' own_id=request.user.id foreign_id=profile.user.id%}"><img src="../../media/icons/comment.png" alt=""></a>
+            {% if profile.user.username not in freunde_namelist %}
+                {% if profile.user.username not in freund_eingehend_namelist and profile.user.username not in freund_ausgehend_namelist %}
+                    <a class="colorfull-btn" href="{% url 'send_friend_request' to_user_id=profile.user.id %}">Freundschaftsanfrage senden</a>
+                {% else %}
+                    {% if profile.user.username in freund_ausgehend_namelist %}
+                        <a class="colorfull-btn" href="{% url 'withdraw_friend_request' profile_id=profile.id %}">Anfrage zurückziehen</a>
+                    {% elif profile.user.username in freund_eingehend_namelist %}
+                        <a class="colorfull-btn" href="{% url 'friend_requests' %}">Anfrage annehmen</a>
+                    {% endif %}
                 {% endif %}
+            {% else %}
+                <a class="colorfull-btn" href="{% url 'remove_friend' profile_id=profile.id %}">Freundschaft Beenden</a> 
             {% endif %}
-        {% else %}
-            <strong>{{ profile.user.username }}</strong> ist seit <strong>{{ freund_seit|date:"d.m.Y" }}</strong> dein Freund! <br>
-            ....keine Lust auf die Freundschaft? <a href="{% url 'remove_friend' profile_id=profile.id %}">Freundschaft Beenden</a> 
+        </div>
+        {% if profile.user.username in freunde_namelist %}
+            <p>Ihr seid seit dem {{ freund_seit|date:"d.m.Y" }} befreundet</p>
         {% endif %}
+    </section>
 
-    <!-- und ist request.user.id == profil.user.id > Eigenes Profil -->
+    
+
+    <!-- Profil Sichtbarkeit -->
     {% else %}
-        <p>Du befindest dich auf DEINEM Profil, <strong>{{ request.user.username }}</strong>.</p>
         
-        Profil für Fremde: 
+    <div class="profile-visibility">
+        <p>Dein Profil ist für Fremde:</p> 
         <button id="visibility-toggle-btn" data-visible="{{ request.user.profile.invisible }}">
             {% if request.user.profile.invisible %}
-                UNSICHTBAR
+                unsichtbar
             {% else %}
-                SICHTBAR
+                sichtbar
             {% endif %}
         </button>
+    </div>
     {% endif %}
+    <hr class="dotted-line">
 
-    <br><br><br>
-
-
-
-    <!-- Freunde auf Profil anzeigen unf auf deren Profile verlinken -->
-    <p>--------------------------------------------------</p>
+    <div class="mq-gap-flex">
+    <!-- Freunde des Users -->
+    <section class="profile-friends">
     {% if request.user != profile.user %}
-        <h3>{{ profile.user.username }}'s Freunde </h3>  
-            Er/Sie hat hier derzeit <strong>{{ num_profil_freunde }}</strong> Freunde:
+        <h2>{{ profile.user.username }}'s Freunde</h2>  
+        <p>{{ num_profil_freunde }} Freunde</p>
 
-        <ul>
+        <ul class="profile-friends-container">
             {% for freund in profil_freunde %}
                 {% if profile.user.username != freund.from_user.username %}
-                    <li><strong><a href="{% url 'profile_detail' pk=freund.from_user.id %}">{{ freund.from_user.username }}</a></strong> ...ist ein Freund des Users!</li>
+                    <li><a href="{% url 'profile_detail' pk=freund.from_user.id %}">{{ freund.from_user.username }}</a></li>
                 {% else %}
-                    <li><strong><a href="{% url 'profile_detail' pk=freund.to_user.id %}">{{ freund.to_user.username }}</a></strong> ...ist ein Freund des Users!</li>
+                    <li><a href="{% url 'profile_detail' pk=freund.to_user.id %}">{{ freund.to_user.username }}</a></li>
                 {% endif %}
             {% endfor %}
         </ul>
 
     {% else %}
-        <h3>Meine Freunde</h3>
-            Du hast hier derzeit <strong>{{ num_freunde }}</strong> Freunde:
+        <div class="mq-flex friend-btn-flex">
+            <h2>Deine Freunde</h2>
+            <a class="colorfull-btn" href="{% url 'friend_requests' %}">Alle Anfragen</a>
+        </div>
+        <h2 class="display-none">Deine Freunde</h2>
+        <p>{{ num_freunde }} Freunde</p>
 
-        <ul>
+        <ul class="profile-friends-container">
             {% for freund in freunde %}
                 {% if user.username != freund.from_user.username %}
-                    <li><strong><a href="{% url 'profile_detail' pk=freund.from_user.id %}">{{ freund.from_user.username }}</a></strong> ...ist dein Freund!</li>
+                    <li><a href="{% url 'profile_detail' pk=freund.from_user.id %}">{{ freund.from_user.username }}</a></li>
                 {% else %}
-                    <li><strong><a href="{% url 'profile_detail' pk=freund.to_user.id %}">{{ freund.to_user.username }}</a></strong> ...ist dein Freund!</li>
+                    <li><a href="{% url 'profile_detail' pk=freund.to_user.id %}">{{ freund.to_user.username }}</a></li>
                 {% endif %}
             {% endfor %}
+        </ul>
     {% endif %}
-    </ul>
-
-    <br>
-    <div><a href="{% url 'friend_requests' %}"> >>> Zu den EIGENEN Friendrequests >>> </a></div>
-
-
+    <a class="colorfull-btn display-none" href="{% url 'friend_requests' %}">Alle Freundschaftsanfragen</a>
+    <hr class="dotted-line display-none">
+    </section>
 
     <!-- Post-Funktion auf dem User-Profil -->
-    <p>--------------------------------------------------</p>
-
-    <br><br><br>
-
-    <h2>Timeline</h2>
 
     <!-- eigenes Profil -->
-    {% if request.user == profile.user or request.user.is_superuser %}
-        <!-- Post-Form -->
-        <p><strong> Teilen macht Spaß! </strong></p>
-
+    {% if request.user == profile.user %}
+    <section class="create-post">
+        <h2>Post erstellen</h2>
         <div>
-            <p><em>Erstelle einen Post</em></p>
-            <form method="post" enctype="multipart/form-data" action="{% url 'create_post' %}">
+            <form class="profile-post-form" method="post" enctype="multipart/form-data" action="{% url 'create_post' %}">
                 {% csrf_token %}
-                {{ post_form.as_p }}
-                <button type="submit">Posten</button>
+                <label for="textarea">Schreib etwas...</label>
+                {{ post_form.text }}
+                <label for="image">Image</label>
+                {{ post_form.image }}
+                <label for="link">Link</label>
+                {{ post_form.link }}
+                <label for="event">Event</label>
+                {{ post_form.event }}
+                <button class="colorfull-btn color-change" type="submit">Posten</button>
             </form>
         </div>
-        <bt><br><br>
+        <hr class="dotted-line display-none">
+    </section>
+    {% endif %}
+    </div>
+    <hr class="dotted-line">
 
-        
-        <!-- Posts des eigenen Profils anzeigen -->
+    <!-- Posts anzeigen -->
+
+    <section class="user-posts">
         {% if profile_user_posts %}
-            <p><strong> Hier siehst du deine Posts: </strong></p><br>
-
+        <h2>Deine Posts</h2>
+        <div class="mq-post-flex">
             {% for post in profile_user_posts %}
+            <div class="main-post" id="main-post">
                 <div>
-                    <strong><a href="{% url 'profile_detail' pk=post.user.id %}">{{ post.user.username }}</a></strong> <em> teilte am <strong>{{ post.created_at|date:"d.m.Y H:i" }}</strong>:</em><br>
-                    {% if post.image %}<img src="{{ post.image.url }}" alt="Post image"><br>{% endif %}
-                    {% if post.text %}{{ post.text|truncatechars:100|safe }}{% endif %}
-                    {% if post.link %}...Klick: <a href="{{ post.link }}">{{ post.domain }}</a>{% endif %}<br>
+                    <div class="flex">
+                        <a class="bold post-user" href="{% url 'profile_detail' pk=post.user.id %}">{{ post.user.username }}</a>
+                        <p>{{ post.created_at|date:"d.m.Y H:i" }}</p>
+                    </div>
+                    <hr class="dotted-line">
+                    <a href="{% url 'post_detail' post.id %}" class="details-link">
+                    {% if post.image %}<img src="{{ post.image.url }}" alt="Post image">{% endif %}
+                    {% if post.text %}<p class="post-text">{{ post.text|truncatechars:100|safe }}</p>{% endif %}
                     {% if post.event %}<p>Veranstaltung: {{ post.event.title }}</p>{% endif %}
-                    
-                    <strong>
-                        {% if post|has_liked_post:request.user %}
-                            <button class="like-post-btn" data-post-id="{{ post.id }}">UNLIKE</button>
-                        {% else %}
-                            <button class="like-post-btn" data-post-id="{{ post.id }}">LIKE</button>
-                        {% endif %}
-                        
-                        <a href="{% url 'likelist_post' post.id %}">
-                            <span class="post-likes-count">{{ post.likes.count }} Likes</span>
-                        </a>
-                        <a href="{% url 'post_detail' post.id %}"> | {{ post.comments.count }} Kommentare</a>
-                        {% if request.user == post.user or request.user.is_superuser %}
-                            <a href="{% url 'edit_post' post.id %}">| Bearbeiten</a>
-                            <a href="{% url 'delete_post' post.id %}">| Löschen</a><br>
-                        {% endif %}
-                        <em><a href="{% url 'post_detail' post.id %}" class="details-link">Mehr erfahren</a></em><br>
-                    </strong>
-
-                    <br> <br>
+                    </a>
                 </div>
-                <p> ........................  </p><br><br>
-            {% endfor %}
-        {% else %}
                 <div>
-                    Du hast ja noch gar nichts geteilt ?!? - <a href="{% url 'create_post' %}">Jetzt nachholen!</a><br><br><br>
-                </div>
-        {% endif %}
-    
-    <!-- Profile der anderen -->
-    {% else %}
-        {% if profile_user_posts %}
-            <p><strong>Hier siehst du {{ profile.user.username }}'s Posts:</strong> </p><br>
-            {% for post in profile_user_posts %}
-            <div>
-                <p><strong><a href="{% url 'profile_detail' pk=post.user.id %}">{{ post.user.username }}</a></strong> <em> teilte am <strong>{{ post.created_at|date:"d.m.Y H:i" }}</strong>:</em></p>
-                <hr><br>
-                {% if post.image %}<img src="{{ post.image.url }}" alt="Post image">{% endif %}
-                {% if post.text %}<p>{{ post.text }}</p>{% endif %}
-                {% if post.link %}...Klick: <a href="{{ post.link }}">{{ post.domain }}</a>{% endif %}
-                {% if post.event %}<p>Veranstaltung: {{ post.event.title }}</p>{% endif %}
-                <br>
-                <strong>
+                    {% if post.link %}<a class="post-link" href="{{ post.link }}">{{ post.domain }}</a>{% endif %}
+                    <hr class="dotted-line">
                     {% if post|has_liked_post:request.user %}
-                        <button class="like-post-btn" data-post-id="{{ post.id }}">UNLIKE</button>
+                    <a class="like-post-btn" data-like_post_ajax="{% url 'like_post_ajax' %}" data-post-id="{{ post.id }}" href="#"><img id="like-image" src="{{ '../../media/icons/heartfull.png' }}" alt=""></a>
                     {% else %}
-                        <button class="like-post-btn" data-post-id="{{ post.id }}">LIKE</button>
+                    <a class="like-post-btn" data-like_post_ajax="{% url 'like_post_ajax' %}" data-post-id="{{ post.id }}" href="#"><img id="like-image" src="{{ '../../media/icons/heart.png' }}" alt=""></a>
                     {% endif %}
                     
-                    <a href="{% url 'likelist_post' post.id %}">
-                        <span class="post-likes-count">{{ post.likes.count }} Likes</span>
-                    </a>
+                    <a class="post-likes-count" href="{% url 'likelist_post' post.id %}">{{ post.likes.count }}</a>
                     <a href="{% url 'post_detail' post.id %}"> | {{ post.comments.count }} Kommentare</a>
                     {% if request.user == post.user or request.user.is_superuser %}
-                        <a href="{% url 'edit_post' post.id %}">| Bearbeiten</a>
-                        <a href="{% url 'delete_post' post.id %}">| Löschen</a><br>
+                    <a href="{% url 'edit_post' post.id %}">| Bearbeiten</a>
+                    <a href="{% url 'delete_post' post.id %}">| Löschen</a>
                     {% endif %}
-                    <br>
-                    <em><a href="{% url 'post_detail' post.id %}" class="details-link">Mehr erfahren</a></em><br>
-                </strong>
+                </div>
             </div>
-            <br><br>
-            
             {% endfor %}
-        
+        </div>
         {% else %}
-            <div>
-                {{ profile.user.username }} hat offenbar nix zu teilen!!
-            </div>
-        {% endif %}
-        
+            <p class="no-entry">Keine Beiträge vorhanden...</p>
+    </section>
     {% endif %}
-
 {% endif %}
+</section>
 </section>
 {% endblock content %}
 
@@ -245,22 +239,27 @@
             var postId = $(this).data('post-id');
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
             var btn = $(this);
-            var likeCountSpan = btn.closest('strong').find('.post-likes-count');
+            var likeCountSpan = btn.closest('div').find('.post-likes-count');
+            var likePostUrl = btn.data('like_post_ajax');
+            var heartFullIcon = "../../media/icons/heartfull.png" // Pfad zum Herz-voll-Bild
+            var heartEmptyIcon = "../../media/icons/heart.png" // Pfad zum Herz-leer-Bild
 
             $.ajax({
                 type: 'POST',
-                url: '{% url 'like_post_ajax' %}',
+                url: likePostUrl,
                 data: {
                     'csrfmiddlewaretoken': csrfToken,
                     'post_id': postId
                 },
                 success: function(response){
                     if(response.liked){
-                        btn.text('UNLIKE');
+                        var html = '<img src="' + heartFullIcon + '" alt="liked">';
+                        btn.html(html);
                     } else {
-                        btn.text('LIKE');
+                        var html = '<img src="' + heartEmptyIcon + '" alt="Unliked">';
+                        btn.html(html);
                     }
-                    likeCountSpan.text(response.total_likes + ' Likes');
+                    likeCountSpan.text(response.total_likes);
                 }
             });
         });
@@ -278,9 +277,9 @@
                 },
                 success: function(response) {
                     if (response.visible) {
-                        $('#visibility-toggle-btn').text('UNSICHTBAR').data('visible', false);
+                        $('#visibility-toggle-btn').text('unsichtbar').data('visible', false);
                     } else {
-                        $('#visibility-toggle-btn').text('SICHTBAR').data('visible', true);
+                        $('#visibility-toggle-btn').text('sichtbar').data('visible', true);
                     }
                 },
                 error: function(xhr, status, error) {

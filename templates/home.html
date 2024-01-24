@@ -7,59 +7,55 @@
 
 {% if user.is_authenticated %}
 <section class="row">
-    <br>
-    Hi {{ user.username }}
-    <a href="{% url 'logout' %}">Logout</a>
-    <br>
-    <a href="{% url 'profile_edit' %}">Bearbeite dein Profil</a>
+    <h1>Hey, {{ user.username }}! <a href="{% url 'profile_edit' %}">&#9998</a></h1>
+    <hr class="dotted-line">
+    <a class="search" href="{% url 'user_filter' %}">
+        <p>Nach anderen Usern stöbern...</p>
+        <img src="{{ '../../../media/icons/search.png' }}" alt="">
+    </a>
+    <hr class="dotted-line">
 
-    <br>
-    <br>
-    <a href="{% url 'profile_list' %}"> >>> ZU DEN PROFILEN</a><br><br>
-
-    <p> --------------------------- </p>
-    <br> <br>
     <h2>NEWSFEED</h2>
-    <em>Was user gepostet haben (wird angepasst auf nur posts von freunden):</em>
-    <br>
-    <br>
-
+    
     <!-- Anzeigen der Posts (Text, img, Link) -->
     {% if posts %}
+    <div id="post-flex">
         {% for post in posts %}
-            <div>
-                <p><strong><a href="{% url 'profile_detail' pk=post.user.id %}">{{ post.user.username }}</a></strong> <em> teilte am <strong>{{ post.created_at|date:"d.m.Y H:i" }}</strong>:</em></p>
-                {% if post.image %}<img src="{{ post.image.url }}" alt="Post image"><br>{% endif %}
-                {% if post.text %}<p>{{ post.text|truncatechars:100|safe }}</p>{% endif %}
-                {% if post.link %}... URL: <a href="{{ post.link }}">{{ post.domain }}</a><br>{% endif %}
-                {% if post.event %}<p>Veranstaltung: {{ post.event.title }}</p>{% endif %}
-               
-
-                <!-- Like und Kommentar Handling -->
-                {% if post|has_liked_post:request.user %}
-                    <button class="like-home-post-btn" data-post-id="{{ post.id }}">UNLIKE</button>
-                {% else %}
-                    <button class="like-home-post-btn" data-post-id="{{ post.id }}">LIKE</button>
-                {% endif %}
-                <strong>
-                    <a href="{% url 'likelist_post' post.id %}">
-                        <span class="home-post-likes-count">{{ post.likes.count }} Likes</span>
-                    </a>
+            <div class="main-post" id="main-post">
+                <div>
+                    <div class="flex">
+                        <a class="bold post-user" href="{% url 'profile_detail' pk=post.user.id %}">{{ post.user.username }}</a>
+                        <p>{{ post.created_at|date:"d.m.Y H:i" }}</p>
+                    </div>
                 
-                    
+                
+                    <hr class="dotted-line">
+                    <a href="{% url 'post_detail' post.id %}" class="details-link">
+                    {% if post.image %}<img src="{{ post.image.url }}" alt="Post image">{% endif %}
+                    {% if post.text %}<p class="post-text">{{ post.text|truncatechars:100|safe }}</p>{% endif %}
+                    {% if post.event %}<p>Veranstaltung: {{ post.event.title }}</p>{% endif %}
+                    </a>
+                </div>
+                <!-- Like und Kommentar Handling -->
+                <div>
+                    {% if post.link %}<a class="post-link" href="{{ post.link }}">{{ post.domain }}</a>{% endif %}
+                    <hr class="dotted-line">
+                    {% if post|has_liked_post:request.user %}
+                    <a class="like-post-btn" data-like_post_ajax="{% url 'like_post_ajax' %}" data-post-id="{{ post.id }}" href="#"><img id="like-image" src="{{ '../../media/icons/heartfull.png' }}" alt=""></a>
+                    {% else %}
+                    <a class="like-post-btn" data-like_post_ajax="{% url 'like_post_ajax' %}" data-post-id="{{ post.id }}" href="#"><img id="like-image" src="{{ '../../media/icons/heart.png' }}" alt=""></a>
+                    {% endif %}
+                
+                    <a class="home-post-likes-count" href="{% url 'likelist_post' post.id %}">{{ post.likes.count }}</a>
                     <a href="{% url 'post_detail' post.id %}"> | {{ post.comments.count }} Kommentare</a>
                     {% if request.user == post.user or request.user.is_superuser %}
-                            <a href="{% url 'edit_post' post.id %}">| Bearbeiten</a>
-                            <a href="{% url 'delete_post' post.id %}">| Löschen</a>
+                    <a href="{% url 'edit_post' post.id %}">| Bearbeiten</a>
+                    <a href="{% url 'delete_post' post.id %}">| Löschen</a>
                     {% endif %}
-                    <br><em><a href="{% url 'post_detail' post.id %}" class="details-link">Mehr erfahren</a></em>
-                </strong>
-
-                <br> <br>
+                </div>   
             </div>
-            <p> ........................  </p><br><br>
-
         {% endfor %}
+    </div>
     {% else %}
         <p> ok... bisher hat noch keiner was geteilt, sei der erste: <a href="{% url 'create_post' %}">KLICK</a> </p>
     {% endif %}
@@ -76,9 +72,6 @@
         <a href="{% url 'signup' %}">Registrieren</a>
     </div>
 </section>
-    
-    <!-- <a href="{% url 'login' %}">Login</a>
-    <a href="{% url 'signup' %}">Registrieren</a> -->
 {% endif %}
     
 
@@ -86,27 +79,33 @@
 <!-- AXAX-->
 <script type="text/javascript">
     $(document).ready(function(){
-        $('.like-home-post-btn').click(function(e){
+        $('.like-post-btn').click(function(e){
             e.preventDefault();
             var postId = $(this).data('post-id');
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
             var btn = $(this); 
             var likeCountSpan = btn.closest('div').find('.home-post-likes-count'); 
+            var likePostUrl = btn.data('like_post_ajax'); // Angenommen, Sie haben dies in Ihrem HTML eingestellt
+            var heartFullIcon = "../../media/icons/heartfull.png" // Pfad zum Herz-voll-Bild
+            var heartEmptyIcon = "../../media/icons/heart.png" // Pfad zum Herz-leer-Bild
 
             $.ajax({
                 type: 'POST',
-                url: '{% url 'like_post_ajax' %}',
+                url: likePostUrl,
                 data: {
                     'csrfmiddlewaretoken': csrfToken,
                     'post_id': postId
                 },
                 success: function(response){
                     if(response.liked){
-                        btn.text('UNLIKE');
+                        var html = '<img src="' + heartFullIcon + '" alt="liked">';
+                        btn.html(html); // Ersetzen Sie den Inhalt des Buttons
                     } else {
-                        btn.text('LIKE');
+                        var html = '<img src="' + heartEmptyIcon + '" alt="Unliked">';
+                        btn.html(html);
                     }
-                    likeCountSpan.text(response.total_likes + ' Likes');
+                    
+                    likeCountSpan.text(response.total_likes);
                 }
             });
         });

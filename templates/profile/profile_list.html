@@ -7,8 +7,8 @@
     <section class="flex-wrap-container profile-list">
         {% for profile in profile_list %}
         <a href="{% url 'profile_detail' profile.pk %}">
-            <img src="{{ profile.avatar.url }}" alt="">
             <p>{{ profile.user }}</p>
+            <img src="{{ profile.avatar.url }}" alt="">
         </a>
         {% endfor %}
     </section>
