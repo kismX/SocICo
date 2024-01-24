@@ -11,14 +11,15 @@ from basics.utils import get_domain
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from .models import Profile, Friendship
-from django.utils import timezone # für friend connecten
-from django.contrib import messages # wird verwendet um meldungen durch die views oder auch verarbeitung an den user zu schicken
+from django.utils import timezone 
+from django.contrib import messages 
 from django.shortcuts import get_object_or_404
 from PIL import Image
 from datetime import date
 # für Ajax invisible_check
 from django.views.decorators.http import require_POST
 from notifications.views import create_notification
+from django.http import JsonResponse
 
 from cities_light.models import City
 
@@ -61,15 +62,13 @@ class UserProfileDetailView(LoginRequiredMixin, DetailView):
 
         # age berechnen
         today = date.today()
-        age = today.year - user.birthdate.year - ((today.month, today.day) < (user.birthdate.month, user.birthdate.day))
+        age = today.year - profil_user.user.birthdate.year - ((today.month, today.day) < (profil_user.user.birthdate.month, profil_user.user.birthdate.day))
 
         # timeline aus postings auf der profilseite anzeigen
         profile_user_posts = Post.objects.filter(user=profil_user.pk).order_by('-created_at')  # post-obj des profilusers
         user_posts = Post.objects.filter(user=user).order_by('-created_at') # post-obj des request-users
         
-        # wenn in einem objekt ein link ist, hole über get_domain die URL 
-        # und füge sie in einem neuen attribut .domain dem post.objekt hinzu
-        # wodurch post.domain im template abrufbar wird
+        # wenn link im post-objekt, erstelle post.domain attribut und speichewr darin über get_domain die URL
         for post in profile_user_posts:
             if post.link:
                 post.domain = get_domain(post.link)
@@ -104,7 +103,7 @@ class UserProfileDetailView(LoginRequiredMixin, DetailView):
 class UserProfileCreateView(LoginRequiredMixin, CreateView):
     model = Profile
     template_name = "profile/profile_create.html"
-    fields = ["bio", "interests"]   # erweitern wenn profile erweitert  # habe "user" entfernt weil es unten dfestgelegt wird in der def, damit ein user keinen ewinfluss drauf hat
+    fields = ["bio", "interests"] # habe "user" entfernt weil es unten festgelegt wird in der def, damit ein user keinen einfluss drauf hat
     
     # diese funktion wird unter der haube immer nach der überprüfung, ob die form gültige daten enthält, aufgerufen, um die form in datenbank zu speichern .save()
     def form_valid(self, form):
@@ -189,7 +188,6 @@ def send_friend_request(request, to_user_id):
     # nun mal checken, ob bereits eine anfrage gibt. 
     # wenn 'from_user' = angemeldeter user und 'to_user' (übermittelte to_user_id) in friendship enthalten, gibt es true aus ...
     if Friendship.objects.filter(from_user=request.user, to_user=to_user).exists():  
-        # ..ne warmmeldung geht in admin ein - muss dann an den user noch
         messages.warning(request, 'Du hast bereits ne Anfrage an den user gestellt') 
     else:
         Friendship.objects.create(from_user=request.user, to_user=to_user, status='pending')  # neu: 'status' auf pending, weil anfrage noch ausstehend
@@ -197,7 +195,6 @@ def send_friend_request(request, to_user_id):
         notification_info = f"{request.user.username} schickt dir eine Freundschaftsanfrage."
         notification_link = f"/accounts/friend_requests/"
         create_notification(to_user, request.user, 'friendrequest', notification_info, notification_link)
-        # message geht auch ins admin
         messages.success(request, f'Deine Anfrage wurde an {to_user.username} gesendet, Dikka')  
     return redirect('profile_detail', pk=to_user_id)
 
@@ -270,3 +267,24 @@ def invisible_check(request):
     profil.save()
     
     return JsonResponse({'visible': profil.invisible})
+
+
+# views für Template profile_settings
+@login_required
+def profile_settings(request):
+    # Hier kannst du auf das Profilobjekt des aktuellen Benutzers zugreifen
+    profile = request.user.profile
+    # Füge den Code für die Anzeige und Bearbeitung der Einstellungen hinzu
+    return render(request, 'profile/profile_settings.html', {'profile': profile})
+
+
+def toggle_profile_visibility(request, toggle_type):
+    if request.method == 'POST':
+        profile = request.user.profile
+        
+        if toggle_type in ['birthdate', 'age', 'country', 'city', 'gender', 'bio', 'interests']:
+            setattr(profile, toggle_type + '_visible', not getattr(profile, toggle_type + '_visible'))
+        
+        profile.save()
+        return JsonResponse({'visible': getattr(profile, toggle_type + '_visible')})
+    return JsonResponse({'error': 'Invalid request'})

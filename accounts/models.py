@@ -25,13 +25,22 @@ class Profile(models.Model):
     
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True) 
-    #location = models.CharField(max_length=255, blank=True)
     bio = models.TextField(blank=True)
     interests = models.TextField(blank=True, help_text='Gib interessen getrennt durch Komma an')
     avatar = models.ImageField(default='default.jpg', upload_to='profile_images')
     is_active = models.BooleanField(default=False)  # ist er geraed online oder offline - muss noch implementiert weden
     last_online = models.DateTimeField(blank=True, null=True)  # wann war user letztes mal online
     invisible = models.BooleanField(default=False) # user invisible mode für nicht-freunde
+
+    # attribute für sichtbarkeit von profilinfos, default ist sichtbar:
+    birthdate_visible = models.BooleanField(default=True)
+    age_visible = models.BooleanField(default=True)
+    gender_visible = models.BooleanField(default=True)
+    country_visible = models.BooleanField(default=True)
+    city_visible = models.BooleanField(default=True)
+    bio_visible = models.BooleanField(default=True)
+    interests_visible = models.BooleanField(default=True)
+
 
     def interest_list(self):
         return [interest.strip().lower() for interest in self.interests.split(',')] if self.interests else []

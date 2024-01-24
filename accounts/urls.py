@@ -3,7 +3,8 @@ from .views import (
     UserProfileListView, UserProfileDetailView, 
     UserProfileCreateView, UserProfileUpdateView, UserProfileDeleteView,
     friend_requests, send_friend_request, accept_reject_friend, profile, 
-    remove_friend, invisible_check, load_cities
+    remove_friend, invisible_check, load_cities, toggle_profile_visibility,
+    profile_settings,
     )
 
 urlpatterns = [    
@@ -14,9 +15,10 @@ urlpatterns = [
     path("profiles/<int:pk>/delete", UserProfileDeleteView.as_view(), name='profile_delete'),
     path('profile-edit/', profile, name='profile_edit'),
     path('profile/invisible/', invisible_check, name='invisible_check'),
+    path('profile_settings/', profile_settings, name='profile_settings'),
+    path('profile/toggle-profile-visibility/<str:toggle_type>/', toggle_profile_visibility, name='toggle_profile_visibility'),
 
     path('friend_requests/', friend_requests,name='friend_requests'),
-
     path('accept_friend/<int:friendship_id>/', accept_reject_friend, {'action': 'accept'}, name='accept_friend'), 
     path('reject_friend/<int:friendship_id>/', accept_reject_friend, {'action': 'reject'}, name='reject_friend'),
     path('send_friend_request/<int:to_user_id>/', send_friend_request, name='send_friend_request'), # das to_user_id wird aus template geholt und an 'send_friend_request' gesendet
