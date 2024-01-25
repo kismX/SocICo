@@ -8,7 +8,7 @@
     <img src="{{ user.profile.avatar.url }}"/>
     <hr class="dotted-line">
 
-    <form method="post" id="ProfileForm" enctype="multipart/form-data" data-cities-url="{% url 'ajax_load_cities' %}" novalidate>
+    <form method="post" class="standart-form" id="ProfileForm" enctype="multipart/form-data" data-cities-url="{% url 'ajax_load_cities' %}" novalidate>
         {% csrf_token %}
 
         <div class="mq-profile-form-flex">

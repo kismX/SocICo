@@ -156,7 +156,6 @@
 
     <!-- Post-Funktion auf dem User-Profil -->
 
-    <!-- eigenes Profil -->
     {% if request.user == profile.user %}
     <section class="create-post">
         <h2>Post erstellen</h2>
@@ -184,7 +183,11 @@
 
     <section class="user-posts">
         {% if profile_user_posts %}
-        <h2>Deine Posts</h2>
+            {% if request.user != profile.user %}
+            <h2>{{ profile.user.username }}'s Posts</h2>
+            {% else %}
+            <h2>Deine Posts</h2>
+            {% endif %}
         <div class="mq-post-flex">
             {% for post in profile_user_posts %}
             <div class="main-post" id="main-post">
