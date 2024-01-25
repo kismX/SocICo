@@ -25,7 +25,8 @@ def user_filter(request):
     max_age = request.GET.get('max_age')
     
     gender = request.GET.get('gender')
-    location = request.GET.get('location', '')
+    city = request.GET.get('city', '')
+    country = request.GET.get('country', '')
     last_online = request.GET.get('last_online')
     last_online_cut = request.GET.get('last_online_cut', '')
 
@@ -76,10 +77,14 @@ def user_filter(request):
 
     if gender:
         users = users.filter(profile__gender=gender)
-    
-    if location:
-        location = location.lower()
-        users = users.filter(profile__location__icontains=location)
+
+    if city:
+        city = city.lower()
+        users = users.filter(city__name__icontains=city)
+
+    if country:
+        country = country.lower()
+        users = users.filter(country__name__icontains=country)
 
     if last_online_cut:
         days_num = int(last_online_cut)
@@ -89,15 +94,16 @@ def user_filter(request):
     print(f"Number of Users Found: {users.count()}")
 
     context = {'users': users, 
-               'interests': interests, 
-               'interest_list': interest_list, 
-               'similar_interests': similar_interests,
-               'age': age, 
-               'min_age': min_age, 
-               'max_age': max_age, 
-               'gender': gender, 
-               'location': location, 
-               'last_online': last_online}
+                'interests': interests, 
+                'interest_list': interest_list, 
+                'similar_interests': similar_interests,
+                'age': age, 
+                'min_age': min_age, 
+                'max_age': max_age, 
+                'gender': gender, 
+                'city': city,
+                'country': country, 
+                'last_online': last_online}
     
     return render(request, 'searchers/user_filter.html', context)
 
