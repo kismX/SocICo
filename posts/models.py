@@ -39,7 +39,6 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     likes = models.ManyToManyField(get_user_model(), related_name='like_comment', blank=True)
 
-
     # bildgröße auf 300x300 proportional begrenzt
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

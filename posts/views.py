@@ -9,7 +9,7 @@ from basics.utils import get_domain
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 
-from notifications.views import create_notification, mention_users_in_text
+from notifications.views import delete_notifications, create_notification, mention_users_in_text
 
 # views zum posten
 def create_post(request):
@@ -28,7 +28,8 @@ def create_post(request):
             if post.user != request.user:
                 notification_info = f"{request.user.username} hat einen neuen Beitrag auf deinem Profil erstellt."
                 notification_link = f"/posts/post/{post.id}/"
-                create_notification(request.user, request.user, 'post', notification_info, notification_link)
+                reference_id = post.id
+                create_notification(request.user, request.user, 'post', notification_info, notification_link, reference_id)
             
             return redirect('profile_detail', pk=post.user.id)
     else:
@@ -51,9 +52,12 @@ def edit_post(request, post_id):
 def delete_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     if request.method == 'POST':
+        reference_id = post.id
+        delete_notifications(post.user, request.user, 'post', post, reference_id)
         post.delete()
         return redirect('profile_detail', pk=post.user.id)
     return render(request, 'posts/delete_post.html', {'post': post})
+
 
 # comments auf post schicken:
 def post_detail(request, post_id):
@@ -73,14 +77,15 @@ def post_detail(request, post_id):
             # nun in die mention-funktion für erwähnung
             #comment.comment = mention_users_in_text(request, comment.comment, None, comment)
             comment.comment = mention_users_in_text(request, comment.comment, comment)
-            print(comment.comment)
             comment.save()
 
             # notification erstellen ohne websockets
             if post.user != request.user:
                 notification_info = f"{request.user.username} hat deinem Beitrag einen Kommentar hinzugefügt."
                 notification_link = f"/posts/post/{post.id}/"
-                create_notification(post.user, request.user, 'comment', notification_info, notification_link)
+                reference_id=comment.id
+                create_notification(post.user, request.user, 'comment', notification_info, notification_link, reference_id)
+         
             return redirect('post_detail', post_id=post.id)
     else:
         comment_form = CommentForm()
@@ -118,6 +123,8 @@ def comment_edit(request, comment_id):
 def comment_delete(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
     if request.method == 'POST':
+        reference_id = comment.id
+        delete_notifications(comment.post.user, request.user, 'comment', comment, reference_id)
         comment.delete()
         return redirect('post_detail', post_id=comment.post.id)
     return render(request, 'posts/comment_delete.html', {'comment': comment})
@@ -131,6 +138,8 @@ def like_post_ajax(request):
 
     if post.likes.filter(id=request.user.id).exists():
         post.likes.remove(request.user)
+        reference_id=post.id
+        delete_notifications(post.user, request.user, 'like', post, reference_id)
     else:
         post.likes.add(request.user)
         liked = True
@@ -139,7 +148,8 @@ def like_post_ajax(request):
         if post.user != request.user:
             notification_info = f"{request.user.username} hat deinen Beitrag geliked."
             notification_link = f"/posts/post/{post.id}/"
-            create_notification(post.user, request.user, 'like', notification_info, notification_link)
+            reference_id = post.id
+            create_notification(post.user, request.user, 'like', notification_info, notification_link, reference_id)
 
     return JsonResponse({'liked': liked, 'total_likes': post.total_likes()})
 
@@ -151,6 +161,9 @@ def like_comment_ajax(request):
 
     if comment.likes.filter(id=request.user.id).exists():
         comment.likes.remove(request.user)
+        reference_id=comment.id
+        delete_notifications(comment.user, request.user, 'like', comment, reference_id)
+
     else:
         comment.likes.add(request.user)
         liked = True
@@ -159,7 +172,8 @@ def like_comment_ajax(request):
         if comment.user != request.user:
             notification_info = f"{request.user.username} hat deinen Kommentar geliked."
             notification_link = f"/posts/post/{comment.post.id}/"
-            create_notification(comment.user, request.user, 'like', notification_info, notification_link)
+            reference_id = comment.id
+            create_notification(comment.user, request.user, 'like', notification_info, notification_link, reference_id)            
 
     return JsonResponse({'liked': liked, 'total_likes_comment': comment.total_likes_comment()})
 

@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+{% block title %}Profil-Einstellungen | {% endblock %}
+{% block content %}
+
+<section class="row">
+    <div class="container">
+        <h2>Profil-Settings</h2>
+    
+        <h3>Sichtbarkeit</h3>
+        <div class="toggle-button">
+            <label>Profil für Fremde:</label>
+            <button id="visibility-toggle-btn" data-visible="{{ request.user.profile.invisible }}">
+                {% if request.user.profile.invisible %}
+                    UNSICHTBAR
+                {% else %}
+                    SICHTBAR
+                {% endif %}
+            </button>
+        </div>
+
+        <br><br>
+
+        <h3>Sichtbarkeit</h3>
+        <div class="toggle-button">
+            <label>B-Day:</label>
+            <button id="toggle-birthdate-btn" data-visible="{{ profile.birthdate_visible }}">
+                {% if profile.birthdate_visible %}
+                    SICHTBAR
+                {% else %}
+                    UNSICHTBAR
+                {% endif %}
+            </button>
+        </div>
+        
+        <div class="toggle-button">
+            <label>Alter:</label>
+            <button id="toggle-age-btn" data-visible="{{ profile.age_visible }}">
+                {% if profile.age_visible %}
+                    SICHTBAR
+                {% else %}
+                    UNSICHTBAR
+                {% endif %}
+            </button>
+        </div>
+    
+        <div class="toggle-button">
+            <label>Geschlecht:</label>
+            <button id="toggle-gender-btn" data-visible="{{ profile.gender_visible }}">
+                {% if profile.gender_visible %}
+                    SICHTBAR
+                {% else %}
+                    UNSICHTBAR
+                {% endif %}
+            </button>
+        </div>
+    
+        <div class="toggle-button">
+            <label>Land:</label>
+            <button id="toggle-country-btn" data-visible="{{ profile.country_visible }}">
+                {% if profile.country_visible %}
+                    SICHTBAR
+                {% else %}
+                    UNSICHTBAR
+                {% endif %}
+            </button>
+        </div>
+    
+        <div class="toggle-button">
+            <label>Stadt:</label>
+            <button id="toggle-city-btn" data-visible="{{ profile.city_visible }}">
+                {% if profile.city_visible %}
+                    SICHTBAR
+                {% else %}
+                    UNSICHTBAR
+                {% endif %}
+            </button>
+        </div>
+    
+        <div class="toggle-button">
+            <label>Bio:</label>
+            <button id="toggle-bio-btn" data-visible="{{ profile.bio_visible }}">
+                {% if profile.bio_visible %}
+                    SICHTBAR
+                {% else %}
+                    UNSICHTBAR
+                {% endif %}
+            </button>
+        </div>
+    
+        <div class="toggle-button">
+            <label>Interessen:</label>
+            <button id="toggle-interests-btn" data-visible="{{ profile.interests_visible }}">
+                {% if profile.interests_visible %}
+                    SICHTBAR
+                {% else %}
+                    UNSICHTBAR
+                {% endif %}
+            </button>
+        </div>
+    
+    </div>
+</section>
+
+
+
+<!-- AJAX Javaskript für die toggle buttons-->
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        // code für "Profil invisible"-toggle
+        $('#visibility-toggle-btn').click(function() {
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+            var isVisible = $(this).data('visible');
+    
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'invisible_check' %}',
+                data: {
+                    'csrfmiddlewaretoken': csrfToken,
+                    'visible': isVisible
+                },
+                success: function(response) {
+                    if (response.visible) {
+                        $('#visibility-toggle-btn').text('UNSICHTBAR').data('visible', false);
+                    } else {
+                        $('#visibility-toggle-btn').text('SICHTBAR').data('visible', true);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert("Ein Fehler ist aufgetreten: " + error);
+                }
+            });
+        });
+
+
+        // funktion für profilinfo-toggles
+        function toggleVisibility(btnId, url) {
+            var btn = $(btnId);
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+            var isVisible = btn.data('visible');
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    'csrfmiddlewaretoken': csrfToken,
+                    'visible': isVisible
+                },
+                success: function(response) {
+                    if (response.visible) {
+                        btn.text('SICHTBAR').data('visible', true);
+                    } else {
+                        btn.text('UNSICHTBAR').data('visible', false);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert("Ein Fehler ist aufgetreten: " + error);
+                }
+            });
+        }
+
+        // funktionen für jeden button
+        $('#toggle-birthdate-btn').click(function() {
+            toggleVisibility('#toggle-birthdate-btn', '{% url 'toggle_profile_visibility' 'birthdate' %}');
+        });
+        
+        $('#toggle-age-btn').click(function() {
+            toggleVisibility('#toggle-age-btn', '{% url 'toggle_profile_visibility' 'age' %}');
+        });
+
+        $('#toggle-gender-btn').click(function() {
+            toggleVisibility('#toggle-gender-btn', '{% url 'toggle_profile_visibility' 'gender' %}');
+        });
+
+        $('#toggle-country-btn').click(function() {
+            toggleVisibility('#toggle-country-btn', '{% url 'toggle_profile_visibility' 'country' %}');
+        });
+
+        $('#toggle-city-btn').click(function() {
+            toggleVisibility('#toggle-city-btn', '{% url 'toggle_profile_visibility' 'city' %}');
+        });
+
+        $('#toggle-bio-btn').click(function() {
+            toggleVisibility('#toggle-bio-btn', '{% url 'toggle_profile_visibility' 'bio' %}');
+        });
+
+        $('#toggle-interests-btn').click(function() {
+            toggleVisibility('#toggle-interests-btn', '{% url 'toggle_profile_visibility' 'interests' %}');
+        });
+
+    });
+</script>
+
+
+{% endblock %}
