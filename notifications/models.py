@@ -13,6 +13,7 @@ class Notification(models.Model):
     notification_info = models.TextField()
     notification_link = models.URLField()
     is_sent = models.BooleanField(default=False)
+    reference_id = models.IntegerField(null=True, blank=True) # für identifikation des comments
 
     def __str__(self):
         return f"Notification von {self.from_user} an {self.to_user} vom Typ {self.notification_type}"

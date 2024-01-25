@@ -4,19 +4,39 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import get_user_model
 import re  
 from .models import Notification
-from posts.models import Comment
+from posts.models import Post, Comment
 
 
-def create_notification(to_user, from_user, notification_type, notification_info, notification_link):
+def create_notification(to_user, from_user, notification_type, notification_info, notification_link, reference_id=None):
     notification = Notification.objects.create(
         to_user=to_user,
         from_user=from_user,
         notification_type=notification_type,
         notification_info=notification_info,
         notification_link=notification_link,
-        #is_sent=False
+        reference_id=reference_id
     )
     return notification
+
+
+def delete_notifications(to_user, from_user, notification_type, target=None, reference_id=None):
+    query = Notification.objects.filter(
+        to_user=to_user,
+        from_user=from_user,
+        notification_type=notification_type,
+        reference_id=reference_id
+    )
+
+    # if target:
+        
+    #     if isinstance(target, Post):
+    #         notification_link = f"/posts/post/{target.id}/"
+    #         query = query.filter(notification_link=notification_link)
+    #     elif isinstance(target, Comment):
+    #         query = query.filter(reference_id=target.id, from_user=from_user)
+
+    query.delete()
+
 
 
 def get_notifications(request):

@@ -18,7 +18,7 @@ from PIL import Image
 from datetime import date
 # für Ajax invisible_check
 from django.views.decorators.http import require_POST
-from notifications.views import create_notification
+from notifications.views import create_notification, delete_notifications
 from django.http import JsonResponse
 
 from cities_light.models import City
@@ -190,11 +190,12 @@ def send_friend_request(request, to_user_id):
     if Friendship.objects.filter(from_user=request.user, to_user=to_user).exists():  
         messages.warning(request, 'Du hast bereits ne Anfrage an den user gestellt') 
     else:
-        Friendship.objects.create(from_user=request.user, to_user=to_user, status='pending')  # neu: 'status' auf pending, weil anfrage noch ausstehend
+        friendship = Friendship.objects.create(from_user=request.user, to_user=to_user, status='pending')  # neu: 'status' auf pending, weil anfrage noch ausstehend
         #notification erstellen:
         notification_info = f"{request.user.username} schickt dir eine Freundschaftsanfrage."
         notification_link = f"/accounts/friend_requests/"
-        create_notification(to_user, request.user, 'friendrequest', notification_info, notification_link)
+        reference_id = friendship.id
+        create_notification(friendship.to_user, friendship.from_user, 'friendrequest', notification_info, notification_link, reference_id)
         messages.success(request, f'Deine Anfrage wurde an {to_user.username} gesendet, Dikka')  
     return redirect('profile_detail', pk=to_user_id)
 
@@ -229,6 +230,8 @@ def withdraw_friend_request(request, profile_id):
     try:
         # Freundobject raussuchen
         friend_request = Friendship.objects.get(from_user=request.user, to_user=profile_id)
+        reference_id=friend_request.id
+        delete_notifications(friend_request.to_user, friend_request.from_user, 'friendrequest', reference_id)
         friend_request.delete()
         return redirect('profile_deteil', pk=profile_id)
     
