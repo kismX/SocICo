@@ -667,6 +667,7 @@ h1 a{
 }
 .profile-list p{
     background: -webkit-linear-gradient(00.25turn,#f3a200,rgb(255, 0, 242));
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     filter: drop-shadow(2px 2px #333);
