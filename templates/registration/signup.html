@@ -4,12 +4,52 @@
 
 {% block content %}
 
-<section class="row signup-form">
+<section class="signup-form">
   <h1>Du möchtest ein Teil unserer farbenfrohen Community werden?</h1>
   <p>Dann registriere dich ganz einfach hier:</p>
   <form method="post" id="RegisterForm" data-cities-url="{% url 'ajax_load_cities' %}" novalidate>
       {% csrf_token %}
-      {{ form }}
+    <div class="register-flex">
+      <div>
+        <label for="username">Username</label>
+        {{ form.username }}
+        <span class="helptext">150 Zeichen oder weniger. Buchstaben, Zahlen und @/./+/-/_ sind erlaubt.</span>
+        
+        <label for="name">Dein Name</label>
+        {{ form.name }}
+        <span class="helptext">Hier kannst du deinen Rufnamen einfügen.</span>
+        
+        <label for="email">Emailadresse</label>
+        {{ form.email }}
+        
+        <label for="country">Land</label>
+        {{ form.country }}
+      </div>
+
+      <div>
+        <label for="city">Stadt</label>
+        {{ form.city }}
+        
+        <label for="birthdate">Geburtsdatum</label>
+        {{ form.birthdate }}
+        <span class="helptext">Achtung, dein Geburtsdatum kannst du später nicht mehr ändern. Logisch oder? &#9829</span>
+        
+        <label for="password">Passwort</label>
+        {{ form.password1 }}
+        <span class="helptext">
+          <ul>
+            <li>Dein Passwort darf nicht deinen persönlichen Angaben entsprechen.</li>
+            <li>Dein Passwort muss mindestens 8 Zeichen lang sein.</li>
+            <li>Dein Passwort darf kein generisches Passwort sein. (z.B. Passwort1234)</li>
+            <li>Dein Passwort darf nicht ausschließlich aus Zahlen bestehen.</li>
+          </ul>
+        </span>
+        
+        <label for="password-confirm">Passwort wiederholen</label>
+        {{ form.password2 }}
+        <span class="helptext">Trag' hier noch einmal das selbe Passwort ein für die Verifizierung.</span>
+      </div>
+    </div>
     <button type="submit">Sign Up</button>
   </form>
 </section>
@@ -33,5 +73,6 @@
       });
 
     });
+
   </script>
   {% endblock scripts %}
