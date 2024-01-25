@@ -6,7 +6,7 @@
 <section class="row">
 <h1>Gruppenchat erstellen</h1>
 
-    <form class="groupchat-form flex-wrap-container" method="post">
+    <form class="standart-form" method="post">
         {% csrf_token %}
         
         <fieldset>
@@ -39,7 +39,7 @@
         <fieldset class="groupchat-form-submit">
             <p>Chatname:</p>
             <input name="room_name" type="text" required>
-            <button type="submit">Gruppe erstellen</button>
+            <button class="colorfull-btn" type="submit">Gruppe erstellen</button>
         </fieldset>
         
     </form>

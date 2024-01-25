@@ -148,7 +148,7 @@ def profile(request):
             if new_image == None:
                 profile = profile_form.save(commit=False)
                 profile.save(update_fields=['gender', 'bio', 'interests'])
-            elif old_image == 'default.jpg':
+            elif old_image == 'default.png':
                 profile_form.save()
                 my_profile = Profile.objects.get(id=request.user.id)
                 img = Image.open(my_profile.avatar.path)
@@ -237,7 +237,7 @@ def withdraw_friend_request(request, profile_id):
     
     except Friendship.DoesNotExist:
         messages.error(request, "Die Freundschaftsanfrage existiert doch gar nicht!")
-        return redirect('profile_deteil', pk=profile_id)
+        return redirect('profile_detail', pk=profile_id)
 
 
 @login_required

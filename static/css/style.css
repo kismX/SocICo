@@ -26,6 +26,7 @@
 }
 .flex{
     display: flex;
+    gap: 20px;
 }
 .flex-wrap-container{
     display: flex;
@@ -40,17 +41,50 @@ body{
 }
 h1, h2, h3, h4{
     font-family: "PoppinsBold";
-    margin-bottom: 30px;
+}
+h1{
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+h2{
+    margin: 20px 0;
+}
+a{
+    color: #fff;
+}
+h1 a{
+    padding: 5px;
+    box-sizing: border-box;
+    font-size: 0.7em;
 }
 .row{
-    margin-top: 150px;
+    margin-top: 170px;
     margin-bottom: 100px;
-    width: 80vw;
+    width: 90vw;
     margin-left: auto;
     margin-right: auto;
 }
 .bold{
     font-family: "PoppinsBold";
+}
+.w-100{
+    width: 100%;
+}
+.dotted-line{
+    width: 100%;
+    border-bottom: 1px dotted #fff;
+    margin: 20px 0;
+}
+.colorfull-line{
+    width: 20px;
+    height: 1px;
+    border-radius: 50%;
+    background: linear-gradient(0.25turn, rgb(0, 255, 225), rgb(4, 248, 4));
+    /* border-bottom: 1px dotted;
+    border-image: linear-gradient(0.25turn,rgb(0, 136, 255),rgb(45, 255, 45), yellow, red) 10; */
+}
+#hr-margin-none{
+    margin: 0;
 }
 /* Home - MainSlider */
 
@@ -130,13 +164,13 @@ h1, h2, h3, h4{
     text-align: center;
     background-color: #000000d7;
     color: #fff;
-    width: 55vw;
+    width: 100vw;
     padding: 50px 50px;
     margin: auto;
     margin-top: 300px;
     font-family: "PoppinsMedium";
-    border-radius: 10px;
     animation:rainbow 10s linear infinite;
+    box-sizing: border-box;
 }
 @keyframes rainbow {
     from {
@@ -178,7 +212,7 @@ h1, h2, h3, h4{
     color: #fff;
     background-color: #000;
     border: 1px solid;
-    border-radius: 50px;
+    border-radius: 5px;
     transition: 1s ease-in-out;
 }
 .login-form button:hover{
@@ -188,7 +222,7 @@ h1, h2, h3, h4{
 .login-signup-banner{
     background-color: #000000d7;
     color: #fff;
-    width: 55vw;
+    width: 100vw;
     padding: 20px 50px;
     margin: auto;
     margin-top: 50px;
@@ -198,7 +232,7 @@ h1, h2, h3, h4{
     justify-content: center;
     align-items: center;
     font-family: "PoppinsMedium";
-    border-radius: 10px;
+    box-sizing: border-box;
 }
 .login-signup-banner a{
     background-color: #fff;
@@ -209,25 +243,38 @@ h1, h2, h3, h4{
 
 /* Registrierung */
 
+.signup-form{
+    width: 100%;
+    height: 97vh;
+    align-items: center;
+    justify-content: center;
+    background-image: url('../../media/slider/friendship-slider.jpg');
+    background-position: center;
+    position: absolute;
+    box-sizing: border-box;
+}
+#RegisterForm{
+    background-color: #000000e4;
+    padding: 20px;
+    padding-bottom: 100px;
+}
 .signup-form h1{
-    margin-bottom: 10px;
+    margin: 150px 20px 10px 20px;
+    color: #000;
 }
 .signup-form p{
     margin-bottom: 20px;
-}
-.signup-form form{
-    width: 100%;
+    margin-left: 20px;
+    color: #000;
 }
 .signup-form label{
     display: block;
 }
-.signup-form input{
+.signup-form input, select{
     width: 100%;
-    padding: 5px 0;
-}
-.signup-form select{
-    width: 100%;
-    padding: 5px 0;
+    box-sizing: border-box;
+    padding:10px 20px;
+    border-radius: 5px;
 }
 .signup-form span{
     margin: 10px 0;
@@ -250,6 +297,237 @@ h1, h2, h3, h4{
     font-size: 1.2em;
     border-radius: 5px;
     margin-top: 20px;
+    transition: 1s ease-in-out;
+}
+.signup-form button:hover{
+    background-color: #fff;
+    color: #000;
+}
+.signup-form span{
+    display: none;
+}
+.signup-form button:hover + .signup-form span{
+    display: block;
+}
+
+/* Home */
+
+.search{
+    display: flex;
+    background-color: #fff;
+    color: #000;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 0;
+    border-radius: 50px;
+    box-sizing: border-box;
+    padding: 5px 10px;
+}
+.search img{
+    width: 25px;
+}
+.main-post{
+    background-color: #fff;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    padding: 10px;
+    border-radius: 5px;
+    color: #000;
+}
+.main-post .flex{
+    justify-content: space-between;
+    width: 400px;
+}
+.post-user{
+    background: -webkit-linear-gradient(0.5turn, aqua, rgb(149, 0, 255));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.main-post .flex p{
+    font-size: small;
+    color: #414141;
+}
+.main-post .dotted-line{
+    border-bottom: 1px dotted #000;
+    margin-bottom: 10px;
+}
+.main-post a{
+    color: #000;
+}
+.main-post img{
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+.post-link{
+    display: block;
+    background-color: #53535340;
+    width: 100%;
+    padding: 5px 10px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    font-size: small;
+    margin: 10px 0;
+    box-sizing: border-box;
+    word-wrap: break-word;
+}
+.like-post-btn img{
+    width: 13px;
+    height: 13px;
+}
+
+/* Profile Detail */
+
+#profile-avatar{
+    object-fit: cover;
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+}
+.profile-detail .avatar-user{
+    align-items: flex-end;
+    gap: 20px;
+}
+.avatar-user{
+    margin-bottom: 30px;
+}
+.profile-detail h1{
+    margin-bottom: 0;
+}
+.profile-detail-list div{
+    margin-bottom: 10px;
+}
+.friend-chat-section{
+    margin-bottom: 20px;
+}
+.friend-chat-section div{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+#chat-button{
+    width: 50px;
+    height: 40px;
+    margin: 0;
+    margin-right: 10px;
+}
+.profile-visibility{
+    background-color: #fff;
+    color: #000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 10px;
+    margin: 20px 0;
+    border-radius: 10px;
+    font-size: 0.9em;
+}
+.profile-visibility button{
+    background-color: #000;
+    color: #fff;
+    padding: 5px;
+    border-radius: 10px;
+}
+.profile-friends-container{
+    list-style: none;
+    background-color: #fff;
+    padding: 10px 10px;
+    border-radius: 10px;
+    width: 100%;
+    height: 120px;
+    overflow-x: scroll;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.profile-friends-container li a{
+    color: #ffffff;
+    background: linear-gradient(0.25turn, rgb(89, 0, 255), rgb(255, 0, 136));
+    width:100%;
+    display: block;
+    padding: 5px 10px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    font-family: "PoppinsBold";
+    text-shadow: 3px 3px 3px #00000062;
+}
+.profile-bio{
+    background-color: #5d5d5d2d;
+    padding: 10px;
+    border-radius: 10px;
+}
+.colorfull-btn{
+    color: #ffffff;
+    background: linear-gradient(0.25turn, rgb(255, 200, 0), magenta);
+    width:100%;
+    display: block;
+    padding: 5px 10px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    font-family: "PoppinsBold";
+    text-shadow: 3px 3px 3px #00000062;
+    text-align: center;
+    margin: 20px 0;
+}
+.color-change{
+    background: linear-gradient(0.25turn, rgb(0, 0, 255), rgb(0, 255, 255));
+}
+.profile-post-form{
+    width: 100%;
+    box-sizing: border-box;
+}
+.profile-post-form #id_image{
+    padding: 0%;
+    background-color: #00000000;
+}
+.profile-post-form input, select, .profile-post-form #id_text{
+    display: block;
+    padding: 5px 10px;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    resize: none;
+    margin-bottom: 10px;
+    background-color: #fff;
+}
+.no-entry{
+    margin-top: 20px;
+}
+
+/* Profile Edit */
+
+.standart-form button{
+    margin-top: 40px;
+    padding: 10px 0;
+}
+#profile_edit img{
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+.standart-form label{
+    display: block;
+}
+.standart-form input, select, #id_bio, #id_interests{
+    display: block;
+    padding: 5px 10px;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    resize: none;
+    margin-bottom: 10px;
+    background-color: #fff;
+}
+.standart-form #id_avatar{
+    background-color: #00000000;
+    padding: 0%;
+}
+.standart-form #id_bio, #id_interests{
+    height: 100px;
 }
 
 /* Alle Chaträume */
@@ -377,121 +655,236 @@ h1, h2, h3, h4{
 /* Profil Liste */
 
 .profile-list a{
-    list-style: none;
-    background-color: white;
-    padding: 10px 30px;
-    border-radius: 5px;
+    background-color: #ffffff20;
+    border-radius: 10px;
     display: flex;
     align-items: center;
-    gap: 20px;
-    color: #40281A;
     font-family: "PoppinsBold";
-    flex: 1 0;
+    padding: 10px 20px;
+    width: 100%;
+    gap: 30px;
+    justify-content: space-between;
+}
+.profile-list p{
+    background: -webkit-linear-gradient(00.25turn,#f3a200,rgb(255, 0, 242));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(2px 2px #333);
 }
 .profile-list a img{
-    width: 60px;
-    height: 60px;
+    width: 30px;
+    height: 30px;
     object-fit: cover;
-    border-radius: 50%;
-    border: 2px solid #40281A;
+    border-radius: 10px;
 }
 
 /* Gruppenchat erstellen */
 
-.groupchat-form{
-    background-color: white;
-    width: 100%;
-    padding: 20px;
-    border-radius: 10px;
-    font-family: "PoppinsMedium";
-    gap: 50px;
-    align-items: start;
-}
-.groupchat-form fieldset{
+
+.groupchat-list-container{
     display: flex;
     flex-direction: column;
-    flex: 1 0;
-}
-.groupchat-form fieldset p{
-    font-size: 1.2em;
-    font-family: "PoppinsBold";
-}
-.groupchat-list-container{
     height: 250px;
     overflow-y: scroll;
     scrollbar-width: 5px;
+    border: 1px solid #fff;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 30px;
 }
 .groupchat-list-container div{
-    background-color: #F28A2E;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #ffffff27;
+    font-family: "PoppinsBold";
     margin-bottom: 5px;
     padding: 10px;
     border-radius: 10px;
-    color: white;
+    color: #ffffff;
 }
-#groupchat-checkbox{
-    margin-right: 10px;
+.groupchat-list-container div input{
+    width: auto;
+    margin: 0;
 }
-.groupchat-form-submit input{
-    height: 30px;
-    background-color: #40281a3f;
-    border-radius: 10px;
-    padding: 10px;
-    margin-bottom: 10px;
-}
-.groupchat-form-submit button{
+
+.groupchat-form-submit .colorfull-btn{
     width: 100%;
-    background-color: #63A69F;
-    color: white;
-    font-family: "PoppinsMedium";
-    padding: 10px;
-    border-radius: 10px;
+    display: block;
 }
 
 /* Media Queries */
 
-@media only screen and (max-width: 460px) {
-    .login-form{
-        margin-top: 200px;
-        align-items: center;
-        justify-content: center;
-    }
-    .login-form div{
-        text-align: left;
-    }
-    .login-form input{
-        width: 200px;
-        margin-left: 0;
-    }
-    .login-signup-banner{
-        text-align: center;
+@media only screen and (max-width: 1000px){
+    .mq-flex{
+        display: none;
     }
 }
 
-/* .home-slider{
-    width: 100vw;
-    height: 97vh;
-    align-items: center;
-    justify-content: center;
-    background-image: url('../../media/slider/friendship-slider.jpg');
-    background-position: center;
+@media only screen and (min-width: 1000px){
+    h1{
+        font-size: 2.5em;
+    }
+    .display-none{
+        display: none;
+    }
+    .seek{
+        margin-bottom: -50px;
+    }
+    .slider-title{
+        font-size: 10em;
+    }
+    .signup-form{
+        padding-bottom: 100px;
+    }
+    .signup-form h1{
+        margin-top: 200px;
+    }
+    .signup-form h1, .signup-form p{
+        text-align: center;
+    }
+    .register-flex{
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+    .register-flex div{
+        width: 45%;
+    }
+    .signup-form input, select{
+        margin-bottom: 20px;
+    }
+    .signup-form button{
+        width: 45%;
+        margin-top: 40px;
+    }
+    #RegisterForm{
+        margin: auto;
+        margin-top: 50px;
+        border-radius: 10px;
+        padding: 40px 50px;
+        width: 70%;
+        display: flex;
+        flex-direction: column;
+        align-items:center;
+    }
+    .login-form, .login-signup-banner{
+        border-radius: 10px;
+        width: 70%;
+    }
+    .login-form input{
+        width: 60%;
+    }
+    .login-form button{
+        width: 30%;
+    }
+    .row{
+        width: 60vw;
+    }
+    .mq-flex{
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+    }
+    .birthdate-location{
+        margin-top: 20px;
+    }
+    #profile-avatar{
+        width: 150px;
+        height: 150px;
+    }
+    .profile-friends-container{
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin-bottom: 30px;
+        padding: 20px 0px;
+        height: 300px;
+        width: 100%;
+        align-items: flex-start;
+        justify-content: center;
+    }
+    .profile-friends-container li{
+        width: 45%;
+    }
+    .profile-friends-container li a{
+        padding: 5px 30px;
+        box-shadow: 3px 3px 3px #00000020;
+        width: 100%;
+    }
+    .friend-btn-flex a{
+        width: 40%;
+    }
+    .mq-post-flex{
+        display: flex;
+        flex-direction: row;
+        box-sizing: border-box;
+        flex-wrap: wrap;
+        width: 100%;
+        justify-content: space-evenly;
+    }
+    #main-post{
+        width: 30%;
+    }
+    #main-post p{
+        box-sizing: border-box;
+    }
+    .main-post .flex{
+        width: 300px;
+    }
+    .user-posts .main-post .flex{
+        width: auto;
+    }
+    .mq-profile-form-flex{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+    .mq-profile-form-div{
+        width: 48%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    #ProfileForm input, select{
+        margin-bottom: 10px;
+    }
 }
-.home-slider div{
-    text-align: center;
-    padding-top: 300px;
-    color: #000;
+@media only screen and (min-width:1450px){
+    .mq-gap-flex{
+        display: flex;
+        gap: 50px;
+        margin-bottom: 30px;
+        box-sizing: border-box;
+    }
+    .mq-gap-flex .profile-friends{
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+    }
+    .mq-gap-flex .create-post{
+        width: 100%;
+        height: 100%;
+    }
+    .profile-friends-container{
+        height: 385px;
+    }
 }
-.home-slider div :nth-child(1){
-    font-size: 2vw;
-    font-family: 'PoppinsMedium';
-    margin-bottom: -70px;
+@media only screen and (min-width: 800px){
+    #post-flex{
+        display: flex;
+        gap: 40px;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 20px;
+        overflow-y: scroll;
+        border: 1px solid #fff;
+	    border-radius: 15px;
+    }
+    .main-post{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
 }
-.home-slider div :nth-child(2){
-    font-size: 10vw;
-    font-family: 'PoppinsBold';
-    background: -webkit-linear-gradient(0.5turn, red, yellow, lime, aqua, blue, magenta, red);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-transform: uppercase;
-    opacity: 0.7;
-} */
