@@ -3,7 +3,7 @@
 {% block title %}| {% endblock %}
 
 {% block content %}
-<section class="row">
+<section class="row" id="chat-row">
     <div class="flex-wrap-container chat-container">
 
         <div class="cc-chatwindow">
@@ -11,11 +11,17 @@
                 
                     {% for message in messages %}
                     <div class="flex-wrap-container">
-                        <!-- <img src="{{ message.user.profile.avatar.url }}" alt=""> -->
-                        <div>
-                            <p class="chat-name">{{ message.user.username }}</p>
-                            <p class="chat-message-box">{{ message.content }}</p>
+                        {% if message.user == request.user %}
+                        <div id="own-messages">
+                            <!-- <p class="chat-name">{{ message.user.username }}</p> -->
+                            <p class="chat-message-box">{{ message.content }}</p>   
                         </div>
+                        {% else %}
+                        <div id="other-messages">
+                            <p class="chat-name">{{ message.user.username }}</p>
+                            <p class="chat-message-box">{{ message.content }}</p>   
+                        </div>
+                        {% endif %}
                     </div>
                     {% endfor %}
             </div>
@@ -25,7 +31,7 @@
                     <form method="post" action="." class="flex-wrap-container">
                         <input type="text" name="content" class="chat-form-input" placeholder="Deine Nachricht..." id="chat-message-input">
 
-                        <button class="chat-form-button" id="chat-message-submit">Senden</button>
+                        <button class="colorfull-btn chat-form-button" id="chat-message-submit">Senden</button>
                     </form>
                 </div>
             </div>
@@ -37,7 +43,7 @@
                 <img src="{{ user.profile.avatar.url }}" alt="">
                 <p>{{ user.username }}</p>
             </a>
-            <hr>
+            <hr class="colorfull-line">
             {% endfor %}
         </div>
     </div>
@@ -73,8 +79,8 @@
         if (data.message){
             // let html = '<div class="flex-wrap-container">';
             //     html += '<img src="'+ profileAvatar +'" alt="">';
-            let html = '<div>';
-                html += '<p class="chat-name">'+ data.username + '</p>';
+            let html = '<div id="own-messages">';
+                // html += '<p class="chat-name">'+ data.username + '</p>';
                 html += '<p class="chat-message-box">'+ data.message + '</p></div>';
                 // html += '</div>';
 

@@ -76,10 +76,10 @@ h1 a{
     margin: 20px 0;
 }
 .colorfull-line{
-    width: 20px;
+    width: 100%;
     height: 1px;
-    border-radius: 50%;
-    background: linear-gradient(0.25turn, rgb(0, 255, 225), rgb(4, 248, 4));
+    border-radius: 100%;
+    background: linear-gradient(0.25turn, rgba(0, 255, 225, 0.496), rgba(4, 248, 4, 0.514));
     /* border-bottom: 1px dotted;
     border-image: linear-gradient(0.25turn,rgb(0, 136, 255),rgb(45, 255, 45), yellow, red) 10; */
 }
@@ -336,7 +336,7 @@ h1 a{
 }
 .main-post .flex{
     justify-content: space-between;
-    width: 400px;
+    /* width: 400px; */
 }
 .post-user{
     background: -webkit-linear-gradient(0.5turn, aqua, rgb(149, 0, 255));
@@ -354,6 +354,9 @@ h1 a{
 }
 .main-post a{
     color: #000;
+}
+.main-post #hr-margin-none{
+    margin-bottom: 10px;
 }
 .main-post img{
     width: 100%;
@@ -555,32 +558,59 @@ h1 a{
 
 /* Chat */
 
+#chat-row{
+    width: 80%;
+}
+
 .cc-chatwindow{
     flex: 3 0 80%;
 }
 .chat-messages {
-    height: 400px;
+    height: 600px;
     overflow-y: auto;
     overflow-x: hidden;
     padding: 10px 10px;
-    border: 1px solid #fff;
+    border: 1px solid #000;
+    background-image: linear-gradient(
+        rgba(0, 0, 0, 0.81), 
+        rgba(185, 65, 0, 0.313)
+      ), url(../../media/slider/dino-background.jpeg);
+    background-size: cover;
     border-top-right-radius: 10px;
     border-top-left-radius: 10px;
 }
 .chat-messages .flex-wrap-container{
     margin-bottom: 20px;
+    width: 100%;
 }
 .chat-messages img{
-    background-color: rgba(255, 255, 255, 0.293);
+    background-color: rgba(0, 0, 0, 0.293);
     object-fit: cover;
-    border: 1px solid #fff;
+    border: 1px solid #000;
     border-radius: 10%;
     height: 40px;
     width: 40px;
     flex: 0 0;
 }
-.chat-messages .flex-wrap-container div{
-    flex: 2 1;
+#own-messages{
+    width: 100%;
+    display: flex;
+    justify-content: end;
+}
+#own-messages .chat-name{
+    color: aqua;
+    text-align: end;
+}
+#own-messages .chat-message-box{
+    width: auto;
+    max-width: 70%;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 0px;
+    border: 0.5px solid  rgba(255, 0, 255, 0.485);
+}
+#other-messages .chat-message-box{
+    max-width: 70%;
+    border: 0.5px solid  rgba(255, 200, 0, 0.435);
 }
 .chat-name{
     font-family: "PoppinsBold";
@@ -588,9 +618,10 @@ h1 a{
     border-top-left-radius: 10px;
     padding: 2px 0px;
     color: #ffffff;
+    text-shadow:3px 3px 3px #000;
 }
 .chat-message-box{
-    background-color: #ffffff2e;
+    background-color: #000000a3;
     padding: 10px 20px;
     border-top-right-radius: 10px;
     border-bottom-left-radius: 10px;
@@ -599,11 +630,10 @@ h1 a{
     word-wrap: break-word;
 }
 .chat-form{
-    background-color: #232323;
+    background-color: #000000;
     padding: 30px 55px;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
-    border: 1px solid #fff;
 }
 .chat-form-input{
     width: 85%;
@@ -612,20 +642,16 @@ h1 a{
     flex: 3 0 50%;
 }
 .chat-form-button{
-    padding: 10px 20px;
-    border-radius: 10px;
-    font-family: "PoppinsMedium";
-    background-color: #F28A2E;
-    color: #40281A;
     flex: 1 0;
 }
 .chat-form form{
     justify-content: space-between;
+    align-items: baseline;
 }
 .cc-namelist{
     padding: 20px;
     font-family: "PoppinsMedium";
-    background-color: white;
+    background-color: #000;
     border-radius: 10px;
     flex: 1 0 15%;
 }
@@ -636,19 +662,19 @@ h1 a{
 }
 .cc-namelist img{
     background-color: white;
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     object-fit: cover;
-    border: 2px solid #40281A;
+    border: 2px solid #fff;
     border-radius: 10%;
     box-shadow: 3px 3px 2px 1px #40281a17;
 }
 .cc-namelist p{
     margin: 5px 0;
-    color: #40281A;
+    color: #ffffff;
 }
 .cc-namelist hr{
-    border: 0.2px solid #40281a31;
+    border: 0.2px dotted #000;
     margin: 10px 0;
 }
 
@@ -719,6 +745,10 @@ h1 a{
 @media only screen and (max-width: 1000px){
     .mq-flex{
         display: none;
+    }
+    #chat-row{
+        width: 100%;
+        margin-top: 130px;
     }
 }
 
@@ -822,9 +852,6 @@ h1 a{
         flex-wrap: wrap;
         width: 100%;
         justify-content: space-evenly;
-    }
-    #main-post{
-        width: 30%;
     }
     #main-post p{
         box-sizing: border-box;

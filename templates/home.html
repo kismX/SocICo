@@ -29,7 +29,7 @@
                     </div>
                 
                 
-                    <hr class="dotted-line">
+                    <hr id="hr-margin-none" class="dotted-line">
                     <a href="{% url 'post_detail' post.id %}" class="details-link">
                     {% if post.image %}<img src="{{ post.image.url }}" alt="Post image">{% endif %}
                     {% if post.text %}<p class="post-text">{{ post.text|truncatechars:100|safe }}</p>{% endif %}
