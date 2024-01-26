@@ -563,7 +563,7 @@ h1 a{
     overflow-y: auto;
     overflow-x: hidden;
     padding: 10px 10px;
-    border: 5px solid #40281A;
+    border: 1px solid #fff;
     border-top-right-radius: 10px;
     border-top-left-radius: 10px;
 }
@@ -571,13 +571,12 @@ h1 a{
     margin-bottom: 20px;
 }
 .chat-messages img{
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.293);
     object-fit: cover;
-    border: 2px solid #40281A;
+    border: 1px solid #fff;
     border-radius: 10%;
     height: 40px;
     width: 40px;
-    box-shadow: 3px 3px 2px 1px #40281a17;
     flex: 0 0;
 }
 .chat-messages .flex-wrap-container div{
@@ -588,10 +587,10 @@ h1 a{
     border-top-right-radius: 10px;
     border-top-left-radius: 10px;
     padding: 2px 0px;
-    color: #40281A;
+    color: #ffffff;
 }
 .chat-message-box{
-    background-color: #fff;
+    background-color: #ffffff2e;
     padding: 10px 20px;
     border-top-right-radius: 10px;
     border-bottom-left-radius: 10px;
@@ -600,10 +599,11 @@ h1 a{
     word-wrap: break-word;
 }
 .chat-form{
-    background-color: #40281A;
+    background-color: #232323;
     padding: 30px 55px;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
+    border: 1px solid #fff;
 }
 .chat-form-input{
     width: 85%;
