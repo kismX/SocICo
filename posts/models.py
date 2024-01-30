@@ -10,6 +10,8 @@ class Post(models.Model):
     event = models.ForeignKey('Event', on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     likes = models.ManyToManyField(get_user_model(), related_name='likes', blank=True)
+    profile = models.ForeignKey('accounts.Profile', on_delete=models.CASCADE, related_name='profile_posts', default=1)    
+    show_in_feed = models.BooleanField(default=False)
     
     # bildgröße auf 500x500 begrenzen, aber seitenverhältnisse beibehalten
     def save(self, *args, **kwargs):
