@@ -91,7 +91,7 @@
 
         if (data.status){
             let html = data.status + ' ' + data.username;
-            document.querySelector('#status').innerHTML += html;
+            document.querySelector('#status').innerHTML = html;
         }
 
         if (data.message){
@@ -105,10 +105,8 @@
     }
 
     chatSocket.onclose = function(e) {
-        chatSocket.send(JSON.stringify({
-            'status': 'offline', 
-            'username': userName,
-        }));
+        let html = 'offline' + data.username;
+        document.querySelector('#status').innerHTML = html;
     }
 
     // Nachricht senden:
