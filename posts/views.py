@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.http import HttpResponseRedirect, JsonResponse
 
 from .models import Post, Comment
 from notifications.models import Notification
 from .forms import PostForm, CommentForm, EventForm
 from basics.utils import get_domain
+from accounts.models import Profile
 
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
@@ -12,26 +15,39 @@ from asgiref.sync import async_to_sync
 from notifications.views import delete_notifications, create_notification, mention_users_in_text
 
 # views zum posten
-def create_post(request):
+def create_post(request, profile_id=None):
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
+            # verknüpft den post mit einem profile eindeutig
+            profile_id = request.POST.get('profile_id')
+            post.profile = get_object_or_404(Profile, id=profile_id) if profile_id else request.user.profile
             post.user = request.user
+
+            # show_in_feed abhängig des profils
+            if str(request.user.profile.id) == profile_id:
+                post.show_in_feed = form.cleaned_data.get('show_in_feed', False)
+            else:
+                post.show_in_feed = False
+
             post.save()
 
             # nun durch die mention-funktion schicken
             post.text = mention_users_in_text(request, post.text, post)
             post.save()
 
-            # notification erstellen - ohne websockets
-            if post.user != request.user:
+            # notification erstellen
+            profile_owner = get_object_or_404(Profile, id=profile_id) if profile_id else request.user.profile
+            if request.user != profile_owner.user:
                 notification_info = f"{request.user.username} hat einen neuen Beitrag auf deinem Profil erstellt."
                 notification_link = f"/posts/post/{post.id}/"
                 reference_id = post.id
-                create_notification(request.user, request.user, 'post', notification_info, notification_link, reference_id)
+                print("profile:", profile_owner.user)
+                create_notification(profile_owner.user, request.user, 'post', notification_info, notification_link, reference_id)
             
-            return redirect('profile_detail', pk=post.user.id)
+            #return redirect('profile_detail', pk=post.user.id)
+            return redirect('profile_detail', pk=profile_id if profile_id else post.user.id)
     else:
         form = PostForm()
     return render(request, 'posts/create_post.html', {'form': form})
@@ -57,6 +73,35 @@ def delete_post(request, post_id):
         post.delete()
         return redirect('profile_detail', pk=post.user.id)
     return render(request, 'posts/delete_post.html', {'post': post})
+
+
+# für einzelne posts auf profile_detail
+@login_required
+@require_POST
+def update_post_feed(request):
+    post_id = request.POST.get('post_id')
+    show_in_feed = request.POST.get('show_in_feed') == 'true'
+
+    post = get_object_or_404(Post, id=post_id, profile=request.user.profile)
+    post.show_in_feed = show_in_feed
+    post.save()
+
+    return JsonResponse({'status': 'success'})
+
+
+# für alle posts über profile_settings
+# @login_required
+# @require_POST
+# def update_all_posts_feed(request):
+#     show_in_feed = request.POST.get('show_in_feed') == 'true'
+   
+#     # Aktualisiere alle Posts des aktuellen Benutzers auf den angegebenen Feed-Status
+#     posts = Post.objects.filter(profile=request.user.profile)
+#     for post in posts:
+#         post.show_in_feed = show_in_feed
+#         post.save()
+    
+#     return JsonResponse({'status': 'success'})
 
 
 # comments auf post schicken:

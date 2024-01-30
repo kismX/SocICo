@@ -156,12 +156,12 @@
 
     <!-- Post-Funktion auf dem User-Profil -->
 
-    {% if request.user == profile.user %}
     <section class="create-post">
         <h2>Post erstellen</h2>
         <div>
-            <form class="profile-post-form" method="post" enctype="multipart/form-data" action="{% url 'create_post' %}">
+            <form class="profile-post-form" method="post" enctype="multipart/form-data" action="{% url 'create_post' profile_id %}">
                 {% csrf_token %}
+                <input type="hidden" name="profile_id" value="{{ profile_id }}">
                 <label for="textarea">Schreib etwas...</label>
                 {{ post_form.text }}
                 <label for="image">Image</label>
@@ -170,24 +170,23 @@
                 {{ post_form.link }}
                 <label for="event">Event</label>
                 {{ post_form.event }}
+                <label for="show_in_feed">In den Newsfeed?</label>
+                {% if request.user.profile == profile %}
+                    {{ post_form.show_in_feed }}
+                {% endif %}
                 <button class="colorfull-btn color-change" type="submit">Posten</button>
             </form>
         </div>
         <hr class="dotted-line display-none">
     </section>
-    {% endif %}
     </div>
     <hr class="dotted-line">
 
     <!-- Posts anzeigen -->
 
     <section class="user-posts">
+        <h2>Timeline</h2>            
         {% if profile_user_posts %}
-            {% if request.user != profile.user %}
-            <h2>{{ profile.user.username }}'s Posts</h2>
-            {% else %}
-            <h2>Deine Posts</h2>
-            {% endif %}
         <div class="mq-post-flex">
             {% for post in profile_user_posts %}
             <div class="main-post" id="main-post">
@@ -213,10 +212,20 @@
                     {% endif %}
                     
                     <a class="post-likes-count" href="{% url 'likelist_post' post.id %}">{{ post.likes.count }}</a>
-                    <a href="{% url 'post_detail' post.id %}"> | {{ post.comments.count }} Kommentare</a>
-                    {% if request.user == post.user or request.user.is_superuser %}
+                    <a href="{% url 'post_detail' post.id %}"> | Kommentare {{ post.comments.count }}</a>
+                    {% if request.user == post.user or request.user.is_superuser or request.user == profile.user %}
                     <a href="{% url 'edit_post' post.id %}">| Bearbeiten</a>
                     <a href="{% url 'delete_post' post.id %}">| Löschen</a>
+                    {% endif %}
+                    
+                    {% if request.user == post.user and request.user == profile.user %}
+                    <button id="post-toggle-button-{{ post.id }}" class="post-toggle-btn" data-post-id="{{ post.id }}" {% if post.show_in_feed %} data-show-in-feed="true" {% else %} data-show-in-feed="false" {% endif %}>
+                        {% if post.show_in_feed %}
+                            FEED
+                        {% else %}
+                            UNFEED
+                        {% endif %}
+                    </button>
                     {% endif %}
                 </div>
             </div>
@@ -290,7 +299,43 @@
                 }
             });
         });
-            
+        
+        // Neuer Code für die Post-Newsfeed-Toggle-Funktionalität
+        $('.post-toggle-btn').click(function() {
+            var button = $(this);
+            var postId = button.data('post-id');
+            var showInFeed = button.data('show-in-feed');
+            var csrfToken = $('[name=csrfmiddlewaretoken]').val();
+    
+            // AJAX-Anfrage zum Aktualisieren des Status
+            $.ajax({
+                type: 'POST',
+                url: '{% url "update_post_feed" %}',
+                data: {
+                    'post_id': postId,
+                    'show_in_feed': !showInFeed, // umkehren des aktuellen Status
+                    'csrfmiddlewaretoken': csrfToken // CSRF-Token aus dem Template
+                },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        // Erfolgreiche Aktualisierung, aktualisieren Sie den Button und die Datenattribute
+                        if (showInFeed) {
+                            button.data('show-in-feed', false);
+                            button.text('UNFEED');
+                        } else {
+                            button.data('show-in-feed', true);
+                            button.text('FEED');
+                        }
+                    } else {
+                        // Fehler bei der Aktualisierung
+                        console.error('Fehler beim Aktualisieren des Feed-Status');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX-Fehler: ' + error);
+                }
+            });
+        });
     });
 </script>
 

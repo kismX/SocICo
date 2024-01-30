@@ -97,7 +97,17 @@
                 {% endif %}
             </button>
         </div>
-    
+
+        <!-- <div class="toggle-button">
+            <label>Posts im Feed anzeigen:</label>
+            <button id="toggle-all-posts-in-feed-btn" data-show-in-feed="{{ profile.show_in_feed }}">
+                {% if profile.show_in_feed %}
+                    FEED
+                {% else %}
+                    NOT FEED
+                {% endif %}
+            </button>
+        </div> -->
     </div>
 </section>
 
@@ -189,6 +199,42 @@
             toggleVisibility('#toggle-interests-btn', '{% url 'toggle_profile_visibility' 'interests' %}');
         });
 
+
+        $('#toggle-all-posts-in-feed-btn').click(function() {
+            var button = $(this);
+            var showInFeed = button.data('show-in-feed');
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+            // bool zu string:
+            var showInFeedString = showInFeed ? 'true' : 'false';
+
+            // AJAX-Anfrage zum Aktualisieren des Status für alle Posts
+            //$.ajax({
+            //    type: 'POST',
+            //    url: '{% url "update_all_posts_feed" %}',
+            //    data: {
+            //        'show_in_feed': !showInFeed, // Umkehrung des aktuellen Status
+            //        'csrfmiddlewaretoken': csrfToken // CSRF-Token aus dem Template
+            //    },
+            //    success: function(response) {
+            //        if (response.status === 'success') {
+            //            // Erfolgreiche Aktualisierung, aktualisieren Sie den Button und das Datenattribut
+            //            if (showInFeed) {
+            //                button.data('show-in-feed', false);
+            //                button.text('not FEED');
+            //            } else {
+            //                button.data('show-in-feed', true);
+            //                button.text('FEED');
+            //            }
+            //        } else {
+            //            // Fehler bei der Aktualisierung
+            //            console.error('Fehler beim Aktualisieren des Feed-Status für alle Posts');
+            //        }
+            //    },
+            //    error: function(xhr, status, error) {
+            //        console.error('AJAX-Fehler: ' + error);
+            //    }
+            //});
+        //});
     });
 </script>
 

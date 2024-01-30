@@ -29,8 +29,9 @@ class ChangePasswordView(SuccessMessageMixin, PasswordChangeView):
 
 
 def home(request):
-    posts = Post.objects.all().order_by('-created_at')
-    
+    # nur posts mit show_in_feed==True
+    posts = Post.objects.filter(show_in_feed=True).order_by('-created_at')
+
     # wenn link füge object das attribut .domain mit der url hinzu
     for post in posts:
         if post.link:

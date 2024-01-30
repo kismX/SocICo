@@ -3,9 +3,11 @@ from .models import Post, Event, Comment
 
 
 class PostForm(forms.ModelForm):
+    show_in_feed = forms.BooleanField(required=False, label='feeden')
+
     class Meta:
         model = Post
-        fields = ['text', 'image', 'link', 'event']
+        fields = ['text', 'image', 'link', 'event', 'show_in_feed']
 
     def clean(self):
         cleaned_data = super().clean()

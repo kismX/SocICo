@@ -73,7 +73,8 @@ class UserProfileDetailView(LoginRequiredMixin, DetailView):
         age = today.year - profil_user.user.birthdate.year - ((today.month, today.day) < (profil_user.user.birthdate.month, profil_user.user.birthdate.day))
 
         # timeline aus postings auf der profilseite anzeigen
-        profile_user_posts = Post.objects.filter(user=profil_user.pk).order_by('-created_at')  # post-obj des profilusers
+        #profile_user_posts = Post.objects.filter(user=profil_user.pk).order_by('-created_at')  # post-obj des profilusers
+        profile_user_posts = Post.objects.filter(profile=profil_user).order_by('-created_at')  # post-obj des verknpften profils
         user_posts = Post.objects.filter(user=user).order_by('-created_at') # post-obj des request-users
         
         # wenn link im post-objekt, erstelle post.domain attribut und speichewr darin über get_domain die URL
@@ -83,6 +84,7 @@ class UserProfileDetailView(LoginRequiredMixin, DetailView):
 
         ##### nun fügen wir dem context hinzu  ####
         context.update({
+            'profile_id': self.kwargs.get('pk'),
             'freunde': freunde,   #freundesobjekte
             'freunde_namelist': [freund.from_user.username if user != freund.from_user else freund.to_user.username for freund in freunde], # eine liste mit den usernamen der freunde
             'freund_ausgehend': freunde_ausgehend, # friendrequests ausgehend: objekt-queryset
