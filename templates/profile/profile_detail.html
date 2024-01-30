@@ -170,8 +170,9 @@
                 {{ post_form.link }}
                 <label for="event">Event</label>
                 {{ post_form.event }}
-                <label for="show_in_feed">In den Newsfeed?</label>
+                
                 {% if request.user.profile == profile %}
+                    <label for="show_in_feed">In den Newsfeed?</label>
                     {{ post_form.show_in_feed }}
                 {% endif %}
                 <button class="colorfull-btn color-change" type="submit">Posten</button>
