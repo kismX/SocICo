@@ -27,21 +27,41 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         data = json.loads(text_data)
-        message = data['message']
-        username = data['username']
-        room = data['room']
+        print(data)
 
-        await self.save_message(username, room, message)
+        if 'status' in data:
+            status = data['status']
+            username = data['username']
 
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                'type': 'chat_message',
-                'message': message,
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {'type': 'user_status', 'status': status, 'username': username,})
+
+        if 'message' in data:
+            message = data['message']
+            username = data['username']
+            room = data['room']
+
+            await self.save_message(username, room, message)
+
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'chat_message',
+                    'message': message,
+                    'username': username,
+                    'room': room,
+                }
+            )
+
+    async def user_status(self, event):
+        status = event['status']
+        username = event['username']
+
+        await self.send(text_data=json.dumps({
+                'status': status,
                 'username': username,
-                'room': room,
-            }
-        )
+        }))
 
     async def chat_message(self, event):
         message = event['message']
@@ -60,3 +80,4 @@ class ChatConsumer(AsyncWebsocketConsumer):
         room = Room.objects.get(slug=room)
 
         Message.objects.create(user=user, room=room, content=message)
+

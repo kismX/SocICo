@@ -7,7 +7,7 @@
     <section class="flex-wrap-container profile-list">
         {% for profile in profile_list %}
         <a href="{% url 'profile_detail' profile.pk %}">
-            <p>{{ profile.user }}</p>
+            <p class="colorfull-txt">{{ profile.user }}</p>
             <img src="{{ profile.avatar.url }}" alt="">
         </a>
         {% endfor %}

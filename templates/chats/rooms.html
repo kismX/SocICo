@@ -3,27 +3,34 @@
 {% block title %}Chatrooms | {% endblock %}
 
 {% block content %}
-<section class="row">
-<h2>Private Chats:</h2>
-{% for key, value in private_dict.items %}
-    <div class="flex-wrap-container rooms-list">
-                <div>
-                    {% for name in value %}
-                    <p>{{ name }}</p>
-                    {% endfor %}
-                </div>
-                <a class="chat-form-button" href="{% url 'room' key %}">></a>
+<section class="chat-list row">
+    <div>
+        <h2>Private Chats:</h2>
+        {% for key, value in private_dict.items %}
+            <div class="flex-wrap-container rooms-list">
+                        <div>
+                            <a href="{% url 'room' key %}">
+                            {% for name in value %}
+                            <p>{{ name }}</p>
+                            {% endfor %}
+                            </a>
+                        </div>
+                        <a class="colorfull-btn" href="{% url 'room' key %}">></a>
+            </div>
+        {% endfor %}
     </div>
-{% endfor %}
-
-<h2>Gruppen Chats:</h2>
-{% for key, value in group_dict.items %}
-    <div class="flex-wrap-container rooms-list">
-                <div>
-                    <p>{{ value }}</p>
-                </div>
-                <a class="chat-form-button" href="{% url 'room' key %}">></a>
+    <div>
+        <h2>Gruppen Chats:</h2>
+        {% for key, value in group_dict.items %}
+            <div class="flex-wrap-container rooms-list">
+                        <div>
+                            <a href="{% url 'room' key %}">
+                            <p>{{ value }}</p>
+                            </a>
+                        </div>
+                        <a class="colorfull-btn" href="{% url 'room' key %}">></a>
+            </div>
+        {% endfor %}
     </div>
-{% endfor %}
 </section>
 {% endblock content%}

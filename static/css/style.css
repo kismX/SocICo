@@ -38,6 +38,8 @@ body{
     background-color: #1a1a1a;
     color: #ffffff;
     font-family: "PoppinsRegular";
+    background-image: url(../../media/patterns/papyrus-dark.webp);
+    background-attachment: fixed;
 }
 h1, h2, h3, h4{
     font-family: "PoppinsBold";
@@ -82,6 +84,13 @@ h1 a{
     background: linear-gradient(0.25turn, rgba(0, 255, 225, 0.496), rgba(4, 248, 4, 0.514));
     /* border-bottom: 1px dotted;
     border-image: linear-gradient(0.25turn,rgb(0, 136, 255),rgb(45, 255, 45), yellow, red) 10; */
+}
+.colorfull-txt{
+    background: -webkit-linear-gradient(00.25turn,#f3a200,rgb(255, 0, 242));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(2px 2px #333);
 }
 #hr-margin-none{
     margin: 0;
@@ -435,21 +444,21 @@ h1 a{
 }
 .profile-friends-container{
     list-style: none;
-    background-color: #fff;
+    background-color: #ffffff27;
     padding: 10px 10px;
     border-radius: 10px;
     width: 100%;
     height: 120px;
-    overflow-x: scroll;
+    overflow-y: scroll;
     box-sizing: border-box;
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    /* flex-direction: column; */
+    gap: 5%;
 }
-.profile-friends-container li a{
+.profile-friends-container a{
     color: #ffffff;
     background: linear-gradient(0.25turn, rgb(89, 0, 255), rgb(255, 0, 136));
-    width:100%;
+    width:40%;
     display: block;
     padding: 5px 10px;
     box-sizing: border-box;
@@ -458,7 +467,7 @@ h1 a{
     text-shadow: 3px 3px 3px #00000062;
 }
 .profile-bio{
-    background-color: #5d5d5d2d;
+    background-color: rgba(255, 255, 255, 0.175);
     padding: 10px;
     border-radius: 10px;
 }
@@ -537,22 +546,28 @@ h1 a{
 
 .rooms-list{
     background-color: #fff;
-    color: #40281A;
-    padding: 5px 50px;
+    color: #000;
+    padding: 5px 10px;
     align-items: center;
     margin-bottom: 10px;
     border-radius: 5px;
+
+    background-color: #ffffff4b;
+    color: #fff;
 }
 .rooms-list div{
-    font-family: "PoppinsBold";
     flex: 1 0;
 }
 .rooms-list a{
     flex: 0 0 10px;
     color: white;
 }
-.rooms-list .chat-form-button{
-    padding: 5px 20px;
+.chat-list .colorfull-btn{
+    margin: 0;
+    padding: 5px 30px;
+    background: #0000006f;
+    box-shadow: 3px 3px 3px #00000020;
+    border: 1px solid rgb(0, 255, 213);
 }
 
 
@@ -691,13 +706,6 @@ h1 a{
     gap: 30px;
     justify-content: space-between;
 }
-.profile-list p{
-    background: -webkit-linear-gradient(00.25turn,#f3a200,rgb(255, 0, 242));
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    filter: drop-shadow(2px 2px #333);
-}
 .profile-list a img{
     width: 30px;
     height: 30px;
@@ -738,6 +746,30 @@ h1 a{
 .groupchat-form-submit .colorfull-btn{
     width: 100%;
     display: block;
+}
+
+/* User Suche */
+
+.seek-result li{
+    list-style: none;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    font-family: "PoppinsBold";
+    background-color: #ffffff38;
+    padding: 5px 10px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    margin: 10px 0;
+}
+.seek-result p{
+    color: #d6d6d6;
+    font-family: "PoppinsRegular";
+    font-size: small;
+}
+.user-search label{
+    margin-bottom: 5px;
 }
 
 /* Media Queries */
@@ -877,6 +909,38 @@ h1 a{
     #ProfileForm input, select{
         margin-bottom: 10px;
     }
+    .user-posts #main-post{
+        width: 30%;
+    }
+    .chat-list{
+        display: flex;
+        justify-content: space-between;
+        gap: 100px;
+        font-family: "PoppinsBold";
+    }
+    .chat-list div{
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .rooms-list{
+        width: 100%;
+    }
+    .create-chat-flex{
+        display: flex;
+        justify-content: space-between;
+        gap: 50px;
+    }
+    .create-chat-flex fieldset{
+        width: 100%;
+    }
+    .user-search{
+        display: flex;
+        gap: 70px
+    }
+    .user-search div{
+        width: 100%;
+    }
+    
 }
 @media only screen and (min-width:1450px){
     .mq-gap-flex{
@@ -906,8 +970,9 @@ h1 a{
         box-sizing: border-box;
         padding: 20px;
         overflow-y: scroll;
-        border: 1px solid #fff;
+        /* border: 1px solid #fff; */
 	    border-radius: 15px;
+        background-color: #ffffff28;
     }
     .main-post{
         display: flex;

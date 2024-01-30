@@ -53,6 +53,14 @@ class UserProfileDetailView(LoginRequiredMixin, DetailView):
         # freunde des Users, auf dessen Profil man sich befindet
         profil_user = self.object  # hole mir das aktuelle Profile-object
         profil_freunde = Friendship.objects.filter(from_user=profil_user.user, accepted_at__isnull=False) | Friendship.objects.filter(to_user=profil_user.user, accepted_at__isnull=False)
+        list_of_friends = []
+
+        for friend_obj in profil_freunde:
+            if friend_obj.from_user != profil_user.user:
+                list_of_friends.append(friend_obj.from_user)
+            else:
+                list_of_friends.append(friend_obj.to_user)
+
 
         freund_profil = Friendship.objects.filter(from_user=profil_user.user, to_user=user, accepted_at__isnull=False).first() or Friendship.objects.filter(to_user=profil_user.user, from_user=user, accepted_at__isnull=False).first()
         if freund_profil:
@@ -85,7 +93,7 @@ class UserProfileDetailView(LoginRequiredMixin, DetailView):
             'age': age,
             
             # für profil-user:
-            'profil_freunde': profil_freunde,
+            'profil_freunde': list_of_friends,
             'num_profil_freunde': profil_freunde.count(),
             # posts des users auf profil:
             'user_posts': user_posts,

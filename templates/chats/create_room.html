@@ -9,6 +9,7 @@
     <form class="standart-form" method="post">
         {% csrf_token %}
         
+        <div class="create-chat-flex">
         <fieldset>
             <p>Freunde</p>
             
@@ -32,10 +33,9 @@
                     <label for="profile_checkbox">{{ profile }}</label>
                 </div>
                 {% endfor %}
-            </div>
-            
+            </div>     
         </fieldset>
-
+        </div>
         <fieldset class="groupchat-form-submit">
             <p>Chatname:</p>
             <input name="room_name" type="text" required>

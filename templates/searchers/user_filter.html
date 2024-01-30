@@ -3,57 +3,56 @@
 {% block content %}
 <section class="row">
     <h1>Buddy Suche</h1>
-<br><br>
-    <form method="GET" action="{% url 'user_filter' %}">
-        <label for="interests"><strong>Suche Leute nach Deinen Interessen:</strong></label><br>
-        <input type="text" name="interests" placeholder="z.B. Knäckebrot, Musik, ..." value="{{ interests }}"> <br>
-        <br>
+    <form class="standart-form" method="GET" action="{% url 'user_filter' %}">
+        <div class="user-search">
+            <div>
+                <label for="interests">Suche nach Interessen</label>
+                <input type="text" name="interests" placeholder="z.B. Knäckebrot, Musik, ..." value="{{ interests }}">
 
-        <label for="age"><strong>Alter:</strong></label>
-        <input type="number" name="age", min="0" placeholder="z.B. 25"> <br>
+                <label for="min_age">Mindestalter</label>
+                <input type="number" name="min_age", min="0" placeholder="z.B. 18">
+                <label for="max_age">Höchstalter</label>
+                <input type="number" name="max_age", min="0" placeholder="z.B. 99">
 
-        <label for="min_age">.....Mindestalter:</label>
-        <input type="number" name="min_age", min="0" placeholder="z.B. 18"> <br>
-        <label for="max_age">.....Höchstalter:</label>
-        <input type="number" name="max_age", min="0" placeholder="z.B. 99"> <br>
-        <br>
-        <label for="gender"><strong>Geschlecht:</strong></label>
-        <select name="gender">
-            <option value="">Alles</option>
-            <option value="female">weiblich</option>
-            <option value="male">männlich</option>
-            <option value="divers">divers</option>
-        </select> <br>
+                <label for="gender">Geschlecht</label>
+                <select name="gender">
+                    <option value="">Alles</option>
+                    <option value="female">weiblich</option>
+                    <option value="male">männlich</option>
+                    <option value="divers">divers</option>
+                </select>
+            </div>
 
-        <label for="city"><strong>Stadt:</strong></label>
-        <input type="text" name="city" placeholder="z.B. Berlin"> <br>
-        
-        <label for="country"><strong>Land:</strong></label>
-        <input type="text" name="country" placeholder="z.B. Deutschland"> <br><br>
-        
-        <label for="last_online_cut"><strong>Zuletzt online (Tage):</strong></label>
-        <input type="number" name="last_online_cut", min="0" placeholder="z.B. 7"> <br>
-
-        <button type="submit">Seeeeek</button>
+            <div>
+                <label for="city">Stadt</label>
+                <input type="text" name="city" placeholder="z.B. Berlin">
+                
+                <label for="country">Land</label>
+                <input type="text" name="country" placeholder="z.B. Deutschland">
+                
+                <label for="last_online_cut">Zuletzt online (Tage)</label>
+                <input type="number" name="last_online_cut", min="0" placeholder="z.B. 7">
+            </div>
+        </div>
+        <button class="colorfull-btn" type="submit">Seeek</button>
     </form>
-<br>
-<br>
-<br>
 
     <h3>Suchergebnis:</h3>
     <!-- ich sage, nur wenn es GET requests gibt bisher (also eine suchanfrage), führt er die auflistung der ergebnisse aus  -->
     {% if request.GET %}
         {% if users %}
-            <ul>
+            <ul class="seek-result">
                 {% for user in users %}
                     <li>
-                        <strong><a href="{% url 'profile_detail' pk=user.profile.id %}">{{ user.username }}</a></strong>..................  <em>zuletzt online: <strong>{{ user.profile.last_online|date:"d.m.Y H:i" }}</em></strong>
+                        <a class="colorfull-txt" href="{% url 'profile_detail' pk=user.profile.id %}">{{ user.username }}</a>
+                        <p>zuletzt online: {{ user.profile.last_online|date:"d.m.Y H:i" }}</p>
                     </li>
+                    <hr class="dotted-line" id="hr-margin-none">
                 {% endfor %}
             </ul>
         {% else %}
             {% if similar_interests %}
-                <p>Irgendwie nix zu finden, meinteste vielleicht:</p>
+                <p>Tut uns leid darunter finden wir nichts, meintest du vielleicht:</p>
                 <ul>
                     {% for similar_interest in similar_interests %}
                         <li>
@@ -64,15 +63,15 @@
                         </li>
                     {% endfor %}
                     <form action="{% url 'user_filter' %}" method="get">
-                        <button type="submit">Nochmal neu starten</button>
+                        <button class="colorfull-btn color-change" type="submit">Reset</button>
                     </form>
                 </ul>
             {% else %}
-                <p>....Sorry, aber Du bist alleine auf diesem Planeten mit deinem Kram!</p>
+                <p>....mh so jemanden scheint es hier nicht zu geben...</p>
             {% endif %}
         {% endif %}
     {% else %}
-        Noch nicht gesucht, mein Friend!
+        Du hast noch nichts gesucht...
     {% endif %}
     
     <br>

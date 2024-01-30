@@ -3,7 +3,7 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from django.contrib.auth import get_user_model
 from django.db.utils import IntegrityError
-from accounts.models import Friendship
+from accounts.models import Friendship, Profile
 from .models import Room, Message
 from psycopg2 import errors
 
@@ -49,9 +49,11 @@ def room(request, slug):
     username_list = []
 
     for id in room.user_list:
-        if id != request.user.id:
+        # if id != request.user.id:
             profile = profiles.get(id=id)
             username_list.append(profile)
+
+    
 
     return render(request, 'chats/room.html', {'room': room, 'messages': messages, 'username_list': username_list})
 

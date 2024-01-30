@@ -42,22 +42,28 @@
             <a href="{% url 'profile_detail' user.profile.pk %}">
                 <img src="{{ user.profile.avatar.url }}" alt="">
                 <p>{{ user.username }}</p>
+                <p style="color: red;" id="status"></p>
             </a>
             <hr class="colorfull-line">
             {% endfor %}
         </div>
     </div>
+    
+    <!-- <p>{{ user.profile.chat_status }}</p> -->
+    
 </section>
 {% endblock %}
 
 {% block scripts %}
 {{ room.slug|json_script:"json-roomname" }}
 {{ request.user.username|json_script:"json-username" }}
+<!-- {{ request.user.profile.chat_status|json_script:"json-chatstatus" }} -->
 {{ user.profile.avatar.url|json_script:"json-profileavatar" }}
 
 <script>
     const roomName = JSON.parse(document.getElementById('json-roomname').textContent);
     const userName = JSON.parse(document.getElementById('json-username').textContent);
+    // const userStatus = JSON.parse(document.getElementById('json-chatstatus').textContent);
 
 
     // Websocket Connection:
@@ -70,24 +76,31 @@
         + '/'
     );
 
+    chatSocket.onopen = function(e) {
+        chatSocket.send(JSON.stringify({
+            'status': 'online', 
+            'username': userName,
+        }));
+    };
+
     chatSocket.onmessage = function(e) {
-        console.log('onmessage')
+        console.log('onmessage');
 
         const data = JSON.parse(e.data);
         const profileAvatar = JSON.parse(document.getElementById('json-profileavatar').textContent);
 
+        if (data.status){
+            let html = data.status + ' ' + data.username;
+            document.querySelector('#status').innerHTML = html;
+        }
+
         if (data.message){
-            // let html = '<div class="flex-wrap-container">';
-            //     html += '<img src="'+ profileAvatar +'" alt="">';
+        
             let html = '<div id="own-messages">';
-                // html += '<p class="chat-name">'+ data.username + '</p>';
                 html += '<p class="chat-message-box">'+ data.message + '</p></div>';
-                // html += '</div>';
 
                 document.querySelector('#chat-messages').innerHTML += html;
                 scrollToBottom();
-        } else {
-            alert('Die Nachricht war leer...')
         }
     }
 
@@ -122,5 +135,6 @@
     }
 
     scrollToBottom(); // um funktion aufzurufen
+    
 </script>
 {% endblock %}

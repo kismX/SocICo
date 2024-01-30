@@ -30,7 +30,11 @@
     <div class="flex avatar-user">
         <img id="profile-avatar" src="{{ profile.avatar.url }}" alt="avatar">
         <div class="w-100">
-            <h1> {{ profile.user }}</h1>
+            <h1> {{ profile.user }}
+                {% if request.user == profile.user %}
+                <a href="{% url 'profile_edit' %}">&#9998</a>
+                {% endif %}
+            </h1>
             <hr id="hr-margin-none" class="dotted-line">
             <div class="flex">
                 <p>{{ age }},</p>
@@ -122,15 +126,11 @@
         <h2>{{ profile.user.username }}'s Freunde</h2>  
         <p>{{ num_profil_freunde }} Freunde</p>
 
-        <ul class="profile-friends-container">
+        <div class="profile-friends-container">
             {% for freund in profil_freunde %}
-                {% if profile.user.username != freund.from_user.username %}
-                    <li><a href="{% url 'profile_detail' pk=freund.from_user.id %}">{{ freund.from_user.username }}</a></li>
-                {% else %}
-                    <li><a href="{% url 'profile_detail' pk=freund.to_user.id %}">{{ freund.to_user.username }}</a></li>
-                {% endif %}
+                <a href="{% url 'profile_detail' pk=freund.id %}">{{ freund.username }}</a>
             {% endfor %}
-        </ul>
+        </div>
 
     {% else %}
         <div class="mq-flex friend-btn-flex">
@@ -140,7 +140,7 @@
         <h2 class="display-none">Deine Freunde</h2>
         <p>{{ num_freunde }} Freunde</p>
 
-        <ul class="profile-friends-container">
+        <div class="profile-friends-container">
             {% for freund in freunde %}
                 {% if user.username != freund.from_user.username %}
                     <li><a href="{% url 'profile_detail' pk=freund.from_user.id %}">{{ freund.from_user.username }}</a></li>
@@ -148,7 +148,7 @@
                     <li><a href="{% url 'profile_detail' pk=freund.to_user.id %}">{{ freund.to_user.username }}</a></li>
                 {% endif %}
             {% endfor %}
-        </ul>
+        </div>
     {% endif %}
     <a class="colorfull-btn display-none" href="{% url 'friend_requests' %}">Alle Freundschaftsanfragen</a>
     <hr class="dotted-line display-none">
