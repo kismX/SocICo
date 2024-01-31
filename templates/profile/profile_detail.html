@@ -119,67 +119,62 @@
     {% endif %}
     <hr class="dotted-line">
 
-    <div class="mq-gap-flex">
     <!-- Freunde des Users -->
-    <section class="profile-friends">
-    {% if request.user != profile.user %}
-        <h2>{{ profile.user.username }}'s Freunde</h2>  
-        <p>{{ num_profil_freunde }} Freunde</p>
 
-        <div class="profile-friends-container">
-            {% for freund in profil_freunde %}
-                <a href="{% url 'profile_detail' pk=freund.id %}">{{ freund.username }}</a>
-            {% endfor %}
-        </div>
+    <div class="mq-gap-flex">
+        <section class="profile-friends">
+            {% if request.user != profile.user %}
+                <h2>{{ profile.user.username }}'s Freunde</h2>  
+                <p>{{ num_profil_freunde }} Freunde</p>
+            {% else %}
+                <div class="mq-flex friend-btn-flex">
+                    <h2>Deine Freunde</h2>
+                    <a class="colorfull-btn" href="{% url 'friend_requests' %}">Alle Anfragen</a>
+                </div>
+                <h2 class="display-none">Deine Freunde</h2>
+                <p>{{ num_freunde }} Freunde</p>
+            {% endif %}
 
-    {% else %}
-        <div class="mq-flex friend-btn-flex">
-            <h2>Deine Freunde</h2>
-            <a class="colorfull-btn" href="{% url 'friend_requests' %}">Alle Anfragen</a>
-        </div>
-        <h2 class="display-none">Deine Freunde</h2>
-        <p>{{ num_freunde }} Freunde</p>
+                <div class="profile-friends-container">
+                    {% for freund in profil_freunde %}
+                        <a href="{% url 'profile_detail' pk=freund.id %}">{{ freund.username }}</a>
+                    {% endfor %}
+                </div>
+            
+            {% if request.user == profile.user %}
+            <a class="colorfull-btn display-none" href="{% url 'friend_requests' %}">Alle Freundschaftsanfragen</a>
+            {% endif %}
+            <hr class="dotted-line display-none">
+        </section>
 
-        <div class="profile-friends-container">
-            {% for freund in freunde %}
-                {% if user.username != freund.from_user.username %}
-                    <li><a href="{% url 'profile_detail' pk=freund.from_user.id %}">{{ freund.from_user.username }}</a></li>
-                {% else %}
-                    <li><a href="{% url 'profile_detail' pk=freund.to_user.id %}">{{ freund.to_user.username }}</a></li>
-                {% endif %}
-            {% endfor %}
-        </div>
-    {% endif %}
-    <a class="colorfull-btn display-none" href="{% url 'friend_requests' %}">Alle Freundschaftsanfragen</a>
-    <hr class="dotted-line display-none">
-    </section>
+        <!-- Post-Funktion auf dem User-Profil -->
 
-    <!-- Post-Funktion auf dem User-Profil -->
-
-    <section class="create-post">
-        <h2>Post erstellen</h2>
-        <div>
-            <form class="profile-post-form" method="post" enctype="multipart/form-data" action="{% url 'create_post' profile_id %}">
-                {% csrf_token %}
-                <input type="hidden" name="profile_id" value="{{ profile_id }}">
-                <label for="textarea">Schreib etwas...</label>
-                {{ post_form.text }}
-                <label for="image">Image</label>
-                {{ post_form.image }}
-                <label for="link">Link</label>
-                {{ post_form.link }}
-                <label for="event">Event</label>
-                {{ post_form.event }}
-                
-                {% if request.user.profile == profile %}
-                    <label for="show_in_feed">In den Newsfeed?</label>
-                    {{ post_form.show_in_feed }}
-                {% endif %}
-                <button class="colorfull-btn color-change" type="submit">Posten</button>
-            </form>
-        </div>
-        <hr class="dotted-line display-none">
-    </section>
+        <section class="create-post">
+            <h2>Post erstellen</h2>
+            <div>
+                <form class="profile-post-form" method="post" enctype="multipart/form-data" action="{% url 'create_post' profile_id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="profile_id" value="{{ profile_id }}">
+                    <label for="textarea">Schreib etwas...</label>
+                    {{ post_form.text }}
+                    <label for="image">Image</label>
+                    {{ post_form.image }}
+                    <label for="link">Link</label>
+                    {{ post_form.link }}
+                    <label for="event">Event</label>
+                    {{ post_form.event }}
+                    
+                    {% if request.user.profile == profile %}
+                    <div class="newsfeed-checkbox">
+                        {{ post_form.show_in_feed }}
+                        <label for="show_in_feed">Ja, teil's im Newsfeed!</label>
+                    </div>
+                    {% endif %}
+                    <button class="colorfull-btn color-change" type="submit">Posten</button>
+                </form>
+            </div>
+            <hr class="dotted-line display-none">
+        </section>
     </div>
     <hr class="dotted-line">
 

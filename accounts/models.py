@@ -29,6 +29,7 @@ class Profile(models.Model):
     interests = models.TextField(blank=True, help_text='Gib interessen getrennt durch Komma an')
     avatar = models.ImageField(default='default.png', upload_to='profile_images')
     is_active = models.BooleanField(default=False)  # ist er geraed online oder offline - muss noch implementiert weden
+    chat_status = models.BooleanField(default=False)
     last_online = models.DateTimeField(blank=True, null=True)  # wann war user letztes mal online
     invisible = models.BooleanField(default=False) # user invisible mode für nicht-freunde
 

@@ -85,12 +85,50 @@ h1 a{
     /* border-bottom: 1px dotted;
     border-image: linear-gradient(0.25turn,rgb(0, 136, 255),rgb(45, 255, 45), yellow, red) 10; */
 }
+.colorfull-btn{
+    color: #ffffff;
+    background: linear-gradient(0.25turn, rgb(255, 200, 0), magenta);
+    width:100%;
+    display: block;
+    padding: 5px 10px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    font-family: "PoppinsBold";
+    text-shadow: 3px 3px 3px #00000062;
+    text-align: center;
+    margin: 20px 0;
+}
+.color-change{
+    background: linear-gradient(0.25turn, rgb(0, 0, 255), rgb(0, 255, 255));
+}
+.color-change-red{
+    background: linear-gradient(0.25turn, rgb(255, 0, 0), rgb(255, 145, 0));
+}
+.color-change-green{
+    background: linear-gradient(0.25turn, rgb(53, 168, 0),rgb(0, 255, 140));
+}
 .colorfull-txt{
-    background: -webkit-linear-gradient(00.25turn,#f3a200,rgb(255, 0, 242));
+    background: linear-gradient(00.25turn,#f3a200,rgb(255, 0, 242));
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    filter: drop-shadow(2px 2px #333);
+    /* filter: drop-shadow(2px 2px #333); */
+}
+.color-txt-bg{
+    background: linear-gradient(00.25turn,#00f3a6,rgb(0, 153, 255));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    /* filter: drop-shadow(2px 2px #333); */
+}
+.color-txt-bm{
+    background: -webkit-linear-gradient(0.25turn, aqua, rgb(149, 0, 255));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.color-txt-grey{
+    color: #a7a7a7;
 }
 #hr-margin-none{
     margin: 0;
@@ -443,49 +481,31 @@ h1 a{
     border-radius: 10px;
 }
 .profile-friends-container{
-    list-style: none;
     background-color: #ffffff27;
     padding: 10px 10px;
     border-radius: 10px;
     width: 100%;
-    height: 120px;
-    overflow-y: scroll;
     box-sizing: border-box;
-    display: flex;
-    /* flex-direction: column; */
-    gap: 5%;
+    gap: 10px;
+    height: 150px;
+    overflow-y: scroll;
 }
 .profile-friends-container a{
     color: #ffffff;
     background: linear-gradient(0.25turn, rgb(89, 0, 255), rgb(255, 0, 136));
-    width:40%;
-    display: block;
     padding: 5px 10px;
     box-sizing: border-box;
     border-radius: 10px;
     font-family: "PoppinsBold";
     text-shadow: 3px 3px 3px #00000062;
+    width: 100%;
+    display: block;
+    margin-bottom: 10px;
 }
 .profile-bio{
     background-color: rgba(255, 255, 255, 0.175);
     padding: 10px;
     border-radius: 10px;
-}
-.colorfull-btn{
-    color: #ffffff;
-    background: linear-gradient(0.25turn, rgb(255, 200, 0), magenta);
-    width:100%;
-    display: block;
-    padding: 5px 10px;
-    box-sizing: border-box;
-    border-radius: 10px;
-    font-family: "PoppinsBold";
-    text-shadow: 3px 3px 3px #00000062;
-    text-align: center;
-    margin: 20px 0;
-}
-.color-change{
-    background: linear-gradient(0.25turn, rgb(0, 0, 255), rgb(0, 255, 255));
 }
 .profile-post-form{
     width: 100%;
@@ -507,6 +527,20 @@ h1 a{
 }
 .no-entry{
     margin-top: 20px;
+}
+.newsfeed-checkbox{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 20px;
+}
+.newsfeed-checkbox label{
+    font-size: small;
+}
+#id_show_in_feed{
+    width: auto;
+    margin: 0;
+    margin-right: 10px;
 }
 
 /* Profile Edit */
@@ -570,7 +604,6 @@ h1 a{
     border: 1px solid rgb(0, 255, 213);
 }
 
-
 /* Chat */
 
 #chat-row{
@@ -595,7 +628,6 @@ h1 a{
     border-top-left-radius: 10px;
 }
 .chat-messages .flex-wrap-container{
-    margin-bottom: 20px;
     width: 100%;
 }
 .chat-messages img{
@@ -612,26 +644,31 @@ h1 a{
     display: flex;
     justify-content: end;
 }
-#own-messages .chat-name{
-    color: aqua;
-    text-align: end;
-}
 #own-messages .chat-message-box{
     width: auto;
     max-width: 70%;
     border-top-left-radius: 10px;
     border-top-right-radius: 0px;
     border: 0.5px solid  rgba(255, 0, 255, 0.485);
+    margin-bottom: 10px;
+}
+#other-messages{
+    width: 100%;
+    display: flex;
+    justify-content: start;
+    align-items: flex-start;
 }
 #other-messages .chat-message-box{
+    width: auto;
     max-width: 70%;
     border: 0.5px solid  rgba(255, 200, 0, 0.435);
+    margin-bottom: 10px;
 }
 .chat-name{
     font-family: "PoppinsBold";
     border-top-right-radius: 10px;
     border-top-left-radius: 10px;
-    padding: 2px 0px;
+    margin-right: 10px;
     color: #ffffff;
     text-shadow:3px 3px 3px #000;
 }
@@ -772,6 +809,111 @@ h1 a{
     margin-bottom: 5px;
 }
 
+/* Notifications */
+
+.notification-section ul li{
+    list-style: none;
+}
+.notification-section p{
+    color: #a5a5a5;
+    font-size: 0.8em;
+}
+
+/* Friendships */
+.friendship-section li{
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.friendship-section li div{
+    display: flex;
+    gap: 10px;
+}
+.friendship-section div a{
+    width: auto;
+    padding: 2px 10px;
+}
+.friendship-section #profile-btn{
+    margin-top: 50px;
+}
+
+/* Post Detail */
+
+.post-detail-section{
+    background-color: #ffffff2a;
+    border-radius: 10px;
+    color: #ffffff;
+    padding: 10px;
+    margin-top: 30px;
+}
+.post-detail-section .post-img{
+    border-radius: 10px;
+}
+.post-detail-section .post-link{
+    color: #ffffff;
+    margin-bottom: 0%;
+    background-color: #00000061;
+}
+.like-com-section{
+    background-color: #ffffff2a;
+    border-radius: 10px;
+    padding: 5px 10px;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.like-com-section a{
+    color: #ffffff;
+}
+.like-com-section .like-post-btn{
+    width: auto;
+    margin: 0%;
+}
+.write-comment button{
+    margin: 0%;
+}
+.write-comment #id_comment{
+    resize: none;
+    width: 100%;
+    border-radius: 5px;
+    height: 100px;
+    overflow-y: scroll;
+    padding: 10px;
+    box-sizing: border-box;
+}
+.write-comment #id_image{
+    background-color: #ffffff3c;
+    margin-top: 3px;
+}
+.comments{
+    background-color: #ffffff23;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+.main-comment-sec .flex{
+    align-items: center;
+    justify-content: space-between;
+}
+.main-comment-sec .flex p{
+    font-size: 0.8em;
+}
+.comment-link{
+    background-color: #ffffff7a;
+    padding: 5px;
+    font-size: 0.9em;
+    border-radius: 5px;
+}
+.like-comment-sec{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+}
+
 /* Media Queries */
 
 @media only screen and (max-width: 1000px){
@@ -781,6 +923,12 @@ h1 a{
     #chat-row{
         width: 100%;
         margin-top: 130px;
+    }
+}
+
+@media only screen and (max-width: 600px){
+    .post-detail-section .post-img{
+        width: 100%;
     }
 }
 
@@ -857,23 +1005,9 @@ h1 a{
         height: 150px;
     }
     .profile-friends-container{
-        flex-direction: row;
-        flex-wrap: wrap;
-        margin-bottom: 30px;
-        padding: 20px 0px;
         height: 300px;
-        width: 100%;
-        align-items: flex-start;
-        justify-content: center;
     }
-    .profile-friends-container li{
-        width: 45%;
-    }
-    .profile-friends-container li a{
-        padding: 5px 30px;
-        box-shadow: 3px 3px 3px #00000020;
-        width: 100%;
-    }
+
     .friend-btn-flex a{
         width: 40%;
     }
@@ -940,7 +1074,25 @@ h1 a{
     .user-search div{
         width: 100%;
     }
-    
+    .notification-section ul li{
+        display: flex;
+        justify-content: space-between;
+    }
+    .wc-form-flex{
+        display: flex;
+        gap: 30px;
+    }
+    .wc-form-flex div{
+        width: 100%;
+    }
+    .wc-form-flex #id_comment{
+        height: 120px;
+    }
+    .wc-button-flex{
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+    }
 }
 @media only screen and (min-width:1450px){
     .mq-gap-flex{
@@ -960,6 +1112,15 @@ h1 a{
     }
     .profile-friends-container{
         height: 385px;
+    }
+    .post-detail-section{
+        display: flex;
+        gap: 30px;
+    }
+    .pds-flex{
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
     }
 }
 @media only screen and (min-width: 800px){

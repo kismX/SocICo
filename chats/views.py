@@ -49,7 +49,7 @@ def room(request, slug):
     username_list = []
 
     for id in room.user_list:
-        # if id != request.user.id:
+        if id != request.user.id:
             profile = profiles.get(id=id)
             username_list.append(profile)
 

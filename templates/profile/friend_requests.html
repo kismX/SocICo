@@ -1,40 +1,37 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<section class="row">
-    <h2>Freundschaftsanfragen</h2>
-    <br><br>
-    <h3> Eingehende Freundschaftsanfragen </h3>
+<section class="row friendship-section">
+    <h1>Alle Anfragen</h1>
+    <h2>Eingehende Freundschaftsanfragen</h2>
 
     {% if incoming_requests %}
         {% for request in incoming_requests %}
-        <li><strong>{{ request.from_user.username }}</strong> möchte dich adden. 
-        <a href="{% url 'accept_friend' friendship_id=request.id %}">Annehmen</a>  |  <a href="{% url 'reject_friend' friendship_id=request.id %}">Ablehnen</a></li>
+        <li>
+            <p><a class="bold" href="{% url 'profile_detail' pk=request.from_user.id %}">{{ request.from_user.username }}</a> möchte dich adden.</p>
+            <div>
+                <a class="colorfull-btn color-change-green" href="{% url 'accept_friend' friendship_id=request.id %}">&#10004</a>
+                <a class="colorfull-btn color-change-red" href="{% url 'reject_friend' friendship_id=request.id %}">&#10006</a>
+            </div>
+        </li>
+        <hr id="hr-margin-none" class="dotted-line">
         {% endfor %}
 
     {% else %}
-        <p>keine Freundesanfragen!</p><br>
+        <p>Keine Freundschaftsanfragen!</p>
     {% endif %}
 
-
-    <br><br>
-    <h3>Ausgehende Freundschaftsanfragen </h3>
+    <h2>Ausgehende Freundschaftsanfragen </h2>
 
     {% if outgoing_requests %}
         {% for request in outgoing_requests %}
-        Du hast eine Anfrage an <strong>{{ request.to_user.username }}</strong> gesendet. <br>
+        <p>Du hast eine Anfrage an <a class="colorfull-txt bold" href="{% url 'profile_detail' pk=request.to_user.id %}">{{ request.to_user.username }}</a> gesendet.</p>
         {% endfor %}
-
     {% else %}
-        <p>keine ausgehenden Freundesanfragen!</p>
+        <p>keine ausgehenden Freundschaftsanfragen!</p>
     {% endif %}
 
-
-
-
-    <br><br>
-    <p></p>
-    <a href="{% url 'profile_detail' pk=request.user.id %}">>>>Zu MEINEM Profil>>></a><br>
+    <a id="profile-btn" class="colorfull-btn" href="{% url 'profile_detail' pk=request.user.id %}">Zurück zum eigenen Profil</a>
 
 </section>
 {% endblock content %}

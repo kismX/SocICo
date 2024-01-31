@@ -16,4 +16,15 @@ class Notification(models.Model):
     reference_id = models.IntegerField(null=True, blank=True) # für identifikation des comments
 
     def __str__(self):
-        return f"Notification von {self.from_user} an {self.to_user} vom Typ {self.notification_type}"
+        if self.notification_type == 'like':
+            return 'Like'
+        elif self.notification_type == 'post':
+            return 'Post'
+        elif self.notification_type == 'comment':
+            return 'Kommentar'
+        elif self.notification_type == 'friendrequest':
+            return 'Freundschaftsanfrage'
+        elif self.notification_type == 'friendrequest_accepted':
+            return 'Freundschaftsanfrage angenommen'
+        elif self.notification_type == 'mention':
+            return 'Erwähnung'
