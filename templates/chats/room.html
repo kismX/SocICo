@@ -41,8 +41,15 @@
             {% for user in username_list %}
             <a href="{% url 'profile_detail' user.profile.pk %}">
                 <img src="{{ user.profile.avatar.url }}" alt="">
-                <p>{{ user.username }}</p>
-                <p style="color: red;" id="status"></p>
+                {% if user.profile.chat_status %}
+                    <p>{{ user.username }}</p>
+                    <!-- <p id="{{user.username}}_status" style="color: green !important;">{{ user.username }}</p>
+                    <small id="{{user.username}}_small">Online</small> -->
+                {% else %}
+                    <p>{{ user.username }}</p>
+                    <!-- <p id="{{user.username}}_status" style="color: red !important;">{{ user.username }}</p>
+                    <small id="{{user.username}}_small">Offline</small> -->
+                {% endif %}
             </a>
             <hr class="colorfull-line">
             {% endfor %}
@@ -57,14 +64,11 @@
 {% block scripts %}
 {{ room.slug|json_script:"json-roomname" }}
 {{ request.user.username|json_script:"json-username" }}
-<!-- {{ request.user.profile.chat_status|json_script:"json-chatstatus" }} -->
 {{ user.profile.avatar.url|json_script:"json-profileavatar" }}
 
 <script>
     const roomName = JSON.parse(document.getElementById('json-roomname').textContent);
     const userName = JSON.parse(document.getElementById('json-username').textContent);
-    // const userStatus = JSON.parse(document.getElementById('json-chatstatus').textContent);
-
 
     // Websocket Connection:
 
@@ -76,38 +80,28 @@
         + '/'
     );
 
-    chatSocket.onopen = function(e) {
-        chatSocket.send(JSON.stringify({
-            'status': 'online', 
-            'username': userName,
-        }));
-    };
-
     chatSocket.onmessage = function(e) {
         console.log('onmessage');
 
         const data = JSON.parse(e.data);
         const profileAvatar = JSON.parse(document.getElementById('json-profileavatar').textContent);
 
-        if (data.status){
-            let html = data.status + ' ' + data.username;
-            document.querySelector('#status').innerHTML = html;
-        }
-
         if (data.message){
-        
-            let html = '<div id="own-messages">';
-                html += '<p class="chat-message-box">'+ data.message + '</p></div>';
-
+            if(data.username != userName){
+                let html = '<div id="other-messages">';
+                    html += '<p class="chat-name">' + data.username + '</p>';
+                    html += '<p class="chat-message-box">'+ data.message + '</p></div>';
                 document.querySelector('#chat-messages').innerHTML += html;
-                scrollToBottom();
+
+            } else{
+                let html = '<div id="own-messages">';
+                    html += '<p class="chat-message-box">'+ data.message + '</p></div>';
+                document.querySelector('#chat-messages').innerHTML += html;
+            }
+            scrollToBottom();
         }
     }
 
-    chatSocket.onclose = function(e) {
-        let html = 'offline' + data.username;
-        document.querySelector('#status').innerHTML = html;
-    }
 
     // Nachricht senden:
 
@@ -136,6 +130,51 @@
     }
 
     scrollToBottom(); // um funktion aufzurufen
+
+    // Online Status
+
+    const onlineStatusSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/'
+        + 'online/'
+    );
+
+    onlineStatusSocket.onopen = function(e) {
+        console.log('connected to consumer');
+
+        onlineStatusSocket.send(JSON.stringify({
+            'username': userName,
+            'type': 'open'
+        }));
+    };
+
+    onlineStatusSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        if(data.username != userName){
+            const user_to_change = document.getElementById(`${data.username}_status`);
+            const small_status_to_change = document.getElementById(`${data.username}_small`);
+            if(data.online_status == true){
+                user_to_change.style.color = 'green'
+                small_status_to_change.textContent = 'Online'
+            }
+            else{
+                user_to_change.style.color = 'red'
+                small_status_to_change.textContent = 'Offline'
+            }
+        }
+    };
+
+    window.addEventListener("beforeunload", function(e){
+        onlineStatusSocket.send(JSON.stringify({
+            'username': userName,
+            'type': 'offline'
+        }));
+    });
+
+    onlineStatusSocket.onclose = function(e) {
+        console.log('disconnected from consumer');
+    };
     
 </script>
 {% endblock %}

@@ -1,80 +1,107 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load like_tags %}
+
 <section class="row">
-<h3>{{ post.user }} teilte..</h3>
-{% if post.text %}
-    <p>{{ post.text|safe }}</p>
-{% endif %}
+    <p><a href="{% url 'home' %}">&#171 Zurück zum Newsfeed</a></p>
+    <section class="post-detail-section">
+        {% if post.image %}
+            <img class="post-img" src="{{ post.image.url }}" alt="Bild des Posts">
+        {% endif %}
 
-{% if post.image %}
-    <img src="{{ post.image.url }}" alt="Bild des Posts"><br>
-{% endif %}
+        <div class="pds-flex">
+            <div>
+                <a class="color-txt-bm bold" href="{% url 'profile_detail' pk=post.user.id %}">{{ post.user }}</a>
+                <hr id="hr-margin-none" class="dotted-line">
+                {% if post.text %}
+                    <p>{{ post.text|safe }}</p>
+                {% endif %}
+            </div>
+            <div>
+                {% if post.link %}
+                    <a class="post-link" href="{{ post.link }}">{{ post.link }}</a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
 
-{% if post.link %}...Klick: <a href="{{ post.link }}">{{ post.domain }}</a>{% endif %}
-
-
-<!-- Like und Kommentar Handling Post-->
-<strong>
-    {% if post|has_liked_post:request.user %}
-        <button class="like-post-btn" data-post-id="{{ post.id }}">UNLIKE</button>
-    {% else %}
-        <button class="like-post-btn" data-post-id="{{ post.id }}">LIKE</button>
-    {% endif %}
-
-    <a href="{% url 'likelist_post' post.id %}">
-        <span class="post-likes-count">{{ post.total_likes }} Likes</span>
-    </a>
-    <a href="{% url 'post_detail' post.id %}">  |  {{ post.comments.count }} Kommentare</a>
-</strong>
-
-
-
-
-
-<hr><br><br>
-<h3>Kommentare</h3>
-{% for comment in comments %}
-    <p><strong><a href="{% url 'profile_detail' pk=comment.user.id %}">{{ comment.user.username }}</a> </strong> <em>antwortete am {{ comment.created_at|date:"d.m.Y, H:i" }}:</em><br>
-        {{ comment.comment|safe }}</p>
-
-
-    <!-- Like handling Kommentar -->
-    <strong>
-        {% if comment|has_liked_comment:request.user %}
-            <button class="like-comment-btn" data-comment-id="{{ comment.id }}">Unlike</button>
+    <section class="like-com-section">
+        {% if post|has_liked_post:request.user %}
+            <button class="like-post-btn colorfull-btn" data-post-id="{{ post.id }}">UNLIKE</button>
         {% else %}
-            <button class="like-comment-btn" data-comment-id="{{ comment.id }}">Like</button>
+            <button class="like-post-btn colorfull-btn" data-post-id="{{ post.id }}">LIKE</button>
         {% endif %}
-        <a href="{% url 'likelist_comment' comment.id %}">
-            <span class="comment-likes-count">{{ comment.total_likes_comment }} Likes</span>
-        </a>
 
+        <div>
+            <a href="{% url 'likelist_post' post.id %}">
+                <span class="post-likes-count">{{ post.total_likes }} Likes</span>
+            </a>
+            <a href="{% url 'post_detail' post.id %}">  |  {{ post.comments.count }} Kommentare</a>
+        </div>
+    </section>
 
+    <hr class="dotted-line">
 
+    <section class="write-comment">
+        {% if user.is_authenticated %}
+        <form class="standart-form" method="post">
+            {% csrf_token %}
+            <div class="wc-form-flex">
+                <div>
+                {{ comment_form.comment }}
+                </div>
+                <div class="wc-button-flex">
+                    <div>
+                        {{ comment_form.image }}
+                        <input type="url" name="link" maxlength="200" id="id_link" placeholder="URL einfügen">
+                    </div>
+                    <button class="colorfull-btn color-change" type="submit">Kommentieren</button>
+                </div>
+            </div>
+        </form>
+        {% else %}
+            <p><a href="{% url 'login' %}">Logge dich ein</a>, um zu kommentieren.</p>
+        {% endif %}
+    </section>
+
+    <hr class="dotted-line">
     
-        {% if request.user == comment.user or request.user.is_superuser %}
-            <a href="{% url 'comment_edit' comment.id %}">Bearbeiten</a>
-            <a href="{% url 'comment_delete' comment.id %}"> | Löschen</a>
-        {% endif %}
-    </strong>
-        <br><br>
-        <p> ................................................ </p>
-        <br>
-{% endfor %}
+    {% for comment in comments %}
+    <section class="comments">
+            <div class="main-comment-sec">
+                <div class="flex">
+                    <a class="colorfull-txt bold" href="{% url 'profile_detail' pk=comment.user.id %}">{{ comment.user.username }}</a>
+                    <p>{{ comment.created_at|date:"d.m.Y, H:i" }}</p>
+                </div>
+            
+            <p>{{ comment.comment|safe }}</p>
+            {% if comment.link %}
+                <p class="comment-link">{{ comment.link }}</p>
+            {% endif %}
+            </div>
 
+            <!-- Like handling Kommentar -->
+            <div class="like-comment-sec">
+                <div>
+                    {% if comment|has_liked_comment:request.user %}
+                        <button class="like-comment-btn" data-comment-id="{{ comment.id }}">Unlike</button>
+                    {% else %}
+                        <button class="like-comment-btn" data-comment-id="{{ comment.id }}">Like</button>
+                    {% endif %}
+                </div>
+                <div>
+                    <a href="{% url 'likelist_comment' comment.id %}">
+                        <span class="comment-likes-count">{{ comment.total_likes_comment }} Likes</span>
+                    </a>
 
-<p> ---------------------------------------------------------------------------------</p><br>
-{% if user.is_authenticated %}
-    <form method="post">
-        {% csrf_token %}
-        {{ comment_form.as_p }}
-        <button type="submit">Kommentieren</button>
-    </form>
-{% else %}
-    <p><a href="{% url 'login' %}">Logge dich ein</a>, um zu kommentieren.</p>
-{% endif %}
-
+                    {% if request.user == comment.user or request.user.is_superuser %}
+                        <a href="{% url 'comment_edit' comment.id %}">Bearbeiten</a>
+                        <a href="{% url 'comment_delete' comment.id %}"> | Löschen</a>
+                    {% endif %}
+                </div>
+            </div>
+    </section>
+    {% endfor %}
 </section>
 {% endblock %}
 {% block scripts %}
