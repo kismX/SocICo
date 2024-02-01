@@ -217,9 +217,9 @@
                     {% if request.user == post.user and request.user == profile.user %}
                     <button id="post-toggle-button-{{ post.id }}" class="post-toggle-btn" data-post-id="{{ post.id }}" {% if post.show_in_feed %} data-show-in-feed="true" {% else %} data-show-in-feed="false" {% endif %}>
                         {% if post.show_in_feed %}
-                            FEED
-                        {% else %}
                             UNFEED
+                        {% else %}
+                            FEED
                         {% endif %}
                     </button>
                     {% endif %}
@@ -317,10 +317,10 @@
                         // Erfolgreiche Aktualisierung, aktualisieren Sie den Button und die Datenattribute
                         if (showInFeed) {
                             button.data('show-in-feed', false);
-                            button.text('UNFEED');
+                            button.text('FEED');
                         } else {
                             button.data('show-in-feed', true);
-                            button.text('FEED');
+                            button.text('UNFEED');
                         }
                     } else {
                         // Fehler bei der Aktualisierung
